@@ -1,0 +1,3340 @@
+{
+  "note": "Produced by an independent reference implementation of docs/ARCHITECTURE.md section 5. Engine tests must reproduce these values. If a mismatch looks like a doc ambiguity, raise it with the team lead before changing either side.",
+  "constants": {
+    "fitWeights": {
+      "coverage": 0.85,
+      "readiness": 0.15
+    },
+    "priorityWeights": {
+      "importance": 0.3,
+      "gap": 0.25,
+      "dependencyImpact": 0.3,
+      "ready": 0.15
+    },
+    "ready": "every direct prerequisite has gap 0 (proficiency >= requiredLevel in this career)",
+    "tieBreak": "priority desc, difficulty asc, name asc",
+    "dependencyImpact": "sum(importance of descendants with gap>0) / max over skills with gap>0 (0 if max is 0)"
+  },
+  "cases": [
+    {
+      "id": "software-developer/empty",
+      "career": "software-developer",
+      "profile": {},
+      "fitScore": 4,
+      "coverage": 0.0,
+      "readiness": 0.2431,
+      "summary": {
+        "strong": 0,
+        "developing": 0,
+        "missing": 26,
+        "total": 26
+      },
+      "nextSkills": [
+        {
+          "skill": "programming-fundamentals",
+          "priority": 0.86
+        },
+        {
+          "skill": "git",
+          "priority": 0.64
+        },
+        {
+          "skill": "sql",
+          "priority": 0.6
+        }
+      ],
+      "path": [
+        {
+          "skill": "programming-fundamentals",
+          "fromLevel": 0,
+          "toLevel": 4,
+          "priority": 0.86,
+          "effortPoints": 4
+        },
+        {
+          "skill": "git",
+          "fromLevel": 0,
+          "toLevel": 4,
+          "priority": 0.72,
+          "effortPoints": 8
+        },
+        {
+          "skill": "sql",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.72,
+          "effortPoints": 6
+        },
+        {
+          "skill": "oop",
+          "fromLevel": 0,
+          "toLevel": 4,
+          "priority": 0.7,
+          "effortPoints": 12
+        },
+        {
+          "skill": "networking-basics",
+          "fromLevel": 0,
+          "toLevel": 2,
+          "priority": 0.67,
+          "effortPoints": 4
+        },
+        {
+          "skill": "http-fundamentals",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.75,
+          "effortPoints": 6
+        },
+        {
+          "skill": "command-line",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.75,
+          "effortPoints": 3
+        },
+        {
+          "skill": "linux",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.75,
+          "effortPoints": 6
+        },
+        {
+          "skill": "rest-apis",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.81,
+          "effortPoints": 9
+        },
+        {
+          "skill": "relational-database-design",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.78,
+          "effortPoints": 9
+        },
+        {
+          "skill": "unit-testing",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.81,
+          "effortPoints": 6
+        },
+        {
+          "skill": "github",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.78,
+          "effortPoints": 3
+        },
+        {
+          "skill": "dsa",
+          "fromLevel": 0,
+          "toLevel": 4,
+          "priority": 0.65,
+          "effortPoints": 16
+        },
+        {
+          "skill": "cloud-fundamentals",
+          "fromLevel": 0,
+          "toLevel": 2,
+          "priority": 0.64,
+          "effortPoints": 4
+        },
+        {
+          "skill": "c-programming",
+          "fromLevel": 0,
+          "toLevel": 2,
+          "priority": 0.64,
+          "effortPoints": 6
+        },
+        {
+          "skill": "java",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.51,
+          "effortPoints": 9
+        },
+        {
+          "skill": "python",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.48,
+          "effortPoints": 6
+        },
+        {
+          "skill": "design-patterns",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.48,
+          "effortPoints": 12
+        },
+        {
+          "skill": "system-design-basics",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.48,
+          "effortPoints": 12
+        },
+        {
+          "skill": "web-security-basics",
+          "fromLevel": 0,
+          "toLevel": 2,
+          "priority": 0.4,
+          "effortPoints": 6
+        },
+        {
+          "skill": "agile-scrum",
+          "fromLevel": 0,
+          "toLevel": 2,
+          "priority": 0.37,
+          "effortPoints": 2
+        },
+        {
+          "skill": "ci-cd",
+          "fromLevel": 0,
+          "toLevel": 2,
+          "priority": 0.37,
+          "effortPoints": 6
+        },
+        {
+          "skill": "docker",
+          "fromLevel": 0,
+          "toLevel": 2,
+          "priority": 0.37,
+          "effortPoints": 6
+        },
+        {
+          "skill": "postgresql",
+          "fromLevel": 0,
+          "toLevel": 2,
+          "priority": 0.37,
+          "effortPoints": 6
+        },
+        {
+          "skill": "aws",
+          "fromLevel": 0,
+          "toLevel": 2,
+          "priority": 0.34,
+          "effortPoints": 6
+        },
+        {
+          "skill": "cpp",
+          "fromLevel": 0,
+          "toLevel": 2,
+          "priority": 0.34,
+          "effortPoints": 8
+        }
+      ]
+    },
+    {
+      "id": "software-developer/random-1",
+      "career": "software-developer",
+      "profile": {
+        "programming-fundamentals": 5,
+        "c-programming": 5,
+        "cpp": 5,
+        "oop": 5,
+        "design-patterns": 3,
+        "unit-testing": 5,
+        "command-line": 4,
+        "rest-apis": 1,
+        "relational-database-design": 1,
+        "postgresql": 2,
+        "ci-cd": 5,
+        "aws": 1
+      },
+      "fitScore": 41,
+      "coverage": 0.3738,
+      "readiness": 0.6319,
+      "summary": {
+        "strong": 9,
+        "developing": 3,
+        "missing": 14,
+        "total": 26
+      },
+      "nextSkills": [
+        {
+          "skill": "networking-basics",
+          "priority": 0.67
+        },
+        {
+          "skill": "git",
+          "priority": 0.67
+        },
+        {
+          "skill": "sql",
+          "priority": 0.67
+        }
+      ],
+      "path": [
+        {
+          "skill": "networking-basics",
+          "fromLevel": 0,
+          "toLevel": 2,
+          "priority": 0.67,
+          "effortPoints": 4
+        },
+        {
+          "skill": "http-fundamentals",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.75,
+          "effortPoints": 6
+        },
+        {
+          "skill": "sql",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.81,
+          "effortPoints": 6
+        },
+        {
+          "skill": "git",
+          "fromLevel": 0,
+          "toLevel": 4,
+          "priority": 0.77,
+          "effortPoints": 8
+        },
+        {
+          "skill": "linux",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.75,
+          "effortPoints": 6
+        },
+        {
+          "skill": "rest-apis",
+          "fromLevel": 1,
+          "toLevel": 3,
+          "priority": 0.76,
+          "effortPoints": 6
+        },
+        {
+          "skill": "relational-database-design",
+          "fromLevel": 1,
+          "toLevel": 3,
+          "priority": 0.73,
+          "effortPoints": 6
+        },
+        {
+          "skill": "dsa",
+          "fromLevel": 0,
+          "toLevel": 4,
+          "priority": 0.65,
+          "effortPoints": 16
+        },
+        {
+          "skill": "cloud-fundamentals",
+          "fromLevel": 0,
+          "toLevel": 2,
+          "priority": 0.64,
+          "effortPoints": 4
+        },
+        {
+          "skill": "java",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.51,
+          "effortPoints": 9
+        },
+        {
+          "skill": "github",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.48,
+          "effortPoints": 3
+        },
+        {
+          "skill": "python",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.48,
+          "effortPoints": 6
+        },
+        {
+          "skill": "system-design-basics",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.48,
+          "effortPoints": 12
+        },
+        {
+          "skill": "web-security-basics",
+          "fromLevel": 0,
+          "toLevel": 2,
+          "priority": 0.4,
+          "effortPoints": 6
+        },
+        {
+          "skill": "agile-scrum",
+          "fromLevel": 0,
+          "toLevel": 2,
+          "priority": 0.37,
+          "effortPoints": 2
+        },
+        {
+          "skill": "docker",
+          "fromLevel": 0,
+          "toLevel": 2,
+          "priority": 0.37,
+          "effortPoints": 6
+        },
+        {
+          "skill": "aws",
+          "fromLevel": 1,
+          "toLevel": 2,
+          "priority": 0.29,
+          "effortPoints": 3
+        }
+      ]
+    },
+    {
+      "id": "software-developer/random-2",
+      "career": "software-developer",
+      "profile": {
+        "programming-fundamentals": 3,
+        "python": 5,
+        "oop": 2,
+        "design-patterns": 5,
+        "git": 3,
+        "github": 1,
+        "linux": 2,
+        "http-fundamentals": 4,
+        "sql": 1,
+        "postgresql": 3,
+        "system-design-basics": 3,
+        "web-security-basics": 4,
+        "docker": 2,
+        "cloud-fundamentals": 4
+      },
+      "fitScore": 42,
+      "coverage": 0.4334,
+      "readiness": 0.3472,
+      "summary": {
+        "strong": 8,
+        "developing": 6,
+        "missing": 12,
+        "total": 26
+      },
+      "nextSkills": [
+        {
+          "skill": "programming-fundamentals",
+          "priority": 0.71
+        },
+        {
+          "skill": "rest-apis",
+          "priority": 0.51
+        },
+        {
+          "skill": "git",
+          "priority": 0.51
+        }
+      ],
+      "path": [
+        {
+          "skill": "programming-fundamentals",
+          "fromLevel": 3,
+          "toLevel": 4,
+          "priority": 0.71,
+          "effortPoints": 1
+        },
+        {
+          "skill": "git",
+          "fromLevel": 3,
+          "toLevel": 4,
+          "priority": 0.74,
+          "effortPoints": 2
+        },
+        {
+          "skill": "command-line",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.75,
+          "effortPoints": 3
+        },
+        {
+          "skill": "sql",
+          "fromLevel": 1,
+          "toLevel": 3,
+          "priority": 0.72,
+          "effortPoints": 4
+        },
+        {
+          "skill": "unit-testing",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.68,
+          "effortPoints": 6
+        },
+        {
+          "skill": "networking-basics",
+          "fromLevel": 0,
+          "toLevel": 2,
+          "priority": 0.67,
+          "effortPoints": 4
+        },
+        {
+          "skill": "github",
+          "fromLevel": 1,
+          "toLevel": 3,
+          "priority": 0.73,
+          "effortPoints": 2
+        },
+        {
+          "skill": "linux",
+          "fromLevel": 2,
+          "toLevel": 3,
+          "priority": 0.65,
+          "effortPoints": 2
+        },
+        {
+          "skill": "dsa",
+          "fromLevel": 0,
+          "toLevel": 4,
+          "priority": 0.65,
+          "effortPoints": 16
+        },
+        {
+          "skill": "c-programming",
+          "fromLevel": 0,
+          "toLevel": 2,
+          "priority": 0.64,
+          "effortPoints": 6
+        },
+        {
+          "skill": "oop",
+          "fromLevel": 2,
+          "toLevel": 4,
+          "priority": 0.52,
+          "effortPoints": 6
+        },
+        {
+          "skill": "java",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.51,
+          "effortPoints": 9
+        },
+        {
+          "skill": "rest-apis",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.51,
+          "effortPoints": 9
+        },
+        {
+          "skill": "relational-database-design",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.48,
+          "effortPoints": 9
+        },
+        {
+          "skill": "agile-scrum",
+          "fromLevel": 0,
+          "toLevel": 2,
+          "priority": 0.37,
+          "effortPoints": 2
+        },
+        {
+          "skill": "ci-cd",
+          "fromLevel": 0,
+          "toLevel": 2,
+          "priority": 0.37,
+          "effortPoints": 6
+        },
+        {
+          "skill": "aws",
+          "fromLevel": 0,
+          "toLevel": 2,
+          "priority": 0.34,
+          "effortPoints": 6
+        },
+        {
+          "skill": "cpp",
+          "fromLevel": 0,
+          "toLevel": 2,
+          "priority": 0.34,
+          "effortPoints": 8
+        }
+      ]
+    },
+    {
+      "id": "full-stack-developer/empty",
+      "career": "full-stack-developer",
+      "profile": {},
+      "fitScore": 3,
+      "coverage": 0.0,
+      "readiness": 0.2022,
+      "summary": {
+        "strong": 0,
+        "developing": 0,
+        "missing": 32,
+        "total": 32
+      },
+      "nextSkills": [
+        {
+          "skill": "programming-fundamentals",
+          "priority": 0.75
+        },
+        {
+          "skill": "html",
+          "priority": 0.75
+        },
+        {
+          "skill": "sql",
+          "priority": 0.59
+        }
+      ],
+      "path": [
+        {
+          "skill": "programming-fundamentals",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.75,
+          "effortPoints": 3
+        },
+        {
+          "skill": "javascript",
+          "fromLevel": 0,
+          "toLevel": 4,
+          "priority": 0.95,
+          "effortPoints": 8
+        },
+        {
+          "skill": "html",
+          "fromLevel": 0,
+          "toLevel": 4,
+          "priority": 0.84,
+          "effortPoints": 4
+        },
+        {
+          "skill": "css",
+          "fromLevel": 0,
+          "toLevel": 4,
+          "priority": 0.78,
+          "effortPoints": 8
+        },
+        {
+          "skill": "react",
+          "fromLevel": 0,
+          "toLevel": 4,
+          "priority": 0.72,
+          "effortPoints": 12
+        },
+        {
+          "skill": "nodejs",
+          "fromLevel": 0,
+          "toLevel": 4,
+          "priority": 0.69,
+          "effortPoints": 12
+        },
+        {
+          "skill": "sql",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.66,
+          "effortPoints": 6
+        },
+        {
+          "skill": "networking-basics",
+          "fromLevel": 0,
+          "toLevel": 2,
+          "priority": 0.64,
+          "effortPoints": 4
+        },
+        {
+          "skill": "http-fundamentals",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.78,
+          "effortPoints": 6
+        },
+        {
+          "skill": "rest-apis",
+          "fromLevel": 0,
+          "toLevel": 4,
+          "priority": 0.87,
+          "effortPoints": 12
+        },
+        {
+          "skill": "git",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.77,
+          "effortPoints": 6
+        },
+        {
+          "skill": "command-line",
+          "fromLevel": 0,
+          "toLevel": 2,
+          "priority": 0.67,
+          "effortPoints": 2
+        },
+        {
+          "skill": "linux",
+          "fromLevel": 0,
+          "toLevel": 2,
+          "priority": 0.64,
+          "effortPoints": 4
+        },
+        {
+          "skill": "web-security-basics",
+          "fromLevel": 0,
+          "toLevel": 2,
+          "priority": 0.7,
+          "effortPoints": 6
+        },
+        {
+          "skill": "github",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.78,
+          "effortPoints": 3
+        },
+        {
+          "skill": "unit-testing",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.75,
+          "effortPoints": 6
+        },
+        {
+          "skill": "relational-database-design",
+          "fromLevel": 0,
+          "toLevel": 2,
+          "priority": 0.67,
+          "effortPoints": 6
+        },
+        {
+          "skill": "cloud-fundamentals",
+          "fromLevel": 0,
+          "toLevel": 2,
+          "priority": 0.64,
+          "effortPoints": 4
+        },
+        {
+          "skill": "express",
+          "fromLevel": 0,
+          "toLevel": 4,
+          "priority": 0.62,
+          "effortPoints": 12
+        },
+        {
+          "skill": "mongodb",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.54,
+          "effortPoints": 9
+        },
+        {
+          "skill": "authentication",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.51,
+          "effortPoints": 9
+        },
+        {
+          "skill": "typescript",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.48,
+          "effortPoints": 9
+        },
+        {
+          "skill": "responsive-design",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.45,
+          "effortPoints": 6
+        },
+        {
+          "skill": "nextjs",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.45,
+          "effortPoints": 9
+        },
+        {
+          "skill": "postgresql",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.45,
+          "effortPoints": 9
+        },
+        {
+          "skill": "state-management",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.45,
+          "effortPoints": 9
+        },
+        {
+          "skill": "ci-cd",
+          "fromLevel": 0,
+          "toLevel": 2,
+          "priority": 0.37,
+          "effortPoints": 6
+        },
+        {
+          "skill": "docker",
+          "fromLevel": 0,
+          "toLevel": 2,
+          "priority": 0.37,
+          "effortPoints": 6
+        },
+        {
+          "skill": "system-design-basics",
+          "fromLevel": 0,
+          "toLevel": 2,
+          "priority": 0.37,
+          "effortPoints": 8
+        },
+        {
+          "skill": "agile-scrum",
+          "fromLevel": 0,
+          "toLevel": 2,
+          "priority": 0.34,
+          "effortPoints": 2
+        },
+        {
+          "skill": "aws",
+          "fromLevel": 0,
+          "toLevel": 2,
+          "priority": 0.34,
+          "effortPoints": 6
+        },
+        {
+          "skill": "redis",
+          "fromLevel": 0,
+          "toLevel": 2,
+          "priority": 0.34,
+          "effortPoints": 6
+        }
+      ]
+    },
+    {
+      "id": "full-stack-developer/random-1",
+      "career": "full-stack-developer",
+      "profile": {
+        "programming-fundamentals": 5,
+        "html": 5,
+        "css": 2,
+        "responsive-design": 4,
+        "javascript": 4,
+        "react": 5,
+        "state-management": 1,
+        "nextjs": 4,
+        "http-fundamentals": 2,
+        "rest-apis": 3,
+        "authentication": 5,
+        "web-security-basics": 3,
+        "sql": 1,
+        "mongodb": 5,
+        "relational-database-design": 3,
+        "redis": 4,
+        "git": 5,
+        "github": 5,
+        "command-line": 4,
+        "linux": 2,
+        "docker": 2,
+        "ci-cd": 2,
+        "system-design-basics": 5,
+        "agile-scrum": 4
+      },
+      "fitScore": 66,
+      "coverage": 0.6799,
+      "readiness": 0.5519,
+      "summary": {
+        "strong": 19,
+        "developing": 5,
+        "missing": 8,
+        "total": 32
+      },
+      "nextSkills": [
+        {
+          "skill": "nodejs",
+          "priority": 0.73
+        },
+        {
+          "skill": "networking-basics",
+          "priority": 0.64
+        },
+        {
+          "skill": "css",
+          "priority": 0.55
+        }
+      ],
+      "path": [
+        {
+          "skill": "nodejs",
+          "fromLevel": 0,
+          "toLevel": 4,
+          "priority": 0.73,
+          "effortPoints": 12
+        },
+        {
+          "skill": "networking-basics",
+          "fromLevel": 0,
+          "toLevel": 2,
+          "priority": 0.64,
+          "effortPoints": 4
+        },
+        {
+          "skill": "http-fundamentals",
+          "fromLevel": 2,
+          "toLevel": 3,
+          "priority": 0.68,
+          "effortPoints": 2
+        },
+        {
+          "skill": "css",
+          "fromLevel": 2,
+          "toLevel": 4,
+          "priority": 0.79,
+          "effortPoints": 4
+        },
+        {
+          "skill": "sql",
+          "fromLevel": 1,
+          "toLevel": 3,
+          "priority": 0.73,
+          "effortPoints": 4
+        },
+        {
+          "skill": "cloud-fundamentals",
+          "fromLevel": 0,
+          "toLevel": 2,
+          "priority": 0.64,
+          "effortPoints": 4
+        },
+        {
+          "skill": "express",
+          "fromLevel": 0,
+          "toLevel": 4,
+          "priority": 0.62,
+          "effortPoints": 12
+        },
+        {
+          "skill": "typescript",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.48,
+          "effortPoints": 9
+        },
+        {
+          "skill": "rest-apis",
+          "fromLevel": 3,
+          "toLevel": 4,
+          "priority": 0.47,
+          "effortPoints": 3
+        },
+        {
+          "skill": "unit-testing",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.45,
+          "effortPoints": 6
+        },
+        {
+          "skill": "postgresql",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.45,
+          "effortPoints": 9
+        },
+        {
+          "skill": "state-management",
+          "fromLevel": 1,
+          "toLevel": 3,
+          "priority": 0.4,
+          "effortPoints": 6
+        },
+        {
+          "skill": "aws",
+          "fromLevel": 0,
+          "toLevel": 2,
+          "priority": 0.34,
+          "effortPoints": 6
+        }
+      ]
+    },
+    {
+      "id": "full-stack-developer/random-2",
+      "career": "full-stack-developer",
+      "profile": {
+        "programming-fundamentals": 1,
+        "html": 5,
+        "responsive-design": 4,
+        "javascript": 5,
+        "typescript": 5,
+        "react": 1,
+        "state-management": 4,
+        "networking-basics": 2,
+        "rest-apis": 4,
+        "authentication": 1,
+        "web-security-basics": 3,
+        "sql": 5,
+        "postgresql": 2,
+        "linux": 1,
+        "unit-testing": 3,
+        "agile-scrum": 1,
+        "cloud-fundamentals": 3,
+        "aws": 1
+      },
+      "fitScore": 45,
+      "coverage": 0.4335,
+      "readiness": 0.5246,
+      "summary": {
+        "strong": 11,
+        "developing": 7,
+        "missing": 14,
+        "total": 32
+      },
+      "nextSkills": [
+        {
+          "skill": "css",
+          "priority": 0.71
+        },
+        {
+          "skill": "programming-fundamentals",
+          "priority": 0.7
+        },
+        {
+          "skill": "nodejs",
+          "priority": 0.69
+        }
+      ],
+      "path": [
+        {
+          "skill": "css",
+          "fromLevel": 0,
+          "toLevel": 4,
+          "priority": 0.71,
+          "effortPoints": 8
+        },
+        {
+          "skill": "programming-fundamentals",
+          "fromLevel": 1,
+          "toLevel": 3,
+          "priority": 0.7,
+          "effortPoints": 2
+        },
+        {
+          "skill": "http-fundamentals",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.78,
+          "effortPoints": 6
+        },
+        {
+          "skill": "nodejs",
+          "fromLevel": 0,
+          "toLevel": 4,
+          "priority": 0.89,
+          "effortPoints": 12
+        },
+        {
+          "skill": "git",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.84,
+          "effortPoints": 6
+        },
+        {
+          "skill": "react",
+          "fromLevel": 1,
+          "toLevel": 4,
+          "priority": 0.75,
+          "effortPoints": 9
+        },
+        {
+          "skill": "command-line",
+          "fromLevel": 0,
+          "toLevel": 2,
+          "priority": 0.67,
+          "effortPoints": 2
+        },
+        {
+          "skill": "github",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.65,
+          "effortPoints": 3
+        },
+        {
+          "skill": "express",
+          "fromLevel": 0,
+          "toLevel": 4,
+          "priority": 0.62,
+          "effortPoints": 12
+        },
+        {
+          "skill": "linux",
+          "fromLevel": 1,
+          "toLevel": 2,
+          "priority": 0.59,
+          "effortPoints": 2
+        },
+        {
+          "skill": "relational-database-design",
+          "fromLevel": 0,
+          "toLevel": 2,
+          "priority": 0.67,
+          "effortPoints": 6
+        },
+        {
+          "skill": "mongodb",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.54,
+          "effortPoints": 9
+        },
+        {
+          "skill": "authentication",
+          "fromLevel": 1,
+          "toLevel": 3,
+          "priority": 0.46,
+          "effortPoints": 6
+        },
+        {
+          "skill": "nextjs",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.45,
+          "effortPoints": 9
+        },
+        {
+          "skill": "ci-cd",
+          "fromLevel": 0,
+          "toLevel": 2,
+          "priority": 0.37,
+          "effortPoints": 6
+        },
+        {
+          "skill": "docker",
+          "fromLevel": 0,
+          "toLevel": 2,
+          "priority": 0.37,
+          "effortPoints": 6
+        },
+        {
+          "skill": "system-design-basics",
+          "fromLevel": 0,
+          "toLevel": 2,
+          "priority": 0.37,
+          "effortPoints": 8
+        },
+        {
+          "skill": "postgresql",
+          "fromLevel": 2,
+          "toLevel": 3,
+          "priority": 0.35,
+          "effortPoints": 3
+        },
+        {
+          "skill": "redis",
+          "fromLevel": 0,
+          "toLevel": 2,
+          "priority": 0.34,
+          "effortPoints": 6
+        },
+        {
+          "skill": "agile-scrum",
+          "fromLevel": 1,
+          "toLevel": 2,
+          "priority": 0.29,
+          "effortPoints": 1
+        },
+        {
+          "skill": "aws",
+          "fromLevel": 1,
+          "toLevel": 2,
+          "priority": 0.29,
+          "effortPoints": 3
+        }
+      ]
+    },
+    {
+      "id": "full-stack-developer/persona-ravi",
+      "career": "full-stack-developer",
+      "profile": {
+        "programming-fundamentals": 4,
+        "html": 4,
+        "css": 4,
+        "responsive-design": 3,
+        "javascript": 4,
+        "typescript": 3,
+        "react": 4,
+        "state-management": 3,
+        "nodejs": 4,
+        "express": 4,
+        "networking-basics": 2,
+        "http-fundamentals": 3,
+        "rest-apis": 4,
+        "authentication": 3,
+        "web-security-basics": 2,
+        "sql": 3,
+        "mongodb": 4,
+        "postgresql": 2,
+        "git": 4,
+        "github": 3,
+        "command-line": 3,
+        "docker": 1,
+        "unit-testing": 2,
+        "nextjs": 2
+      },
+      "fitScore": 83,
+      "coverage": 0.8142,
+      "readiness": 0.9016,
+      "summary": {
+        "strong": 20,
+        "developing": 4,
+        "missing": 8,
+        "total": 32
+      },
+      "nextSkills": [
+        {
+          "skill": "linux",
+          "priority": 0.64
+        },
+        {
+          "skill": "relational-database-design",
+          "priority": 0.49
+        },
+        {
+          "skill": "unit-testing",
+          "priority": 0.47
+        }
+      ],
+      "path": [
+        {
+          "skill": "linux",
+          "fromLevel": 0,
+          "toLevel": 2,
+          "priority": 0.64,
+          "effortPoints": 4
+        },
+        {
+          "skill": "relational-database-design",
+          "fromLevel": 0,
+          "toLevel": 2,
+          "priority": 0.67,
+          "effortPoints": 6
+        },
+        {
+          "skill": "unit-testing",
+          "fromLevel": 2,
+          "toLevel": 3,
+          "priority": 0.65,
+          "effortPoints": 2
+        },
+        {
+          "skill": "cloud-fundamentals",
+          "fromLevel": 0,
+          "toLevel": 2,
+          "priority": 0.64,
+          "effortPoints": 4
+        },
+        {
+          "skill": "ci-cd",
+          "fromLevel": 0,
+          "toLevel": 2,
+          "priority": 0.37,
+          "effortPoints": 6
+        },
+        {
+          "skill": "system-design-basics",
+          "fromLevel": 0,
+          "toLevel": 2,
+          "priority": 0.37,
+          "effortPoints": 8
+        },
+        {
+          "skill": "nextjs",
+          "fromLevel": 2,
+          "toLevel": 3,
+          "priority": 0.35,
+          "effortPoints": 3
+        },
+        {
+          "skill": "postgresql",
+          "fromLevel": 2,
+          "toLevel": 3,
+          "priority": 0.35,
+          "effortPoints": 3
+        },
+        {
+          "skill": "agile-scrum",
+          "fromLevel": 0,
+          "toLevel": 2,
+          "priority": 0.34,
+          "effortPoints": 2
+        },
+        {
+          "skill": "aws",
+          "fromLevel": 0,
+          "toLevel": 2,
+          "priority": 0.34,
+          "effortPoints": 6
+        },
+        {
+          "skill": "redis",
+          "fromLevel": 0,
+          "toLevel": 2,
+          "priority": 0.34,
+          "effortPoints": 6
+        },
+        {
+          "skill": "docker",
+          "fromLevel": 1,
+          "toLevel": 2,
+          "priority": 0.32,
+          "effortPoints": 3
+        }
+      ]
+    },
+    {
+      "id": "data-analyst/empty",
+      "career": "data-analyst",
+      "profile": {},
+      "fitScore": 6,
+      "coverage": 0.0,
+      "readiness": 0.4,
+      "summary": {
+        "strong": 0,
+        "developing": 0,
+        "missing": 17,
+        "total": 17
+      },
+      "nextSkills": [
+        {
+          "skill": "sql",
+          "priority": 0.72
+        },
+        {
+          "skill": "programming-fundamentals",
+          "priority": 0.67
+        },
+        {
+          "skill": "excel",
+          "priority": 0.64
+        }
+      ],
+      "path": [
+        {
+          "skill": "sql",
+          "fromLevel": 0,
+          "toLevel": 4,
+          "priority": 0.72,
+          "effortPoints": 8
+        },
+        {
+          "skill": "programming-fundamentals",
+          "fromLevel": 0,
+          "toLevel": 2,
+          "priority": 0.67,
+          "effortPoints": 2
+        },
+        {
+          "skill": "python",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.81,
+          "effortPoints": 6
+        },
+        {
+          "skill": "numpy",
+          "fromLevel": 0,
+          "toLevel": 2,
+          "priority": 0.67,
+          "effortPoints": 4
+        },
+        {
+          "skill": "pandas",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.84,
+          "effortPoints": 9
+        },
+        {
+          "skill": "excel",
+          "fromLevel": 0,
+          "toLevel": 4,
+          "priority": 0.89,
+          "effortPoints": 4
+        },
+        {
+          "skill": "data-cleaning",
+          "fromLevel": 0,
+          "toLevel": 4,
+          "priority": 0.89,
+          "effortPoints": 8
+        },
+        {
+          "skill": "data-visualization",
+          "fromLevel": 0,
+          "toLevel": 4,
+          "priority": 0.89,
+          "effortPoints": 12
+        },
+        {
+          "skill": "statistics",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.84,
+          "effortPoints": 9
+        },
+        {
+          "skill": "git",
+          "fromLevel": 0,
+          "toLevel": 2,
+          "priority": 0.67,
+          "effortPoints": 4
+        },
+        {
+          "skill": "bi-tools",
+          "fromLevel": 0,
+          "toLevel": 4,
+          "priority": 0.59,
+          "effortPoints": 8
+        },
+        {
+          "skill": "eda",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.51,
+          "effortPoints": 9
+        },
+        {
+          "skill": "jupyter-notebooks",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.42,
+          "effortPoints": 3
+        },
+        {
+          "skill": "agile-scrum",
+          "fromLevel": 0,
+          "toLevel": 2,
+          "priority": 0.34,
+          "effortPoints": 2
+        },
+        {
+          "skill": "command-line",
+          "fromLevel": 0,
+          "toLevel": 2,
+          "priority": 0.34,
+          "effortPoints": 2
+        },
+        {
+          "skill": "github",
+          "fromLevel": 0,
+          "toLevel": 2,
+          "priority": 0.34,
+          "effortPoints": 2
+        },
+        {
+          "skill": "postgresql",
+          "fromLevel": 0,
+          "toLevel": 2,
+          "priority": 0.34,
+          "effortPoints": 6
+        }
+      ]
+    },
+    {
+      "id": "data-analyst/random-1",
+      "career": "data-analyst",
+      "profile": {
+        "excel": 5,
+        "sql": 1,
+        "data-cleaning": 4,
+        "bi-tools": 1,
+        "command-line": 5,
+        "postgresql": 1,
+        "agile-scrum": 1
+      },
+      "fitScore": 29,
+      "coverage": 0.265,
+      "readiness": 0.4,
+      "summary": {
+        "strong": 3,
+        "developing": 4,
+        "missing": 10,
+        "total": 17
+      },
+      "nextSkills": [
+        {
+          "skill": "sql",
+          "priority": 0.69
+        },
+        {
+          "skill": "programming-fundamentals",
+          "priority": 0.67
+        },
+        {
+          "skill": "statistics",
+          "priority": 0.6
+        }
+      ],
+      "path": [
+        {
+          "skill": "sql",
+          "fromLevel": 1,
+          "toLevel": 4,
+          "priority": 0.69,
+          "effortPoints": 6
+        },
+        {
+          "skill": "programming-fundamentals",
+          "fromLevel": 0,
+          "toLevel": 2,
+          "priority": 0.67,
+          "effortPoints": 2
+        },
+        {
+          "skill": "python",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.81,
+          "effortPoints": 6
+        },
+        {
+          "skill": "numpy",
+          "fromLevel": 0,
+          "toLevel": 2,
+          "priority": 0.67,
+          "effortPoints": 4
+        },
+        {
+          "skill": "pandas",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.84,
+          "effortPoints": 9
+        },
+        {
+          "skill": "data-visualization",
+          "fromLevel": 0,
+          "toLevel": 4,
+          "priority": 0.89,
+          "effortPoints": 12
+        },
+        {
+          "skill": "statistics",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.84,
+          "effortPoints": 9
+        },
+        {
+          "skill": "git",
+          "fromLevel": 0,
+          "toLevel": 2,
+          "priority": 0.67,
+          "effortPoints": 4
+        },
+        {
+          "skill": "bi-tools",
+          "fromLevel": 1,
+          "toLevel": 4,
+          "priority": 0.54,
+          "effortPoints": 6
+        },
+        {
+          "skill": "eda",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.51,
+          "effortPoints": 9
+        },
+        {
+          "skill": "jupyter-notebooks",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.42,
+          "effortPoints": 3
+        },
+        {
+          "skill": "github",
+          "fromLevel": 0,
+          "toLevel": 2,
+          "priority": 0.34,
+          "effortPoints": 2
+        },
+        {
+          "skill": "agile-scrum",
+          "fromLevel": 1,
+          "toLevel": 2,
+          "priority": 0.29,
+          "effortPoints": 1
+        },
+        {
+          "skill": "postgresql",
+          "fromLevel": 1,
+          "toLevel": 2,
+          "priority": 0.29,
+          "effortPoints": 3
+        }
+      ]
+    },
+    {
+      "id": "data-analyst/random-2",
+      "career": "data-analyst",
+      "profile": {
+        "programming-fundamentals": 5,
+        "python": 4,
+        "pandas": 5,
+        "data-cleaning": 5,
+        "data-visualization": 1,
+        "eda": 1,
+        "bi-tools": 5,
+        "git": 1,
+        "github": 2,
+        "postgresql": 2
+      },
+      "fitScore": 51,
+      "coverage": 0.4733,
+      "readiness": 0.71,
+      "summary": {
+        "strong": 7,
+        "developing": 3,
+        "missing": 7,
+        "total": 17
+      },
+      "nextSkills": [
+        {
+          "skill": "data-visualization",
+          "priority": 0.68
+        },
+        {
+          "skill": "statistics",
+          "priority": 0.68
+        },
+        {
+          "skill": "numpy",
+          "priority": 0.67
+        }
+      ],
+      "path": [
+        {
+          "skill": "data-visualization",
+          "fromLevel": 1,
+          "toLevel": 4,
+          "priority": 0.68,
+          "effortPoints": 9
+        },
+        {
+          "skill": "statistics",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.84,
+          "effortPoints": 9
+        },
+        {
+          "skill": "numpy",
+          "fromLevel": 0,
+          "toLevel": 2,
+          "priority": 0.67,
+          "effortPoints": 4
+        },
+        {
+          "skill": "sql",
+          "fromLevel": 0,
+          "toLevel": 4,
+          "priority": 0.65,
+          "effortPoints": 8
+        },
+        {
+          "skill": "excel",
+          "fromLevel": 0,
+          "toLevel": 4,
+          "priority": 0.59,
+          "effortPoints": 4
+        },
+        {
+          "skill": "eda",
+          "fromLevel": 1,
+          "toLevel": 3,
+          "priority": 0.46,
+          "effortPoints": 6
+        },
+        {
+          "skill": "jupyter-notebooks",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.42,
+          "effortPoints": 3
+        },
+        {
+          "skill": "agile-scrum",
+          "fromLevel": 0,
+          "toLevel": 2,
+          "priority": 0.34,
+          "effortPoints": 2
+        },
+        {
+          "skill": "command-line",
+          "fromLevel": 0,
+          "toLevel": 2,
+          "priority": 0.34,
+          "effortPoints": 2
+        },
+        {
+          "skill": "git",
+          "fromLevel": 1,
+          "toLevel": 2,
+          "priority": 0.32,
+          "effortPoints": 2
+        }
+      ]
+    },
+    {
+      "id": "data-analyst/persona-asha",
+      "career": "data-analyst",
+      "profile": {
+        "programming-fundamentals": 2,
+        "excel": 3,
+        "sql": 2,
+        "statistics": 1,
+        "python": 1
+      },
+      "fitScore": 24,
+      "coverage": 0.2,
+      "readiness": 0.47,
+      "summary": {
+        "strong": 1,
+        "developing": 4,
+        "missing": 12,
+        "total": 17
+      },
+      "nextSkills": [
+        {
+          "skill": "python",
+          "priority": 0.76
+        },
+        {
+          "skill": "sql",
+          "priority": 0.63
+        },
+        {
+          "skill": "statistics",
+          "priority": 0.54
+        }
+      ],
+      "path": [
+        {
+          "skill": "python",
+          "fromLevel": 1,
+          "toLevel": 3,
+          "priority": 0.76,
+          "effortPoints": 4
+        },
+        {
+          "skill": "numpy",
+          "fromLevel": 0,
+          "toLevel": 2,
+          "priority": 0.67,
+          "effortPoints": 4
+        },
+        {
+          "skill": "pandas",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.84,
+          "effortPoints": 9
+        },
+        {
+          "skill": "sql",
+          "fromLevel": 2,
+          "toLevel": 4,
+          "priority": 0.85,
+          "effortPoints": 4
+        },
+        {
+          "skill": "data-cleaning",
+          "fromLevel": 0,
+          "toLevel": 4,
+          "priority": 0.85,
+          "effortPoints": 8
+        },
+        {
+          "skill": "data-visualization",
+          "fromLevel": 0,
+          "toLevel": 4,
+          "priority": 0.85,
+          "effortPoints": 12
+        },
+        {
+          "skill": "statistics",
+          "fromLevel": 1,
+          "toLevel": 3,
+          "priority": 0.75,
+          "effortPoints": 6
+        },
+        {
+          "skill": "excel",
+          "fromLevel": 3,
+          "toLevel": 4,
+          "priority": 0.74,
+          "effortPoints": 1
+        },
+        {
+          "skill": "git",
+          "fromLevel": 0,
+          "toLevel": 2,
+          "priority": 0.67,
+          "effortPoints": 4
+        },
+        {
+          "skill": "bi-tools",
+          "fromLevel": 0,
+          "toLevel": 4,
+          "priority": 0.59,
+          "effortPoints": 8
+        },
+        {
+          "skill": "eda",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.51,
+          "effortPoints": 9
+        },
+        {
+          "skill": "jupyter-notebooks",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.42,
+          "effortPoints": 3
+        },
+        {
+          "skill": "agile-scrum",
+          "fromLevel": 0,
+          "toLevel": 2,
+          "priority": 0.34,
+          "effortPoints": 2
+        },
+        {
+          "skill": "command-line",
+          "fromLevel": 0,
+          "toLevel": 2,
+          "priority": 0.34,
+          "effortPoints": 2
+        },
+        {
+          "skill": "github",
+          "fromLevel": 0,
+          "toLevel": 2,
+          "priority": 0.34,
+          "effortPoints": 2
+        },
+        {
+          "skill": "postgresql",
+          "fromLevel": 0,
+          "toLevel": 2,
+          "priority": 0.34,
+          "effortPoints": 6
+        }
+      ]
+    },
+    {
+      "id": "data-scientist/empty",
+      "career": "data-scientist",
+      "profile": {},
+      "fitScore": 3,
+      "coverage": 0.0,
+      "readiness": 0.1939,
+      "summary": {
+        "strong": 0,
+        "developing": 0,
+        "missing": 24,
+        "total": 24
+      },
+      "nextSkills": [
+        {
+          "skill": "statistics",
+          "priority": 0.85
+        },
+        {
+          "skill": "programming-fundamentals",
+          "priority": 0.72
+        },
+        {
+          "skill": "linear-algebra",
+          "priority": 0.66
+        }
+      ],
+      "path": [
+        {
+          "skill": "statistics",
+          "fromLevel": 0,
+          "toLevel": 4,
+          "priority": 0.85,
+          "effortPoints": 12
+        },
+        {
+          "skill": "programming-fundamentals",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.72,
+          "effortPoints": 3
+        },
+        {
+          "skill": "python",
+          "fromLevel": 0,
+          "toLevel": 4,
+          "priority": 0.95,
+          "effortPoints": 8
+        },
+        {
+          "skill": "linear-algebra",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.78,
+          "effortPoints": 9
+        },
+        {
+          "skill": "ml-fundamentals",
+          "fromLevel": 0,
+          "toLevel": 4,
+          "priority": 0.92,
+          "effortPoints": 16
+        },
+        {
+          "skill": "supervised-learning",
+          "fromLevel": 0,
+          "toLevel": 4,
+          "priority": 0.82,
+          "effortPoints": 12
+        },
+        {
+          "skill": "numpy",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.81,
+          "effortPoints": 6
+        },
+        {
+          "skill": "pandas",
+          "fromLevel": 0,
+          "toLevel": 4,
+          "priority": 0.92,
+          "effortPoints": 12
+        },
+        {
+          "skill": "data-visualization",
+          "fromLevel": 0,
+          "toLevel": 4,
+          "priority": 0.89,
+          "effortPoints": 12
+        },
+        {
+          "skill": "data-cleaning",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.81,
+          "effortPoints": 6
+        },
+        {
+          "skill": "classification",
+          "fromLevel": 0,
+          "toLevel": 4,
+          "priority": 0.83,
+          "effortPoints": 12
+        },
+        {
+          "skill": "unsupervised-learning",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.78,
+          "effortPoints": 9
+        },
+        {
+          "skill": "neural-networks",
+          "fromLevel": 0,
+          "toLevel": 2,
+          "priority": 0.67,
+          "effortPoints": 8
+        },
+        {
+          "skill": "eda",
+          "fromLevel": 0,
+          "toLevel": 4,
+          "priority": 0.59,
+          "effortPoints": 12
+        },
+        {
+          "skill": "model-evaluation",
+          "fromLevel": 0,
+          "toLevel": 4,
+          "priority": 0.59,
+          "effortPoints": 12
+        },
+        {
+          "skill": "regression",
+          "fromLevel": 0,
+          "toLevel": 4,
+          "priority": 0.59,
+          "effortPoints": 12
+        },
+        {
+          "skill": "scikit-learn",
+          "fromLevel": 0,
+          "toLevel": 4,
+          "priority": 0.59,
+          "effortPoints": 12
+        },
+        {
+          "skill": "sql",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.51,
+          "effortPoints": 6
+        },
+        {
+          "skill": "feature-engineering",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.51,
+          "effortPoints": 12
+        },
+        {
+          "skill": "jupyter-notebooks",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.45,
+          "effortPoints": 3
+        },
+        {
+          "skill": "git",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.45,
+          "effortPoints": 6
+        },
+        {
+          "skill": "clustering",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.45,
+          "effortPoints": 9
+        },
+        {
+          "skill": "deep-learning",
+          "fromLevel": 0,
+          "toLevel": 2,
+          "priority": 0.37,
+          "effortPoints": 8
+        },
+        {
+          "skill": "nlp",
+          "fromLevel": 0,
+          "toLevel": 2,
+          "priority": 0.37,
+          "effortPoints": 8
+        }
+      ]
+    },
+    {
+      "id": "data-scientist/random-1",
+      "career": "data-scientist",
+      "profile": {
+        "programming-fundamentals": 4,
+        "python": 2,
+        "numpy": 3,
+        "pandas": 4,
+        "eda": 2,
+        "statistics": 5,
+        "sql": 2,
+        "jupyter-notebooks": 1,
+        "unsupervised-learning": 2,
+        "regression": 4,
+        "classification": 2,
+        "feature-engineering": 5,
+        "model-evaluation": 3,
+        "nlp": 1,
+        "git": 5
+      },
+      "fitScore": 47,
+      "coverage": 0.4929,
+      "readiness": 0.3455,
+      "summary": {
+        "strong": 7,
+        "developing": 8,
+        "missing": 9,
+        "total": 24
+      },
+      "nextSkills": [
+        {
+          "skill": "python",
+          "priority": 0.85
+        },
+        {
+          "skill": "linear-algebra",
+          "priority": 0.69
+        },
+        {
+          "skill": "data-visualization",
+          "priority": 0.62
+        }
+      ],
+      "path": [
+        {
+          "skill": "python",
+          "fromLevel": 2,
+          "toLevel": 4,
+          "priority": 0.85,
+          "effortPoints": 4
+        },
+        {
+          "skill": "linear-algebra",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.78,
+          "effortPoints": 9
+        },
+        {
+          "skill": "ml-fundamentals",
+          "fromLevel": 0,
+          "toLevel": 4,
+          "priority": 0.92,
+          "effortPoints": 16
+        },
+        {
+          "skill": "supervised-learning",
+          "fromLevel": 0,
+          "toLevel": 4,
+          "priority": 0.89,
+          "effortPoints": 12
+        },
+        {
+          "skill": "data-visualization",
+          "fromLevel": 0,
+          "toLevel": 4,
+          "priority": 0.89,
+          "effortPoints": 12
+        },
+        {
+          "skill": "data-cleaning",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.81,
+          "effortPoints": 6
+        },
+        {
+          "skill": "classification",
+          "fromLevel": 2,
+          "toLevel": 4,
+          "priority": 0.73,
+          "effortPoints": 6
+        },
+        {
+          "skill": "unsupervised-learning",
+          "fromLevel": 2,
+          "toLevel": 3,
+          "priority": 0.68,
+          "effortPoints": 3
+        },
+        {
+          "skill": "neural-networks",
+          "fromLevel": 0,
+          "toLevel": 2,
+          "priority": 0.67,
+          "effortPoints": 8
+        },
+        {
+          "skill": "scikit-learn",
+          "fromLevel": 0,
+          "toLevel": 4,
+          "priority": 0.59,
+          "effortPoints": 12
+        },
+        {
+          "skill": "eda",
+          "fromLevel": 2,
+          "toLevel": 4,
+          "priority": 0.49,
+          "effortPoints": 6
+        },
+        {
+          "skill": "clustering",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.45,
+          "effortPoints": 9
+        },
+        {
+          "skill": "model-evaluation",
+          "fromLevel": 3,
+          "toLevel": 4,
+          "priority": 0.44,
+          "effortPoints": 3
+        },
+        {
+          "skill": "sql",
+          "fromLevel": 2,
+          "toLevel": 3,
+          "priority": 0.41,
+          "effortPoints": 2
+        },
+        {
+          "skill": "jupyter-notebooks",
+          "fromLevel": 1,
+          "toLevel": 3,
+          "priority": 0.4,
+          "effortPoints": 2
+        },
+        {
+          "skill": "deep-learning",
+          "fromLevel": 0,
+          "toLevel": 2,
+          "priority": 0.37,
+          "effortPoints": 8
+        },
+        {
+          "skill": "nlp",
+          "fromLevel": 1,
+          "toLevel": 2,
+          "priority": 0.32,
+          "effortPoints": 4
+        }
+      ]
+    },
+    {
+      "id": "data-scientist/random-2",
+      "career": "data-scientist",
+      "profile": {
+        "programming-fundamentals": 3,
+        "numpy": 5,
+        "pandas": 2,
+        "data-cleaning": 2,
+        "data-visualization": 3,
+        "eda": 2,
+        "sql": 1,
+        "classification": 4,
+        "clustering": 1,
+        "scikit-learn": 2,
+        "neural-networks": 3
+      },
+      "fitScore": 30,
+      "coverage": 0.304,
+      "readiness": 0.303,
+      "summary": {
+        "strong": 4,
+        "developing": 7,
+        "missing": 13,
+        "total": 24
+      },
+      "nextSkills": [
+        {
+          "skill": "python",
+          "priority": 0.95
+        },
+        {
+          "skill": "statistics",
+          "priority": 0.87
+        },
+        {
+          "skill": "linear-algebra",
+          "priority": 0.67
+        }
+      ],
+      "path": [
+        {
+          "skill": "python",
+          "fromLevel": 0,
+          "toLevel": 4,
+          "priority": 0.95,
+          "effortPoints": 8
+        },
+        {
+          "skill": "statistics",
+          "fromLevel": 0,
+          "toLevel": 4,
+          "priority": 0.95,
+          "effortPoints": 12
+        },
+        {
+          "skill": "linear-algebra",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.78,
+          "effortPoints": 9
+        },
+        {
+          "skill": "ml-fundamentals",
+          "fromLevel": 0,
+          "toLevel": 4,
+          "priority": 0.92,
+          "effortPoints": 16
+        },
+        {
+          "skill": "supervised-learning",
+          "fromLevel": 0,
+          "toLevel": 4,
+          "priority": 0.83,
+          "effortPoints": 12
+        },
+        {
+          "skill": "pandas",
+          "fromLevel": 2,
+          "toLevel": 4,
+          "priority": 0.82,
+          "effortPoints": 6
+        },
+        {
+          "skill": "data-visualization",
+          "fromLevel": 3,
+          "toLevel": 4,
+          "priority": 0.74,
+          "effortPoints": 3
+        },
+        {
+          "skill": "data-cleaning",
+          "fromLevel": 2,
+          "toLevel": 3,
+          "priority": 0.71,
+          "effortPoints": 2
+        },
+        {
+          "skill": "unsupervised-learning",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.78,
+          "effortPoints": 9
+        },
+        {
+          "skill": "model-evaluation",
+          "fromLevel": 0,
+          "toLevel": 4,
+          "priority": 0.59,
+          "effortPoints": 12
+        },
+        {
+          "skill": "regression",
+          "fromLevel": 0,
+          "toLevel": 4,
+          "priority": 0.59,
+          "effortPoints": 12
+        },
+        {
+          "skill": "feature-engineering",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.51,
+          "effortPoints": 12
+        },
+        {
+          "skill": "eda",
+          "fromLevel": 2,
+          "toLevel": 4,
+          "priority": 0.49,
+          "effortPoints": 6
+        },
+        {
+          "skill": "scikit-learn",
+          "fromLevel": 2,
+          "toLevel": 4,
+          "priority": 0.49,
+          "effortPoints": 6
+        },
+        {
+          "skill": "sql",
+          "fromLevel": 1,
+          "toLevel": 3,
+          "priority": 0.46,
+          "effortPoints": 4
+        },
+        {
+          "skill": "jupyter-notebooks",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.45,
+          "effortPoints": 3
+        },
+        {
+          "skill": "git",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.45,
+          "effortPoints": 6
+        },
+        {
+          "skill": "clustering",
+          "fromLevel": 1,
+          "toLevel": 3,
+          "priority": 0.4,
+          "effortPoints": 6
+        },
+        {
+          "skill": "deep-learning",
+          "fromLevel": 0,
+          "toLevel": 2,
+          "priority": 0.37,
+          "effortPoints": 8
+        },
+        {
+          "skill": "nlp",
+          "fromLevel": 0,
+          "toLevel": 2,
+          "priority": 0.37,
+          "effortPoints": 8
+        }
+      ]
+    },
+    {
+      "id": "machine-learning-engineer/empty",
+      "career": "machine-learning-engineer",
+      "profile": {},
+      "fitScore": 3,
+      "coverage": 0.0,
+      "readiness": 0.1889,
+      "summary": {
+        "strong": 0,
+        "developing": 0,
+        "missing": 35,
+        "total": 35
+      },
+      "nextSkills": [
+        {
+          "skill": "statistics",
+          "priority": 0.8
+        },
+        {
+          "skill": "programming-fundamentals",
+          "priority": 0.72
+        },
+        {
+          "skill": "linear-algebra",
+          "priority": 0.69
+        }
+      ],
+      "path": [
+        {
+          "skill": "statistics",
+          "fromLevel": 0,
+          "toLevel": 4,
+          "priority": 0.8,
+          "effortPoints": 12
+        },
+        {
+          "skill": "programming-fundamentals",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.72,
+          "effortPoints": 3
+        },
+        {
+          "skill": "python",
+          "fromLevel": 0,
+          "toLevel": 4,
+          "priority": 0.92,
+          "effortPoints": 8
+        },
+        {
+          "skill": "linear-algebra",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.78,
+          "effortPoints": 9
+        },
+        {
+          "skill": "ml-fundamentals",
+          "fromLevel": 0,
+          "toLevel": 5,
+          "priority": 1.0,
+          "effortPoints": 20
+        },
+        {
+          "skill": "supervised-learning",
+          "fromLevel": 0,
+          "toLevel": 4,
+          "priority": 0.89,
+          "effortPoints": 12
+        },
+        {
+          "skill": "numpy",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.78,
+          "effortPoints": 6
+        },
+        {
+          "skill": "neural-networks",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.78,
+          "effortPoints": 12
+        },
+        {
+          "skill": "deep-learning",
+          "fromLevel": 0,
+          "toLevel": 4,
+          "priority": 0.72,
+          "effortPoints": 16
+        },
+        {
+          "skill": "scikit-learn",
+          "fromLevel": 0,
+          "toLevel": 4,
+          "priority": 0.66,
+          "effortPoints": 12
+        },
+        {
+          "skill": "command-line",
+          "fromLevel": 0,
+          "toLevel": 2,
+          "priority": 0.64,
+          "effortPoints": 2
+        },
+        {
+          "skill": "linux",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.72,
+          "effortPoints": 6
+        },
+        {
+          "skill": "prompt-engineering",
+          "fromLevel": 0,
+          "toLevel": 2,
+          "priority": 0.64,
+          "effortPoints": 2
+        },
+        {
+          "skill": "llm-apis",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.72,
+          "effortPoints": 6
+        },
+        {
+          "skill": "pandas",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.68,
+          "effortPoints": 9
+        },
+        {
+          "skill": "embeddings",
+          "fromLevel": 0,
+          "toLevel": 2,
+          "priority": 0.67,
+          "effortPoints": 6
+        },
+        {
+          "skill": "classification",
+          "fromLevel": 0,
+          "toLevel": 4,
+          "priority": 0.73,
+          "effortPoints": 12
+        },
+        {
+          "skill": "docker",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.7,
+          "effortPoints": 9
+        },
+        {
+          "skill": "vector-databases",
+          "fromLevel": 0,
+          "toLevel": 2,
+          "priority": 0.64,
+          "effortPoints": 6
+        },
+        {
+          "skill": "unsupervised-learning",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.65,
+          "effortPoints": 9
+        },
+        {
+          "skill": "cloud-fundamentals",
+          "fromLevel": 0,
+          "toLevel": 2,
+          "priority": 0.64,
+          "effortPoints": 4
+        },
+        {
+          "skill": "rag",
+          "fromLevel": 0,
+          "toLevel": 2,
+          "priority": 0.67,
+          "effortPoints": 8
+        },
+        {
+          "skill": "model-evaluation",
+          "fromLevel": 0,
+          "toLevel": 4,
+          "priority": 0.56,
+          "effortPoints": 12
+        },
+        {
+          "skill": "feature-engineering",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.48,
+          "effortPoints": 12
+        },
+        {
+          "skill": "pytorch",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.48,
+          "effortPoints": 12
+        },
+        {
+          "skill": "git",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.45,
+          "effortPoints": 6
+        },
+        {
+          "skill": "sql",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.45,
+          "effortPoints": 6
+        },
+        {
+          "skill": "regression",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.45,
+          "effortPoints": 9
+        },
+        {
+          "skill": "mlops",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.45,
+          "effortPoints": 12
+        },
+        {
+          "skill": "computer-vision",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.42,
+          "effortPoints": 12
+        },
+        {
+          "skill": "nlp",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.42,
+          "effortPoints": 12
+        },
+        {
+          "skill": "aws",
+          "fromLevel": 0,
+          "toLevel": 2,
+          "priority": 0.37,
+          "effortPoints": 6
+        },
+        {
+          "skill": "clustering",
+          "fromLevel": 0,
+          "toLevel": 2,
+          "priority": 0.34,
+          "effortPoints": 6
+        },
+        {
+          "skill": "tensorflow",
+          "fromLevel": 0,
+          "toLevel": 2,
+          "priority": 0.34,
+          "effortPoints": 8
+        },
+        {
+          "skill": "ai-agents",
+          "fromLevel": 0,
+          "toLevel": 2,
+          "priority": 0.31,
+          "effortPoints": 8
+        }
+      ]
+    },
+    {
+      "id": "machine-learning-engineer/random-1",
+      "career": "machine-learning-engineer",
+      "profile": {
+        "python": 2,
+        "statistics": 4,
+        "linear-algebra": 4,
+        "numpy": 1,
+        "pandas": 5,
+        "regression": 3,
+        "clustering": 1,
+        "feature-engineering": 4,
+        "pytorch": 1,
+        "tensorflow": 1,
+        "nlp": 3,
+        "git": 1,
+        "command-line": 1,
+        "linux": 1,
+        "docker": 3,
+        "mlops": 5,
+        "vector-databases": 4
+      },
+      "fitScore": 33,
+      "coverage": 0.3556,
+      "readiness": 0.1889,
+      "summary": {
+        "strong": 9,
+        "developing": 8,
+        "missing": 18,
+        "total": 35
+      },
+      "nextSkills": [
+        {
+          "skill": "programming-fundamentals",
+          "priority": 0.72
+        },
+        {
+          "skill": "sql",
+          "priority": 0.45
+        },
+        {
+          "skill": "git",
+          "priority": 0.4
+        }
+      ],
+      "path": [
+        {
+          "skill": "programming-fundamentals",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.72,
+          "effortPoints": 3
+        },
+        {
+          "skill": "python",
+          "fromLevel": 2,
+          "toLevel": 4,
+          "priority": 0.82,
+          "effortPoints": 4
+        },
+        {
+          "skill": "ml-fundamentals",
+          "fromLevel": 0,
+          "toLevel": 5,
+          "priority": 1.0,
+          "effortPoints": 20
+        },
+        {
+          "skill": "supervised-learning",
+          "fromLevel": 0,
+          "toLevel": 4,
+          "priority": 0.89,
+          "effortPoints": 12
+        },
+        {
+          "skill": "neural-networks",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.81,
+          "effortPoints": 12
+        },
+        {
+          "skill": "deep-learning",
+          "fromLevel": 0,
+          "toLevel": 4,
+          "priority": 0.76,
+          "effortPoints": 16
+        },
+        {
+          "skill": "numpy",
+          "fromLevel": 1,
+          "toLevel": 3,
+          "priority": 0.73,
+          "effortPoints": 4
+        },
+        {
+          "skill": "prompt-engineering",
+          "fromLevel": 0,
+          "toLevel": 2,
+          "priority": 0.64,
+          "effortPoints": 2
+        },
+        {
+          "skill": "llm-apis",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.69,
+          "effortPoints": 6
+        },
+        {
+          "skill": "command-line",
+          "fromLevel": 1,
+          "toLevel": 2,
+          "priority": 0.59,
+          "effortPoints": 1
+        },
+        {
+          "skill": "linux",
+          "fromLevel": 1,
+          "toLevel": 3,
+          "priority": 0.67,
+          "effortPoints": 4
+        },
+        {
+          "skill": "embeddings",
+          "fromLevel": 0,
+          "toLevel": 2,
+          "priority": 0.67,
+          "effortPoints": 6
+        },
+        {
+          "skill": "unsupervised-learning",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.65,
+          "effortPoints": 9
+        },
+        {
+          "skill": "cloud-fundamentals",
+          "fromLevel": 0,
+          "toLevel": 2,
+          "priority": 0.64,
+          "effortPoints": 4
+        },
+        {
+          "skill": "rag",
+          "fromLevel": 0,
+          "toLevel": 2,
+          "priority": 0.67,
+          "effortPoints": 8
+        },
+        {
+          "skill": "scikit-learn",
+          "fromLevel": 0,
+          "toLevel": 4,
+          "priority": 0.59,
+          "effortPoints": 12
+        },
+        {
+          "skill": "model-evaluation",
+          "fromLevel": 0,
+          "toLevel": 4,
+          "priority": 0.56,
+          "effortPoints": 12
+        },
+        {
+          "skill": "classification",
+          "fromLevel": 0,
+          "toLevel": 4,
+          "priority": 0.53,
+          "effortPoints": 12
+        },
+        {
+          "skill": "sql",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.45,
+          "effortPoints": 6
+        },
+        {
+          "skill": "pytorch",
+          "fromLevel": 1,
+          "toLevel": 3,
+          "priority": 0.43,
+          "effortPoints": 8
+        },
+        {
+          "skill": "computer-vision",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.42,
+          "effortPoints": 12
+        },
+        {
+          "skill": "git",
+          "fromLevel": 1,
+          "toLevel": 3,
+          "priority": 0.4,
+          "effortPoints": 4
+        },
+        {
+          "skill": "aws",
+          "fromLevel": 0,
+          "toLevel": 2,
+          "priority": 0.37,
+          "effortPoints": 6
+        },
+        {
+          "skill": "ai-agents",
+          "fromLevel": 0,
+          "toLevel": 2,
+          "priority": 0.31,
+          "effortPoints": 8
+        },
+        {
+          "skill": "clustering",
+          "fromLevel": 1,
+          "toLevel": 2,
+          "priority": 0.29,
+          "effortPoints": 3
+        },
+        {
+          "skill": "tensorflow",
+          "fromLevel": 1,
+          "toLevel": 2,
+          "priority": 0.29,
+          "effortPoints": 4
+        }
+      ]
+    },
+    {
+      "id": "machine-learning-engineer/random-2",
+      "career": "machine-learning-engineer",
+      "profile": {
+        "python": 5,
+        "statistics": 5,
+        "supervised-learning": 4,
+        "clustering": 2,
+        "neural-networks": 5,
+        "deep-learning": 1,
+        "tensorflow": 1,
+        "computer-vision": 5,
+        "sql": 1,
+        "command-line": 5,
+        "linux": 4,
+        "docker": 4,
+        "cloud-fundamentals": 3,
+        "aws": 4,
+        "prompt-engineering": 4,
+        "vector-databases": 1,
+        "rag": 2,
+        "ai-agents": 3
+      },
+      "fitScore": 42,
+      "coverage": 0.4065,
+      "readiness": 0.4667,
+      "summary": {
+        "strong": 14,
+        "developing": 4,
+        "missing": 17,
+        "total": 35
+      },
+      "nextSkills": [
+        {
+          "skill": "programming-fundamentals",
+          "priority": 0.72
+        },
+        {
+          "skill": "linear-algebra",
+          "priority": 0.71
+        },
+        {
+          "skill": "numpy",
+          "priority": 0.59
+        }
+      ],
+      "path": [
+        {
+          "skill": "programming-fundamentals",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.72,
+          "effortPoints": 3
+        },
+        {
+          "skill": "linear-algebra",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.78,
+          "effortPoints": 9
+        },
+        {
+          "skill": "ml-fundamentals",
+          "fromLevel": 0,
+          "toLevel": 5,
+          "priority": 1.0,
+          "effortPoints": 20
+        },
+        {
+          "skill": "numpy",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.78,
+          "effortPoints": 6
+        },
+        {
+          "skill": "deep-learning",
+          "fromLevel": 1,
+          "toLevel": 4,
+          "priority": 0.78,
+          "effortPoints": 12
+        },
+        {
+          "skill": "scikit-learn",
+          "fromLevel": 0,
+          "toLevel": 4,
+          "priority": 0.8,
+          "effortPoints": 12
+        },
+        {
+          "skill": "pandas",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.74,
+          "effortPoints": 9
+        },
+        {
+          "skill": "llm-apis",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.72,
+          "effortPoints": 6
+        },
+        {
+          "skill": "classification",
+          "fromLevel": 0,
+          "toLevel": 4,
+          "priority": 0.83,
+          "effortPoints": 12
+        },
+        {
+          "skill": "embeddings",
+          "fromLevel": 0,
+          "toLevel": 2,
+          "priority": 0.67,
+          "effortPoints": 6
+        },
+        {
+          "skill": "model-evaluation",
+          "fromLevel": 0,
+          "toLevel": 4,
+          "priority": 0.56,
+          "effortPoints": 12
+        },
+        {
+          "skill": "feature-engineering",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.48,
+          "effortPoints": 12
+        },
+        {
+          "skill": "pytorch",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.48,
+          "effortPoints": 12
+        },
+        {
+          "skill": "git",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.45,
+          "effortPoints": 6
+        },
+        {
+          "skill": "regression",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.45,
+          "effortPoints": 9
+        },
+        {
+          "skill": "mlops",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.45,
+          "effortPoints": 12
+        },
+        {
+          "skill": "unsupervised-learning",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.42,
+          "effortPoints": 9
+        },
+        {
+          "skill": "nlp",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.42,
+          "effortPoints": 12
+        },
+        {
+          "skill": "sql",
+          "fromLevel": 1,
+          "toLevel": 3,
+          "priority": 0.4,
+          "effortPoints": 4
+        },
+        {
+          "skill": "vector-databases",
+          "fromLevel": 1,
+          "toLevel": 2,
+          "priority": 0.29,
+          "effortPoints": 3
+        },
+        {
+          "skill": "tensorflow",
+          "fromLevel": 1,
+          "toLevel": 2,
+          "priority": 0.29,
+          "effortPoints": 4
+        }
+      ]
+    },
+    {
+      "id": "machine-learning-engineer/persona-prabha",
+      "career": "machine-learning-engineer",
+      "profile": {
+        "programming-fundamentals": 4,
+        "python": 4,
+        "javascript": 4,
+        "html": 3,
+        "css": 3,
+        "react": 3,
+        "sql": 3,
+        "numpy": 3,
+        "pandas": 2,
+        "statistics": 1,
+        "ml-fundamentals": 1,
+        "git": 3,
+        "github": 2,
+        "command-line": 3,
+        "linux": 2,
+        "docker": 1
+      },
+      "fitScore": 26,
+      "coverage": 0.2463,
+      "readiness": 0.3278,
+      "summary": {
+        "strong": 6,
+        "developing": 5,
+        "missing": 24,
+        "total": 35
+      },
+      "nextSkills": [
+        {
+          "skill": "statistics",
+          "priority": 0.84
+        },
+        {
+          "skill": "linear-algebra",
+          "priority": 0.78
+        },
+        {
+          "skill": "pandas",
+          "priority": 0.4
+        }
+      ],
+      "path": [
+        {
+          "skill": "statistics",
+          "fromLevel": 1,
+          "toLevel": 4,
+          "priority": 0.84,
+          "effortPoints": 9
+        },
+        {
+          "skill": "linear-algebra",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.78,
+          "effortPoints": 9
+        },
+        {
+          "skill": "ml-fundamentals",
+          "fromLevel": 1,
+          "toLevel": 5,
+          "priority": 0.95,
+          "effortPoints": 16
+        },
+        {
+          "skill": "supervised-learning",
+          "fromLevel": 0,
+          "toLevel": 4,
+          "priority": 0.89,
+          "effortPoints": 12
+        },
+        {
+          "skill": "neural-networks",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.81,
+          "effortPoints": 12
+        },
+        {
+          "skill": "deep-learning",
+          "fromLevel": 0,
+          "toLevel": 4,
+          "priority": 0.76,
+          "effortPoints": 16
+        },
+        {
+          "skill": "scikit-learn",
+          "fromLevel": 0,
+          "toLevel": 4,
+          "priority": 0.68,
+          "effortPoints": 12
+        },
+        {
+          "skill": "prompt-engineering",
+          "fromLevel": 0,
+          "toLevel": 2,
+          "priority": 0.64,
+          "effortPoints": 2
+        },
+        {
+          "skill": "llm-apis",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.65,
+          "effortPoints": 6
+        },
+        {
+          "skill": "linux",
+          "fromLevel": 2,
+          "toLevel": 3,
+          "priority": 0.62,
+          "effortPoints": 2
+        },
+        {
+          "skill": "embeddings",
+          "fromLevel": 0,
+          "toLevel": 2,
+          "priority": 0.67,
+          "effortPoints": 6
+        },
+        {
+          "skill": "classification",
+          "fromLevel": 0,
+          "toLevel": 4,
+          "priority": 0.73,
+          "effortPoints": 12
+        },
+        {
+          "skill": "pandas",
+          "fromLevel": 2,
+          "toLevel": 3,
+          "priority": 0.68,
+          "effortPoints": 3
+        },
+        {
+          "skill": "docker",
+          "fromLevel": 1,
+          "toLevel": 3,
+          "priority": 0.65,
+          "effortPoints": 6
+        },
+        {
+          "skill": "vector-databases",
+          "fromLevel": 0,
+          "toLevel": 2,
+          "priority": 0.64,
+          "effortPoints": 6
+        },
+        {
+          "skill": "unsupervised-learning",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.65,
+          "effortPoints": 9
+        },
+        {
+          "skill": "cloud-fundamentals",
+          "fromLevel": 0,
+          "toLevel": 2,
+          "priority": 0.64,
+          "effortPoints": 4
+        },
+        {
+          "skill": "rag",
+          "fromLevel": 0,
+          "toLevel": 2,
+          "priority": 0.67,
+          "effortPoints": 8
+        },
+        {
+          "skill": "model-evaluation",
+          "fromLevel": 0,
+          "toLevel": 4,
+          "priority": 0.56,
+          "effortPoints": 12
+        },
+        {
+          "skill": "feature-engineering",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.48,
+          "effortPoints": 12
+        },
+        {
+          "skill": "pytorch",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.48,
+          "effortPoints": 12
+        },
+        {
+          "skill": "regression",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.45,
+          "effortPoints": 9
+        },
+        {
+          "skill": "mlops",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.45,
+          "effortPoints": 12
+        },
+        {
+          "skill": "computer-vision",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.42,
+          "effortPoints": 12
+        },
+        {
+          "skill": "nlp",
+          "fromLevel": 0,
+          "toLevel": 3,
+          "priority": 0.42,
+          "effortPoints": 12
+        },
+        {
+          "skill": "aws",
+          "fromLevel": 0,
+          "toLevel": 2,
+          "priority": 0.37,
+          "effortPoints": 6
+        },
+        {
+          "skill": "clustering",
+          "fromLevel": 0,
+          "toLevel": 2,
+          "priority": 0.34,
+          "effortPoints": 6
+        },
+        {
+          "skill": "tensorflow",
+          "fromLevel": 0,
+          "toLevel": 2,
+          "priority": 0.34,
+          "effortPoints": 8
+        },
+        {
+          "skill": "ai-agents",
+          "fromLevel": 0,
+          "toLevel": 2,
+          "priority": 0.31,
+          "effortPoints": 8
+        }
+      ]
+    }
+  ]
+}

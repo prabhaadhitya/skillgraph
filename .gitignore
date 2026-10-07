@@ -1,0 +1,30 @@
+# Node.js dependencies
+node_modules/
+
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+
+# Build output
+dist/
+.next/
+build/
+
+# Python virtual environments
+.venv/
+venv/
+
+# Python cache files
+__pycache__/
+*.py[cod]
+
+# Machine learning model files
+*.joblib
+
+# ML profile dataset
+ml-service/data/profiles.csv
+
+# Operating system files
+.DS_Store
+Thumbs.db

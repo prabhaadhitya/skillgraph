@@ -1,0 +1,927 @@
+{
+  "career": {
+    "slug": "machine-learning-engineer",
+    "name": "Machine Learning Engineer"
+  },
+  "totalSteps": 29,
+  "totalEffortPoints": 259,
+  "steps": [
+    {
+      "order": 1,
+      "skill": {
+        "slug": "statistics",
+        "name": "Statistics",
+        "category": "data-analytics",
+        "difficulty": 3
+      },
+      "fromLevel": 1,
+      "toLevel": 4,
+      "priority": 0.84,
+      "effortPoints": 9,
+      "isReadyNow": true,
+      "prerequisites": [],
+      "unlocks": [
+        {
+          "slug": "ml-fundamentals",
+          "name": "Machine Learning Fundamentals"
+        }
+      ],
+      "reasons": [
+        "HIGH_IMPORTANCE",
+        "LARGE_GAP",
+        "UNLOCKS_MANY"
+      ]
+    },
+    {
+      "order": 2,
+      "skill": {
+        "slug": "linear-algebra",
+        "name": "Linear Algebra",
+        "category": "machine-learning",
+        "difficulty": 3
+      },
+      "fromLevel": 0,
+      "toLevel": 3,
+      "priority": 0.78,
+      "effortPoints": 9,
+      "isReadyNow": true,
+      "prerequisites": [],
+      "unlocks": [
+        {
+          "slug": "ml-fundamentals",
+          "name": "Machine Learning Fundamentals"
+        },
+        {
+          "slug": "neural-networks",
+          "name": "Neural Networks"
+        }
+      ],
+      "reasons": [
+        "LARGE_GAP",
+        "UNLOCKS_MANY"
+      ]
+    },
+    {
+      "order": 3,
+      "skill": {
+        "slug": "ml-fundamentals",
+        "name": "Machine Learning Fundamentals",
+        "category": "machine-learning",
+        "difficulty": 4
+      },
+      "fromLevel": 1,
+      "toLevel": 5,
+      "priority": 0.95,
+      "effortPoints": 16,
+      "isReadyNow": false,
+      "prerequisites": [
+        {
+          "slug": "python",
+          "name": "Python",
+          "proficiency": 4
+        },
+        {
+          "slug": "statistics",
+          "name": "Statistics",
+          "proficiency": 1
+        },
+        {
+          "slug": "linear-algebra",
+          "name": "Linear Algebra",
+          "proficiency": 0
+        }
+      ],
+      "unlocks": [
+        {
+          "slug": "supervised-learning",
+          "name": "Supervised Learning"
+        },
+        {
+          "slug": "unsupervised-learning",
+          "name": "Unsupervised Learning"
+        },
+        {
+          "slug": "feature-engineering",
+          "name": "Feature Engineering"
+        },
+        {
+          "slug": "scikit-learn",
+          "name": "Scikit-learn"
+        }
+      ],
+      "reasons": [
+        "HIGH_IMPORTANCE",
+        "LARGE_GAP",
+        "UNLOCKS_MANY"
+      ]
+    },
+    {
+      "order": 4,
+      "skill": {
+        "slug": "supervised-learning",
+        "name": "Supervised Learning",
+        "category": "machine-learning",
+        "difficulty": 3
+      },
+      "fromLevel": 0,
+      "toLevel": 4,
+      "priority": 0.89,
+      "effortPoints": 12,
+      "isReadyNow": false,
+      "prerequisites": [
+        {
+          "slug": "ml-fundamentals",
+          "name": "Machine Learning Fundamentals",
+          "proficiency": 1
+        }
+      ],
+      "unlocks": [
+        {
+          "slug": "regression",
+          "name": "Regression"
+        },
+        {
+          "slug": "classification",
+          "name": "Classification"
+        },
+        {
+          "slug": "model-evaluation",
+          "name": "Model Evaluation"
+        },
+        {
+          "slug": "neural-networks",
+          "name": "Neural Networks"
+        }
+      ],
+      "reasons": [
+        "HIGH_IMPORTANCE",
+        "LARGE_GAP",
+        "UNLOCKS_MANY"
+      ]
+    },
+    {
+      "order": 5,
+      "skill": {
+        "slug": "neural-networks",
+        "name": "Neural Networks",
+        "category": "deep-learning",
+        "difficulty": 4
+      },
+      "fromLevel": 0,
+      "toLevel": 3,
+      "priority": 0.81,
+      "effortPoints": 12,
+      "isReadyNow": false,
+      "prerequisites": [
+        {
+          "slug": "supervised-learning",
+          "name": "Supervised Learning",
+          "proficiency": 0
+        },
+        {
+          "slug": "linear-algebra",
+          "name": "Linear Algebra",
+          "proficiency": 0
+        }
+      ],
+      "unlocks": [
+        {
+          "slug": "deep-learning",
+          "name": "Deep Learning"
+        }
+      ],
+      "reasons": [
+        "LARGE_GAP",
+        "UNLOCKS_MANY"
+      ]
+    },
+    {
+      "order": 6,
+      "skill": {
+        "slug": "deep-learning",
+        "name": "Deep Learning",
+        "category": "deep-learning",
+        "difficulty": 4
+      },
+      "fromLevel": 0,
+      "toLevel": 4,
+      "priority": 0.76,
+      "effortPoints": 16,
+      "isReadyNow": false,
+      "prerequisites": [
+        {
+          "slug": "neural-networks",
+          "name": "Neural Networks",
+          "proficiency": 0
+        }
+      ],
+      "unlocks": [
+        {
+          "slug": "pytorch",
+          "name": "PyTorch"
+        },
+        {
+          "slug": "tensorflow",
+          "name": "TensorFlow"
+        },
+        {
+          "slug": "computer-vision",
+          "name": "Computer Vision"
+        }
+      ],
+      "reasons": [
+        "LARGE_GAP",
+        "UNLOCKS_MANY"
+      ]
+    },
+    {
+      "order": 7,
+      "skill": {
+        "slug": "scikit-learn",
+        "name": "Scikit-learn",
+        "category": "machine-learning",
+        "difficulty": 3
+      },
+      "fromLevel": 0,
+      "toLevel": 4,
+      "priority": 0.68,
+      "effortPoints": 12,
+      "isReadyNow": false,
+      "prerequisites": [
+        {
+          "slug": "ml-fundamentals",
+          "name": "Machine Learning Fundamentals",
+          "proficiency": 1
+        },
+        {
+          "slug": "numpy",
+          "name": "NumPy",
+          "proficiency": 3
+        }
+      ],
+      "unlocks": [
+        {
+          "slug": "mlops",
+          "name": "MLOps"
+        }
+      ],
+      "reasons": [
+        "HIGH_IMPORTANCE",
+        "LARGE_GAP"
+      ]
+    },
+    {
+      "order": 8,
+      "skill": {
+        "slug": "prompt-engineering",
+        "name": "Prompt Engineering",
+        "category": "ai-llm",
+        "difficulty": 1
+      },
+      "fromLevel": 0,
+      "toLevel": 2,
+      "priority": 0.64,
+      "effortPoints": 2,
+      "isReadyNow": true,
+      "prerequisites": [],
+      "unlocks": [
+        {
+          "slug": "llm-apis",
+          "name": "LLM APIs"
+        }
+      ],
+      "reasons": [
+        "UNLOCKS_MANY"
+      ]
+    },
+    {
+      "order": 9,
+      "skill": {
+        "slug": "llm-apis",
+        "name": "LLM APIs",
+        "category": "ai-llm",
+        "difficulty": 2
+      },
+      "fromLevel": 0,
+      "toLevel": 3,
+      "priority": 0.65,
+      "effortPoints": 6,
+      "isReadyNow": false,
+      "prerequisites": [
+        {
+          "slug": "python",
+          "name": "Python",
+          "proficiency": 4
+        },
+        {
+          "slug": "prompt-engineering",
+          "name": "Prompt Engineering",
+          "proficiency": 0
+        }
+      ],
+      "unlocks": [
+        {
+          "slug": "embeddings",
+          "name": "Embeddings"
+        },
+        {
+          "slug": "rag",
+          "name": "Retrieval-Augmented Generation"
+        },
+        {
+          "slug": "ai-agents",
+          "name": "AI Agents"
+        }
+      ],
+      "reasons": [
+        "LARGE_GAP",
+        "UNLOCKS_MANY"
+      ]
+    },
+    {
+      "order": 10,
+      "skill": {
+        "slug": "linux",
+        "name": "Linux",
+        "category": "devops",
+        "difficulty": 2
+      },
+      "fromLevel": 2,
+      "toLevel": 3,
+      "priority": 0.62,
+      "effortPoints": 2,
+      "isReadyNow": true,
+      "prerequisites": [
+        {
+          "slug": "command-line",
+          "name": "Command Line",
+          "proficiency": 3
+        }
+      ],
+      "unlocks": [
+        {
+          "slug": "docker",
+          "name": "Docker"
+        },
+        {
+          "slug": "cloud-fundamentals",
+          "name": "Cloud Fundamentals"
+        }
+      ],
+      "reasons": [
+        "UNLOCKS_MANY",
+        "QUICK_WIN"
+      ]
+    },
+    {
+      "order": 11,
+      "skill": {
+        "slug": "embeddings",
+        "name": "Embeddings",
+        "category": "ai-llm",
+        "difficulty": 3
+      },
+      "fromLevel": 0,
+      "toLevel": 2,
+      "priority": 0.67,
+      "effortPoints": 6,
+      "isReadyNow": false,
+      "prerequisites": [
+        {
+          "slug": "llm-apis",
+          "name": "LLM APIs",
+          "proficiency": 0
+        }
+      ],
+      "unlocks": [
+        {
+          "slug": "vector-databases",
+          "name": "Vector Databases"
+        }
+      ],
+      "reasons": [
+        "UNLOCKS_MANY"
+      ]
+    },
+    {
+      "order": 12,
+      "skill": {
+        "slug": "classification",
+        "name": "Classification",
+        "category": "machine-learning",
+        "difficulty": 3
+      },
+      "fromLevel": 0,
+      "toLevel": 4,
+      "priority": 0.73,
+      "effortPoints": 12,
+      "isReadyNow": false,
+      "prerequisites": [
+        {
+          "slug": "supervised-learning",
+          "name": "Supervised Learning",
+          "proficiency": 0
+        }
+      ],
+      "unlocks": [
+        {
+          "slug": "nlp",
+          "name": "Natural Language Processing"
+        }
+      ],
+      "reasons": [
+        "LARGE_GAP"
+      ]
+    },
+    {
+      "order": 13,
+      "skill": {
+        "slug": "pandas",
+        "name": "Pandas",
+        "category": "data-analytics",
+        "difficulty": 3
+      },
+      "fromLevel": 2,
+      "toLevel": 3,
+      "priority": 0.68,
+      "effortPoints": 3,
+      "isReadyNow": true,
+      "prerequisites": [
+        {
+          "slug": "python",
+          "name": "Python",
+          "proficiency": 4
+        },
+        {
+          "slug": "numpy",
+          "name": "NumPy",
+          "proficiency": 3
+        }
+      ],
+      "unlocks": [
+        {
+          "slug": "feature-engineering",
+          "name": "Feature Engineering"
+        }
+      ],
+      "reasons": [
+        "QUICK_WIN"
+      ]
+    },
+    {
+      "order": 14,
+      "skill": {
+        "slug": "docker",
+        "name": "Docker",
+        "category": "devops",
+        "difficulty": 3
+      },
+      "fromLevel": 1,
+      "toLevel": 3,
+      "priority": 0.65,
+      "effortPoints": 6,
+      "isReadyNow": false,
+      "prerequisites": [
+        {
+          "slug": "linux",
+          "name": "Linux",
+          "proficiency": 2
+        }
+      ],
+      "unlocks": [
+        {
+          "slug": "mlops",
+          "name": "MLOps"
+        }
+      ],
+      "reasons": [
+        "REQUIRED_BY_CAREER"
+      ]
+    },
+    {
+      "order": 15,
+      "skill": {
+        "slug": "vector-databases",
+        "name": "Vector Databases",
+        "category": "ai-llm",
+        "difficulty": 3
+      },
+      "fromLevel": 0,
+      "toLevel": 2,
+      "priority": 0.64,
+      "effortPoints": 6,
+      "isReadyNow": false,
+      "prerequisites": [
+        {
+          "slug": "embeddings",
+          "name": "Embeddings",
+          "proficiency": 0
+        }
+      ],
+      "unlocks": [
+        {
+          "slug": "rag",
+          "name": "Retrieval-Augmented Generation"
+        }
+      ],
+      "reasons": [
+        "REQUIRED_BY_CAREER"
+      ]
+    },
+    {
+      "order": 16,
+      "skill": {
+        "slug": "unsupervised-learning",
+        "name": "Unsupervised Learning",
+        "category": "machine-learning",
+        "difficulty": 3
+      },
+      "fromLevel": 0,
+      "toLevel": 3,
+      "priority": 0.65,
+      "effortPoints": 9,
+      "isReadyNow": false,
+      "prerequisites": [
+        {
+          "slug": "ml-fundamentals",
+          "name": "Machine Learning Fundamentals",
+          "proficiency": 1
+        }
+      ],
+      "unlocks": [
+        {
+          "slug": "clustering",
+          "name": "Clustering"
+        }
+      ],
+      "reasons": [
+        "LARGE_GAP"
+      ]
+    },
+    {
+      "order": 17,
+      "skill": {
+        "slug": "cloud-fundamentals",
+        "name": "Cloud Fundamentals",
+        "category": "cloud",
+        "difficulty": 2
+      },
+      "fromLevel": 0,
+      "toLevel": 2,
+      "priority": 0.64,
+      "effortPoints": 4,
+      "isReadyNow": false,
+      "prerequisites": [
+        {
+          "slug": "linux",
+          "name": "Linux",
+          "proficiency": 2
+        }
+      ],
+      "unlocks": [
+        {
+          "slug": "aws",
+          "name": "AWS"
+        }
+      ],
+      "reasons": [
+        "REQUIRED_BY_CAREER"
+      ]
+    },
+    {
+      "order": 18,
+      "skill": {
+        "slug": "rag",
+        "name": "Retrieval-Augmented Generation",
+        "category": "ai-llm",
+        "difficulty": 4
+      },
+      "fromLevel": 0,
+      "toLevel": 2,
+      "priority": 0.67,
+      "effortPoints": 8,
+      "isReadyNow": false,
+      "prerequisites": [
+        {
+          "slug": "llm-apis",
+          "name": "LLM APIs",
+          "proficiency": 0
+        },
+        {
+          "slug": "vector-databases",
+          "name": "Vector Databases",
+          "proficiency": 0
+        }
+      ],
+      "unlocks": [
+        {
+          "slug": "ai-agents",
+          "name": "AI Agents"
+        }
+      ],
+      "reasons": [
+        "REQUIRED_BY_CAREER"
+      ]
+    },
+    {
+      "order": 19,
+      "skill": {
+        "slug": "model-evaluation",
+        "name": "Model Evaluation",
+        "category": "machine-learning",
+        "difficulty": 3
+      },
+      "fromLevel": 0,
+      "toLevel": 4,
+      "priority": 0.56,
+      "effortPoints": 12,
+      "isReadyNow": false,
+      "prerequisites": [
+        {
+          "slug": "supervised-learning",
+          "name": "Supervised Learning",
+          "proficiency": 0
+        }
+      ],
+      "unlocks": [],
+      "reasons": [
+        "LARGE_GAP"
+      ]
+    },
+    {
+      "order": 20,
+      "skill": {
+        "slug": "feature-engineering",
+        "name": "Feature Engineering",
+        "category": "machine-learning",
+        "difficulty": 4
+      },
+      "fromLevel": 0,
+      "toLevel": 3,
+      "priority": 0.48,
+      "effortPoints": 12,
+      "isReadyNow": false,
+      "prerequisites": [
+        {
+          "slug": "pandas",
+          "name": "Pandas",
+          "proficiency": 2
+        },
+        {
+          "slug": "ml-fundamentals",
+          "name": "Machine Learning Fundamentals",
+          "proficiency": 1
+        }
+      ],
+      "unlocks": [],
+      "reasons": [
+        "LARGE_GAP"
+      ]
+    },
+    {
+      "order": 21,
+      "skill": {
+        "slug": "pytorch",
+        "name": "PyTorch",
+        "category": "deep-learning",
+        "difficulty": 4
+      },
+      "fromLevel": 0,
+      "toLevel": 3,
+      "priority": 0.48,
+      "effortPoints": 12,
+      "isReadyNow": false,
+      "prerequisites": [
+        {
+          "slug": "deep-learning",
+          "name": "Deep Learning",
+          "proficiency": 0
+        },
+        {
+          "slug": "numpy",
+          "name": "NumPy",
+          "proficiency": 3
+        }
+      ],
+      "unlocks": [],
+      "reasons": [
+        "LARGE_GAP"
+      ]
+    },
+    {
+      "order": 22,
+      "skill": {
+        "slug": "regression",
+        "name": "Regression",
+        "category": "machine-learning",
+        "difficulty": 3
+      },
+      "fromLevel": 0,
+      "toLevel": 3,
+      "priority": 0.45,
+      "effortPoints": 9,
+      "isReadyNow": false,
+      "prerequisites": [
+        {
+          "slug": "supervised-learning",
+          "name": "Supervised Learning",
+          "proficiency": 0
+        }
+      ],
+      "unlocks": [],
+      "reasons": [
+        "LARGE_GAP"
+      ]
+    },
+    {
+      "order": 23,
+      "skill": {
+        "slug": "mlops",
+        "name": "MLOps",
+        "category": "devops",
+        "difficulty": 4
+      },
+      "fromLevel": 0,
+      "toLevel": 3,
+      "priority": 0.45,
+      "effortPoints": 12,
+      "isReadyNow": false,
+      "prerequisites": [
+        {
+          "slug": "docker",
+          "name": "Docker",
+          "proficiency": 1
+        },
+        {
+          "slug": "scikit-learn",
+          "name": "Scikit-learn",
+          "proficiency": 0
+        }
+      ],
+      "unlocks": [],
+      "reasons": [
+        "LARGE_GAP"
+      ]
+    },
+    {
+      "order": 24,
+      "skill": {
+        "slug": "computer-vision",
+        "name": "Computer Vision",
+        "category": "deep-learning",
+        "difficulty": 4
+      },
+      "fromLevel": 0,
+      "toLevel": 3,
+      "priority": 0.42,
+      "effortPoints": 12,
+      "isReadyNow": false,
+      "prerequisites": [
+        {
+          "slug": "deep-learning",
+          "name": "Deep Learning",
+          "proficiency": 0
+        }
+      ],
+      "unlocks": [],
+      "reasons": [
+        "LARGE_GAP"
+      ]
+    },
+    {
+      "order": 25,
+      "skill": {
+        "slug": "nlp",
+        "name": "Natural Language Processing",
+        "category": "deep-learning",
+        "difficulty": 4
+      },
+      "fromLevel": 0,
+      "toLevel": 3,
+      "priority": 0.42,
+      "effortPoints": 12,
+      "isReadyNow": false,
+      "prerequisites": [
+        {
+          "slug": "classification",
+          "name": "Classification",
+          "proficiency": 0
+        }
+      ],
+      "unlocks": [],
+      "reasons": [
+        "LARGE_GAP"
+      ]
+    },
+    {
+      "order": 26,
+      "skill": {
+        "slug": "aws",
+        "name": "AWS",
+        "category": "cloud",
+        "difficulty": 3
+      },
+      "fromLevel": 0,
+      "toLevel": 2,
+      "priority": 0.37,
+      "effortPoints": 6,
+      "isReadyNow": false,
+      "prerequisites": [
+        {
+          "slug": "cloud-fundamentals",
+          "name": "Cloud Fundamentals",
+          "proficiency": 0
+        }
+      ],
+      "unlocks": [],
+      "reasons": [
+        "REQUIRED_BY_CAREER"
+      ]
+    },
+    {
+      "order": 27,
+      "skill": {
+        "slug": "clustering",
+        "name": "Clustering",
+        "category": "machine-learning",
+        "difficulty": 3
+      },
+      "fromLevel": 0,
+      "toLevel": 2,
+      "priority": 0.34,
+      "effortPoints": 6,
+      "isReadyNow": false,
+      "prerequisites": [
+        {
+          "slug": "unsupervised-learning",
+          "name": "Unsupervised Learning",
+          "proficiency": 0
+        }
+      ],
+      "unlocks": [],
+      "reasons": [
+        "REQUIRED_BY_CAREER"
+      ]
+    },
+    {
+      "order": 28,
+      "skill": {
+        "slug": "tensorflow",
+        "name": "TensorFlow",
+        "category": "deep-learning",
+        "difficulty": 4
+      },
+      "fromLevel": 0,
+      "toLevel": 2,
+      "priority": 0.34,
+      "effortPoints": 8,
+      "isReadyNow": false,
+      "prerequisites": [
+        {
+          "slug": "deep-learning",
+          "name": "Deep Learning",
+          "proficiency": 0
+        },
+        {
+          "slug": "numpy",
+          "name": "NumPy",
+          "proficiency": 3
+        }
+      ],
+      "unlocks": [],
+      "reasons": [
+        "REQUIRED_BY_CAREER"
+      ]
+    },
+    {
+      "order": 29,
+      "skill": {
+        "slug": "ai-agents",
+        "name": "AI Agents",
+        "category": "ai-llm",
+        "difficulty": 4
+      },
+      "fromLevel": 0,
+      "toLevel": 2,
+      "priority": 0.31,
+      "effortPoints": 8,
+      "isReadyNow": false,
+      "prerequisites": [
+        {
+          "slug": "llm-apis",
+          "name": "LLM APIs",
+          "proficiency": 0
+        },
+        {
+          "slug": "rag",
+          "name": "Retrieval-Augmented Generation",
+          "proficiency": 0
+        }
+      ],
+      "unlocks": [],
+      "reasons": [
+        "REQUIRED_BY_CAREER"
+      ]
+    }
+  ]
+}

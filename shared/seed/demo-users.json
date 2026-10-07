@@ -1,0 +1,128 @@
+[
+  {
+    "handle": "prabha",
+    "name": "Prabha",
+    "email": "prabha@demo.skillgraph.dev",
+    "college": "Chaitanya",
+    "degree": "B.Tech",
+    "branch": "CSE",
+    "semester": 5,
+    "targetCareer": "machine-learning-engineer",
+    "onboardingCompleted": true,
+    "skills": {
+      "programming-fundamentals": 4,
+      "python": 4,
+      "javascript": 4,
+      "html": 3,
+      "css": 3,
+      "react": 3,
+      "sql": 3,
+      "numpy": 3,
+      "pandas": 2,
+      "statistics": 1,
+      "ml-fundamentals": 1,
+      "git": 3,
+      "github": 2,
+      "command-line": 3,
+      "linux": 2,
+      "docker": 1
+    },
+    "alignmentHistory": [
+      {
+        "daysAgo": 14,
+        "fitScore": 12
+      },
+      {
+        "daysAgo": 7,
+        "fitScore": 19
+      }
+    ]
+  },
+  {
+    "handle": "asha",
+    "name": "Asha",
+    "email": "asha@demo.skillgraph.dev",
+    "college": "Chaitanya",
+    "degree": "B.Tech",
+    "branch": "IT",
+    "semester": 3,
+    "targetCareer": "data-analyst",
+    "onboardingCompleted": true,
+    "skills": {
+      "programming-fundamentals": 2,
+      "excel": 3,
+      "sql": 2,
+      "statistics": 1,
+      "python": 1
+    },
+    "alignmentHistory": [
+      {
+        "daysAgo": 14,
+        "fitScore": 10
+      },
+      {
+        "daysAgo": 7,
+        "fitScore": 17
+      }
+    ]
+  },
+  {
+    "handle": "ravi",
+    "name": "Ravi",
+    "email": "ravi@demo.skillgraph.dev",
+    "college": "Chaitanya",
+    "degree": "B.Tech",
+    "branch": "CSE",
+    "semester": 7,
+    "targetCareer": "full-stack-developer",
+    "onboardingCompleted": true,
+    "skills": {
+      "programming-fundamentals": 4,
+      "html": 4,
+      "css": 4,
+      "responsive-design": 3,
+      "javascript": 4,
+      "typescript": 3,
+      "react": 4,
+      "state-management": 3,
+      "nodejs": 4,
+      "express": 4,
+      "networking-basics": 2,
+      "http-fundamentals": 3,
+      "rest-apis": 4,
+      "authentication": 3,
+      "web-security-basics": 2,
+      "sql": 3,
+      "mongodb": 4,
+      "postgresql": 2,
+      "git": 4,
+      "github": 3,
+      "command-line": 3,
+      "docker": 1,
+      "unit-testing": 2,
+      "nextjs": 2
+    },
+    "alignmentHistory": [
+      {
+        "daysAgo": 14,
+        "fitScore": 69
+      },
+      {
+        "daysAgo": 7,
+        "fitScore": 76
+      }
+    ]
+  },
+  {
+    "handle": "newbie",
+    "name": "Newbie",
+    "email": "newbie@demo.skillgraph.dev",
+    "college": "Chaitanya",
+    "degree": "B.Tech",
+    "branch": "ECE",
+    "semester": 1,
+    "targetCareer": null,
+    "onboardingCompleted": false,
+    "skills": {}
+  }
+]

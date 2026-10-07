@@ -1,0 +1,103 @@
+{
+  "user": {
+    "name": "Prabha"
+  },
+  "career": {
+    "slug": "machine-learning-engineer",
+    "name": "Machine Learning Engineer"
+  },
+  "fit": {
+    "score": 26,
+    "previousScore": 19,
+    "delta": 7,
+    "band": "early"
+  },
+  "summary": {
+    "strong": 6,
+    "developing": 5,
+    "missing": 24,
+    "total": 35
+  },
+  "nextSkills": [
+    {
+      "skill": {
+        "slug": "statistics",
+        "name": "Statistics",
+        "category": "data-analytics"
+      },
+      "score": 0.84,
+      "reasons": [
+        "HIGH_IMPORTANCE",
+        "LARGE_GAP",
+        "UNLOCKS_MANY"
+      ]
+    },
+    {
+      "skill": {
+        "slug": "linear-algebra",
+        "name": "Linear Algebra",
+        "category": "machine-learning"
+      },
+      "score": 0.78,
+      "reasons": [
+        "LARGE_GAP",
+        "UNLOCKS_MANY"
+      ]
+    },
+    {
+      "skill": {
+        "slug": "pandas",
+        "name": "Pandas",
+        "category": "data-analytics"
+      },
+      "score": 0.4,
+      "reasons": [
+        "QUICK_WIN"
+      ]
+    }
+  ],
+  "strategy": "rule",
+  "topGaps": [
+    {
+      "skill": {
+        "slug": "statistics",
+        "name": "Statistics"
+      },
+      "gap": 3,
+      "status": "critical"
+    },
+    {
+      "skill": {
+        "slug": "linear-algebra",
+        "name": "Linear Algebra"
+      },
+      "gap": 3,
+      "status": "critical"
+    },
+    {
+      "skill": {
+        "slug": "ml-fundamentals",
+        "name": "Machine Learning Fundamentals"
+      },
+      "gap": 4,
+      "status": "critical"
+    },
+    {
+      "skill": {
+        "slug": "supervised-learning",
+        "name": "Supervised Learning"
+      },
+      "gap": 4,
+      "status": "critical"
+    },
+    {
+      "skill": {
+        "slug": "scikit-learn",
+        "name": "Scikit-learn"
+      },
+      "gap": 4,
+      "status": "critical"
+    }
+  ],
+  "updatedAt": "2026-10-08T10:30:00.000Z"
+}

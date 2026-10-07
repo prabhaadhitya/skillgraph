@@ -1,0 +1,37 @@
+[
+  {
+    "slug": "software-developer",
+    "name": "Software Developer",
+    "category": "software",
+    "icon": "code",
+    "description": "Designs, builds, tests and maintains software. Strong on programming fundamentals, data structures, design and engineering practice."
+  },
+  {
+    "slug": "full-stack-developer",
+    "name": "Full Stack Developer",
+    "category": "software",
+    "icon": "layers",
+    "description": "Builds complete web applications: React front ends, Node.js back ends, databases and deployment."
+  },
+  {
+    "slug": "data-analyst",
+    "name": "Data Analyst",
+    "category": "data",
+    "icon": "bar-chart",
+    "description": "Turns data into answers with SQL, spreadsheets, Python and dashboards."
+  },
+  {
+    "slug": "data-scientist",
+    "name": "Data Scientist",
+    "category": "data",
+    "icon": "flask-conical",
+    "description": "Uses statistics and machine learning to find insights and build predictive models."
+  },
+  {
+    "slug": "machine-learning-engineer",
+    "name": "Machine Learning Engineer",
+    "category": "ai",
+    "icon": "brain",
+    "description": "Builds, ships and maintains machine learning systems, from models to deployment."
+  }
+]
