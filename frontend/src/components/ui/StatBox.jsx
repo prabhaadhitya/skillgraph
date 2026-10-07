@@ -31,7 +31,7 @@ export function StatBox({ value, label, className = '' }) {
 export function StatBoxGroup({ children, className = '' }) {
   return (
     <div
-      className={`grid grid-cols-2 md:grid-cols-4 border-2 border-ink divide-y-2 md:divide-y-0 md:divide-x-2 divide-ink bg-surface shadow-md ${className}`}
+      className={`grid grid-cols-2 md:grid-cols-4 border-2 border-ink divide-y-2 md:divide-y-0 md:divide-x-2 divide-ink bg-surface shadow-md [&>*]:border-0 [&>*]:shadow-none ${className}`}
     >
       {children}
     </div>
