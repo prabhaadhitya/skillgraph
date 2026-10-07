@@ -47,6 +47,14 @@ export const PRIORITY_WEIGHTS = {
 
 export const EFFORT_POINTS_PER_WEEK = 6;
 
+export const getImportanceLabel = (importance) => {
+  if (importance >= 0.9) return 'Very High';
+  if (importance >= 0.7) return 'High';
+  if (importance >= 0.5) return 'Medium';
+  return 'Low';
+};
+export const importanceLabel = getImportanceLabel;
+
 export default {
   LEVELS,
   CATEGORIES,
@@ -58,4 +66,6 @@ export default {
   FIT_WEIGHTS,
   PRIORITY_WEIGHTS,
   EFFORT_POINTS_PER_WEEK,
+  getImportanceLabel,
+  importanceLabel,
 };
