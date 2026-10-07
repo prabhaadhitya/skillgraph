@@ -5,9 +5,9 @@ import cookieParser from 'cookie-parser';
 import morgan from 'morgan';
 import { env } from './config/env.js';
 import { logger } from './utils/logger.js';
-import { respond } from './utils/respond.js';
 import { notFound } from './middleware/notFound.js';
 import { errorHandler } from './middleware/errorHandler.js';
+import { apiRouter } from './routes/index.js';
 
 export const app = express();
 
@@ -41,10 +41,8 @@ app.use(
   }),
 );
 
-// Health check endpoint
-app.get('/api/health', (req, res) => {
-  respond.ok(res, { status: 'ok' });
-});
+// Mount API routes
+app.use('/api', apiRouter);
 
 // 404 handler for unknown routes
 app.use(notFound);
