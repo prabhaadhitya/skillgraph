@@ -7,6 +7,7 @@
     "dev": "node --watch src/server.js",
     "start": "node src/server.js",
     "test": "vitest run",
+    "test:engine": "vitest run tests/engine",
     "lint": "eslint src seed tests",
     "seed": "node seed/seed.js",
     "seed:reset": "node seed/seed.js --reset",
