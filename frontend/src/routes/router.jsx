@@ -5,6 +5,7 @@ import Register from '../pages/Register.jsx';
 import ComponentKit from '../pages/ComponentKit.jsx';
 import SkillGraph from '../pages/SkillGraph.jsx';
 import LearningPath from '../pages/LearningPath.jsx';
+import Analytics from '../pages/Analytics.jsx';
 import ProtectedRoute from './ProtectedRoute.jsx';
 import AdminRoute from './AdminRoute.jsx';
 import { EmptyState } from '../components/ui/EmptyState.jsx';
@@ -63,6 +64,10 @@ export const routes = [
       {
         path: 'path',
         element: <LearningPath />,
+      },
+      {
+        path: 'analytics',
+        element: <Analytics />,
       },
     ],
   },
