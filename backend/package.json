@@ -7,7 +7,8 @@
     "dev": "node --watch src/server.js",
     "start": "node src/server.js",
     "test": "vitest run",
-    "lint": "eslint src"
+    "lint": "eslint src seed tests",
+    "seed:validate": "node seed/validate.cli.js"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",
