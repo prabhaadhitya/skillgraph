@@ -4,6 +4,7 @@ import Login from '../pages/Login.jsx';
 import Register from '../pages/Register.jsx';
 import ComponentKit from '../pages/ComponentKit.jsx';
 import SkillGraph from '../pages/SkillGraph.jsx';
+import LearningPath from '../pages/LearningPath.jsx';
 import ProtectedRoute from './ProtectedRoute.jsx';
 import AdminRoute from './AdminRoute.jsx';
 import { EmptyState } from '../components/ui/EmptyState.jsx';
@@ -55,21 +56,23 @@ export const routes = [
         path: 'dashboard',
         element: <PlaceholderPage title="STUDENT DASHBOARD" />,
       },
+      {
+        path: 'graph',
+        element: <SkillGraph />,
+      },
+      {
+        path: 'path',
+        element: <LearningPath />,
+      },
     ],
   },
 ];
 
 if (import.meta.env.DEV) {
-  routes.push(
-    {
-      path: '/_kit',
-      element: <ComponentKit />,
-    },
-    {
-      path: '/_graph',
-      element: <SkillGraph />,
-    },
-  );
+  routes.push({
+    path: '/_kit',
+    element: <ComponentKit />,
+  });
 }
 
 export const router = createBrowserRouter(routes);

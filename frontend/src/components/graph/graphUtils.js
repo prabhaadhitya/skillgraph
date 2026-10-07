@@ -1,8 +1,9 @@
 import { MarkerType } from '@xyflow/react';
 
 /**
- * Computes edge styling based on the currently selected node.
- * Highlights prerequisite and unlock edges in brand violet; fades others to 40% opacity.
+ * Computes edge styling based on the currently selected node and edge type.
+ * PREREQUISITE: 2px solid ink with arrowhead; brand violet when highlighted.
+ * RELATED_TO: 1.5px dashed muted grey with no arrowhead.
  *
  * @param {Array<object>} edges - Base edges
  * @param {string | null} selectedNodeId - ID of the selected node
@@ -10,9 +11,25 @@ import { MarkerType } from '@xyflow/react';
  */
 export function getStyledEdges(edges = [], selectedNodeId = null) {
   return edges.map((edge) => {
+    const isRelated =
+      edge.type === 'RELATED_TO' || edge.type === 'RELATED' || edge.type === 'related_to';
     const isPrerequisite = selectedNodeId && edge.target === selectedNodeId;
     const isUnlock = selectedNodeId && edge.source === selectedNodeId;
-    const isConnected = isPrerequisite || isUnlock;
+    const isConnected = selectedNodeId && (isPrerequisite || isUnlock);
+
+    if (isRelated) {
+      return {
+        ...edge,
+        animated: false,
+        style: {
+          stroke: isConnected ? 'var(--color-brand)' : 'var(--color-muted)',
+          strokeWidth: isConnected ? 2 : 1.5,
+          strokeDasharray: '4 4',
+          opacity: selectedNodeId ? (isConnected ? 1 : 0.4) : 0.8,
+        },
+        markerEnd: undefined,
+      };
+    }
 
     if (!selectedNodeId) {
       return {
@@ -95,3 +112,30 @@ export function getNodeConnections(edges = [], nodeId = '') {
 
   return { prerequisiteIds, unlockIds };
 }
+
+/**
+ * Pure function to filter graph nodes based on a search term.
+ * Matches name, slug, or category case-insensitively.
+ *
+ * @param {Array<object>} nodes
+ * @param {string} query
+ * @returns {Array<object>}
+ */
+export function filterGraphNodes(nodes = [], query = '') {
+  if (!query || typeof query !== 'string' || !query.trim()) {
+    return nodes;
+  }
+  const normalized = query.trim().toLowerCase();
+  return nodes.filter((node) => {
+    const name = (node.name || '').toLowerCase();
+    const slug = (node.slug || node.id || '').toLowerCase();
+    const category = (node.category || '').toLowerCase();
+    return name.includes(normalized) || slug.includes(normalized) || category.includes(normalized);
+  });
+}
+
+export default {
+  getStyledEdges,
+  getNodeConnections,
+  filterGraphNodes,
+};
