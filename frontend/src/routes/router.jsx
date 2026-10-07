@@ -1,4 +1,5 @@
 import { createBrowserRouter } from 'react-router';
+import Landing from '../pages/Landing.jsx';
 import Login from '../pages/Login.jsx';
 import Register from '../pages/Register.jsx';
 import ComponentKit from '../pages/ComponentKit.jsx';
@@ -20,7 +21,7 @@ function PlaceholderPage({ title }) {
 export const routes = [
   {
     path: '/',
-    element: <PlaceholderPage title="LANDING PAGE" />,
+    element: <Landing />,
   },
   {
     path: '/login',
