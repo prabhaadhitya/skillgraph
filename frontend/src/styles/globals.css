@@ -1,0 +1,7 @@
+:root {
+  --color-sky: #BFE6FF;
+}
+
+.bg-sky {
+  background-color: var(--color-sky, #BFE6FF);
+}
