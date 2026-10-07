@@ -45,4 +45,43 @@ export const auth = asyncHandler(async (req, res, next) => {
   next();
 });
 
+/**
+ * Optional authentication middleware.
+ * If valid cookie or bearer token exists, attaches user to req.user.
+ * Otherwise leaves req.user = null without throwing 401.
+ */
+export const optionalAuth = asyncHandler(async (req, res, next) => {
+  const token =
+    req.cookies?.[COOKIE_NAME] ||
+    (req.headers.authorization?.startsWith('Bearer ')
+      ? req.headers.authorization.slice(7)
+      : null);
+
+  if (!token) {
+    req.user = null;
+    return next();
+  }
+
+  try {
+    const decoded = jwt.verify(token, env.JWT_SECRET);
+    const user = await User.findById(decoded.sub).populate('targetCareerId');
+    if (user) {
+      req.user = {
+        id: user._id.toString(),
+        role: user.role,
+        email: user.email,
+        name: user.name,
+        targetCareerId: user.targetCareerId,
+      };
+      req.userDoc = user;
+    } else {
+      req.user = null;
+    }
+  } catch {
+    req.user = null;
+  }
+
+  next();
+});
+
 export default auth;
