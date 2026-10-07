@@ -40,6 +40,8 @@ export function GraphCanvas({
   selectedNodeId = null,
   onSelectNode,
   className = '',
+  onInit,
+  children,
 }) {
   // Sync React Flow's node.selected property with selectedNodeId
   const displayNodes = useMemo(() => {
@@ -86,6 +88,7 @@ export function GraphCanvas({
         edgeTypes={edgeTypes}
         onNodeClick={handleNodeClick}
         onPaneClick={handlePaneClick}
+        onInit={onInit}
         fitView
         fitViewOptions={{ padding: 0.2 }}
         minZoom={0.2}
@@ -109,6 +112,9 @@ export function GraphCanvas({
           className="!bg-surface !border-2 !border-ink !rounded-none !shadow-md"
         />
       </ReactFlow>
+
+      {/* Optional top-left toolbar or custom overlays */}
+      {children}
 
       {/* Legend positioned bottom-left */}
       <Legend className="absolute bottom-6 left-6 z-10" />

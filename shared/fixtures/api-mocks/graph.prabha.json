@@ -1,0 +1,674 @@
+{
+  "career": {
+    "slug": "machine-learning-engineer",
+    "name": "Machine Learning Engineer"
+  },
+  "nodes": [
+    {
+      "id": "programming-fundamentals",
+      "slug": "programming-fundamentals",
+      "name": "Programming Fundamentals",
+      "category": "programming",
+      "difficulty": 1,
+      "state": "mastered",
+      "proficiency": 4,
+      "requiredLevel": 3,
+      "importance": 0.4,
+      "isReadyNow": false
+    },
+    {
+      "id": "python",
+      "slug": "python",
+      "name": "Python",
+      "category": "programming",
+      "difficulty": 2,
+      "state": "mastered",
+      "proficiency": 4,
+      "requiredLevel": 4,
+      "importance": 0.9,
+      "isReadyNow": false
+    },
+    {
+      "id": "statistics",
+      "slug": "statistics",
+      "name": "Statistics",
+      "category": "data-analytics",
+      "difficulty": 3,
+      "state": "recommended",
+      "proficiency": 1,
+      "requiredLevel": 4,
+      "importance": 0.8,
+      "isReadyNow": true
+    },
+    {
+      "id": "linear-algebra",
+      "slug": "linear-algebra",
+      "name": "Linear Algebra",
+      "category": "machine-learning",
+      "difficulty": 3,
+      "state": "recommended",
+      "proficiency": 0,
+      "requiredLevel": 3,
+      "importance": 0.6,
+      "isReadyNow": true
+    },
+    {
+      "id": "numpy",
+      "slug": "numpy",
+      "name": "NumPy",
+      "category": "data-analytics",
+      "difficulty": 2,
+      "state": "mastered",
+      "proficiency": 3,
+      "requiredLevel": 3,
+      "importance": 0.6,
+      "isReadyNow": false
+    },
+    {
+      "id": "pandas",
+      "slug": "pandas",
+      "name": "Pandas",
+      "category": "data-analytics",
+      "difficulty": 3,
+      "state": "recommended",
+      "proficiency": 2,
+      "requiredLevel": 3,
+      "importance": 0.6,
+      "isReadyNow": true
+    },
+    {
+      "id": "ml-fundamentals",
+      "slug": "ml-fundamentals",
+      "name": "Machine Learning Fundamentals",
+      "category": "machine-learning",
+      "difficulty": 4,
+      "state": "partial",
+      "proficiency": 1,
+      "requiredLevel": 5,
+      "importance": 1.0,
+      "isReadyNow": false
+    },
+    {
+      "id": "supervised-learning",
+      "slug": "supervised-learning",
+      "name": "Supervised Learning",
+      "category": "machine-learning",
+      "difficulty": 3,
+      "state": "missing",
+      "proficiency": 0,
+      "requiredLevel": 4,
+      "importance": 0.8,
+      "isReadyNow": false
+    },
+    {
+      "id": "unsupervised-learning",
+      "slug": "unsupervised-learning",
+      "name": "Unsupervised Learning",
+      "category": "machine-learning",
+      "difficulty": 3,
+      "state": "missing",
+      "proficiency": 0,
+      "requiredLevel": 3,
+      "importance": 0.4,
+      "isReadyNow": false
+    },
+    {
+      "id": "regression",
+      "slug": "regression",
+      "name": "Regression",
+      "category": "machine-learning",
+      "difficulty": 3,
+      "state": "missing",
+      "proficiency": 0,
+      "requiredLevel": 3,
+      "importance": 0.5,
+      "isReadyNow": false
+    },
+    {
+      "id": "classification",
+      "slug": "classification",
+      "name": "Classification",
+      "category": "machine-learning",
+      "difficulty": 3,
+      "state": "missing",
+      "proficiency": 0,
+      "requiredLevel": 4,
+      "importance": 0.6,
+      "isReadyNow": false
+    },
+    {
+      "id": "clustering",
+      "slug": "clustering",
+      "name": "Clustering",
+      "category": "machine-learning",
+      "difficulty": 3,
+      "state": "missing",
+      "proficiency": 0,
+      "requiredLevel": 2,
+      "importance": 0.3,
+      "isReadyNow": false
+    },
+    {
+      "id": "feature-engineering",
+      "slug": "feature-engineering",
+      "name": "Feature Engineering",
+      "category": "machine-learning",
+      "difficulty": 4,
+      "state": "missing",
+      "proficiency": 0,
+      "requiredLevel": 3,
+      "importance": 0.6,
+      "isReadyNow": false
+    },
+    {
+      "id": "model-evaluation",
+      "slug": "model-evaluation",
+      "name": "Model Evaluation",
+      "category": "machine-learning",
+      "difficulty": 3,
+      "state": "missing",
+      "proficiency": 0,
+      "requiredLevel": 4,
+      "importance": 0.7,
+      "isReadyNow": false
+    },
+    {
+      "id": "scikit-learn",
+      "slug": "scikit-learn",
+      "name": "Scikit-learn",
+      "category": "machine-learning",
+      "difficulty": 3,
+      "state": "missing",
+      "proficiency": 0,
+      "requiredLevel": 4,
+      "importance": 0.8,
+      "isReadyNow": false
+    },
+    {
+      "id": "neural-networks",
+      "slug": "neural-networks",
+      "name": "Neural Networks",
+      "category": "deep-learning",
+      "difficulty": 4,
+      "state": "missing",
+      "proficiency": 0,
+      "requiredLevel": 3,
+      "importance": 0.7,
+      "isReadyNow": false
+    },
+    {
+      "id": "deep-learning",
+      "slug": "deep-learning",
+      "name": "Deep Learning",
+      "category": "deep-learning",
+      "difficulty": 4,
+      "state": "missing",
+      "proficiency": 0,
+      "requiredLevel": 4,
+      "importance": 0.6,
+      "isReadyNow": false
+    },
+    {
+      "id": "pytorch",
+      "slug": "pytorch",
+      "name": "PyTorch",
+      "category": "deep-learning",
+      "difficulty": 4,
+      "state": "missing",
+      "proficiency": 0,
+      "requiredLevel": 3,
+      "importance": 0.6,
+      "isReadyNow": false
+    },
+    {
+      "id": "tensorflow",
+      "slug": "tensorflow",
+      "name": "TensorFlow",
+      "category": "deep-learning",
+      "difficulty": 4,
+      "state": "missing",
+      "proficiency": 0,
+      "requiredLevel": 2,
+      "importance": 0.3,
+      "isReadyNow": false
+    },
+    {
+      "id": "nlp",
+      "slug": "nlp",
+      "name": "Natural Language Processing",
+      "category": "deep-learning",
+      "difficulty": 4,
+      "state": "missing",
+      "proficiency": 0,
+      "requiredLevel": 3,
+      "importance": 0.4,
+      "isReadyNow": false
+    },
+    {
+      "id": "computer-vision",
+      "slug": "computer-vision",
+      "name": "Computer Vision",
+      "category": "deep-learning",
+      "difficulty": 4,
+      "state": "missing",
+      "proficiency": 0,
+      "requiredLevel": 3,
+      "importance": 0.4,
+      "isReadyNow": false
+    },
+    {
+      "id": "sql",
+      "slug": "sql",
+      "name": "SQL",
+      "category": "database",
+      "difficulty": 2,
+      "state": "mastered",
+      "proficiency": 3,
+      "requiredLevel": 3,
+      "importance": 0.5,
+      "isReadyNow": false
+    },
+    {
+      "id": "git",
+      "slug": "git",
+      "name": "Git",
+      "category": "tools",
+      "difficulty": 2,
+      "state": "mastered",
+      "proficiency": 3,
+      "requiredLevel": 3,
+      "importance": 0.5,
+      "isReadyNow": false
+    },
+    {
+      "id": "command-line",
+      "slug": "command-line",
+      "name": "Command Line",
+      "category": "tools",
+      "difficulty": 1,
+      "state": "mastered",
+      "proficiency": 3,
+      "requiredLevel": 2,
+      "importance": 0.3,
+      "isReadyNow": false
+    },
+    {
+      "id": "linux",
+      "slug": "linux",
+      "name": "Linux",
+      "category": "devops",
+      "difficulty": 2,
+      "state": "partial",
+      "proficiency": 2,
+      "requiredLevel": 3,
+      "importance": 0.4,
+      "isReadyNow": true
+    },
+    {
+      "id": "docker",
+      "slug": "docker",
+      "name": "Docker",
+      "category": "devops",
+      "difficulty": 3,
+      "state": "partial",
+      "proficiency": 1,
+      "requiredLevel": 3,
+      "importance": 0.5,
+      "isReadyNow": false
+    },
+    {
+      "id": "cloud-fundamentals",
+      "slug": "cloud-fundamentals",
+      "name": "Cloud Fundamentals",
+      "category": "cloud",
+      "difficulty": 2,
+      "state": "missing",
+      "proficiency": 0,
+      "requiredLevel": 2,
+      "importance": 0.3,
+      "isReadyNow": false
+    },
+    {
+      "id": "aws",
+      "slug": "aws",
+      "name": "AWS",
+      "category": "cloud",
+      "difficulty": 3,
+      "state": "missing",
+      "proficiency": 0,
+      "requiredLevel": 2,
+      "importance": 0.4,
+      "isReadyNow": false
+    },
+    {
+      "id": "mlops",
+      "slug": "mlops",
+      "name": "MLOps",
+      "category": "devops",
+      "difficulty": 4,
+      "state": "missing",
+      "proficiency": 0,
+      "requiredLevel": 3,
+      "importance": 0.5,
+      "isReadyNow": false
+    },
+    {
+      "id": "prompt-engineering",
+      "slug": "prompt-engineering",
+      "name": "Prompt Engineering",
+      "category": "ai-llm",
+      "difficulty": 1,
+      "state": "missing",
+      "proficiency": 0,
+      "requiredLevel": 2,
+      "importance": 0.3,
+      "isReadyNow": true
+    },
+    {
+      "id": "llm-apis",
+      "slug": "llm-apis",
+      "name": "LLM APIs",
+      "category": "ai-llm",
+      "difficulty": 2,
+      "state": "missing",
+      "proficiency": 0,
+      "requiredLevel": 3,
+      "importance": 0.4,
+      "isReadyNow": false
+    },
+    {
+      "id": "embeddings",
+      "slug": "embeddings",
+      "name": "Embeddings",
+      "category": "ai-llm",
+      "difficulty": 3,
+      "state": "missing",
+      "proficiency": 0,
+      "requiredLevel": 2,
+      "importance": 0.4,
+      "isReadyNow": false
+    },
+    {
+      "id": "vector-databases",
+      "slug": "vector-databases",
+      "name": "Vector Databases",
+      "category": "ai-llm",
+      "difficulty": 3,
+      "state": "missing",
+      "proficiency": 0,
+      "requiredLevel": 2,
+      "importance": 0.3,
+      "isReadyNow": false
+    },
+    {
+      "id": "rag",
+      "slug": "rag",
+      "name": "Retrieval-Augmented Generation",
+      "category": "ai-llm",
+      "difficulty": 4,
+      "state": "missing",
+      "proficiency": 0,
+      "requiredLevel": 2,
+      "importance": 0.4,
+      "isReadyNow": false
+    },
+    {
+      "id": "ai-agents",
+      "slug": "ai-agents",
+      "name": "AI Agents",
+      "category": "ai-llm",
+      "difficulty": 4,
+      "state": "missing",
+      "proficiency": 0,
+      "requiredLevel": 2,
+      "importance": 0.2,
+      "isReadyNow": false
+    }
+  ],
+  "edges": [
+    {
+      "id": "programming-fundamentals>python",
+      "source": "programming-fundamentals",
+      "target": "python",
+      "type": "PREREQUISITE"
+    },
+    {
+      "id": "python>numpy",
+      "source": "python",
+      "target": "numpy",
+      "type": "PREREQUISITE"
+    },
+    {
+      "id": "python>pandas",
+      "source": "python",
+      "target": "pandas",
+      "type": "PREREQUISITE"
+    },
+    {
+      "id": "numpy>pandas",
+      "source": "numpy",
+      "target": "pandas",
+      "type": "PREREQUISITE"
+    },
+    {
+      "id": "python>ml-fundamentals",
+      "source": "python",
+      "target": "ml-fundamentals",
+      "type": "PREREQUISITE"
+    },
+    {
+      "id": "python>llm-apis",
+      "source": "python",
+      "target": "llm-apis",
+      "type": "PREREQUISITE"
+    },
+    {
+      "id": "pandas>feature-engineering",
+      "source": "pandas",
+      "target": "feature-engineering",
+      "type": "PREREQUISITE"
+    },
+    {
+      "id": "statistics>ml-fundamentals",
+      "source": "statistics",
+      "target": "ml-fundamentals",
+      "type": "PREREQUISITE"
+    },
+    {
+      "id": "linear-algebra>ml-fundamentals",
+      "source": "linear-algebra",
+      "target": "ml-fundamentals",
+      "type": "PREREQUISITE"
+    },
+    {
+      "id": "ml-fundamentals>supervised-learning",
+      "source": "ml-fundamentals",
+      "target": "supervised-learning",
+      "type": "PREREQUISITE"
+    },
+    {
+      "id": "ml-fundamentals>unsupervised-learning",
+      "source": "ml-fundamentals",
+      "target": "unsupervised-learning",
+      "type": "PREREQUISITE"
+    },
+    {
+      "id": "ml-fundamentals>feature-engineering",
+      "source": "ml-fundamentals",
+      "target": "feature-engineering",
+      "type": "PREREQUISITE"
+    },
+    {
+      "id": "ml-fundamentals>scikit-learn",
+      "source": "ml-fundamentals",
+      "target": "scikit-learn",
+      "type": "PREREQUISITE"
+    },
+    {
+      "id": "numpy>scikit-learn",
+      "source": "numpy",
+      "target": "scikit-learn",
+      "type": "PREREQUISITE"
+    },
+    {
+      "id": "supervised-learning>regression",
+      "source": "supervised-learning",
+      "target": "regression",
+      "type": "PREREQUISITE"
+    },
+    {
+      "id": "supervised-learning>classification",
+      "source": "supervised-learning",
+      "target": "classification",
+      "type": "PREREQUISITE"
+    },
+    {
+      "id": "supervised-learning>model-evaluation",
+      "source": "supervised-learning",
+      "target": "model-evaluation",
+      "type": "PREREQUISITE"
+    },
+    {
+      "id": "supervised-learning>neural-networks",
+      "source": "supervised-learning",
+      "target": "neural-networks",
+      "type": "PREREQUISITE"
+    },
+    {
+      "id": "linear-algebra>neural-networks",
+      "source": "linear-algebra",
+      "target": "neural-networks",
+      "type": "PREREQUISITE"
+    },
+    {
+      "id": "unsupervised-learning>clustering",
+      "source": "unsupervised-learning",
+      "target": "clustering",
+      "type": "PREREQUISITE"
+    },
+    {
+      "id": "classification>nlp",
+      "source": "classification",
+      "target": "nlp",
+      "type": "PREREQUISITE"
+    },
+    {
+      "id": "neural-networks>deep-learning",
+      "source": "neural-networks",
+      "target": "deep-learning",
+      "type": "PREREQUISITE"
+    },
+    {
+      "id": "deep-learning>pytorch",
+      "source": "deep-learning",
+      "target": "pytorch",
+      "type": "PREREQUISITE"
+    },
+    {
+      "id": "deep-learning>tensorflow",
+      "source": "deep-learning",
+      "target": "tensorflow",
+      "type": "PREREQUISITE"
+    },
+    {
+      "id": "deep-learning>computer-vision",
+      "source": "deep-learning",
+      "target": "computer-vision",
+      "type": "PREREQUISITE"
+    },
+    {
+      "id": "numpy>pytorch",
+      "source": "numpy",
+      "target": "pytorch",
+      "type": "PREREQUISITE"
+    },
+    {
+      "id": "numpy>tensorflow",
+      "source": "numpy",
+      "target": "tensorflow",
+      "type": "PREREQUISITE"
+    },
+    {
+      "id": "prompt-engineering>llm-apis",
+      "source": "prompt-engineering",
+      "target": "llm-apis",
+      "type": "PREREQUISITE"
+    },
+    {
+      "id": "llm-apis>embeddings",
+      "source": "llm-apis",
+      "target": "embeddings",
+      "type": "PREREQUISITE"
+    },
+    {
+      "id": "embeddings>vector-databases",
+      "source": "embeddings",
+      "target": "vector-databases",
+      "type": "PREREQUISITE"
+    },
+    {
+      "id": "llm-apis>rag",
+      "source": "llm-apis",
+      "target": "rag",
+      "type": "PREREQUISITE"
+    },
+    {
+      "id": "vector-databases>rag",
+      "source": "vector-databases",
+      "target": "rag",
+      "type": "PREREQUISITE"
+    },
+    {
+      "id": "llm-apis>ai-agents",
+      "source": "llm-apis",
+      "target": "ai-agents",
+      "type": "PREREQUISITE"
+    },
+    {
+      "id": "rag>ai-agents",
+      "source": "rag",
+      "target": "ai-agents",
+      "type": "PREREQUISITE"
+    },
+    {
+      "id": "command-line>linux",
+      "source": "command-line",
+      "target": "linux",
+      "type": "PREREQUISITE"
+    },
+    {
+      "id": "linux>docker",
+      "source": "linux",
+      "target": "docker",
+      "type": "PREREQUISITE"
+    },
+    {
+      "id": "linux>cloud-fundamentals",
+      "source": "linux",
+      "target": "cloud-fundamentals",
+      "type": "PREREQUISITE"
+    },
+    {
+      "id": "cloud-fundamentals>aws",
+      "source": "cloud-fundamentals",
+      "target": "aws",
+      "type": "PREREQUISITE"
+    },
+    {
+      "id": "docker>mlops",
+      "source": "docker",
+      "target": "mlops",
+      "type": "PREREQUISITE"
+    },
+    {
+      "id": "scikit-learn>mlops",
+      "source": "scikit-learn",
+      "target": "mlops",
+      "type": "PREREQUISITE"
+    }
+  ],
+  "stats": {
+    "nodes": 35,
+    "edges": 40
+  }
+}
