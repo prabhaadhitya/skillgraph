@@ -166,7 +166,7 @@ while candidates not empty:
     state[pick] = requiredLevel(pick)       // assume completed
     recompute priorities (dependencyImpact changes) and candidates
 ```
-Because the PREREQUISITE graph is acyclic and closed within the career, at least one candidate is always ready, so the loop cannot deadlock; and every skill appears **after** all of its prerequisites that still had a gap. `effortPoints = (toLevel − fromLevel) × difficulty`. **Reason codes** per step: `HIGH_IMPORTANCE` (importance ≥ 0.8), `LARGE_GAP` (gap ≥ 3), `UNLOCKS_MANY` (≥ 3 descendants with gap > 0), `QUICK_WIN` (gap = 1).
+Because the PREREQUISITE graph is acyclic and closed within the career, at least one candidate is always ready, so the loop cannot deadlock; and every skill appears **after** all of its prerequisites that still had a gap. `effortPoints = (toLevel − fromLevel) × difficulty`. **Reason codes** per step: `HIGH_IMPORTANCE` (importance ≥ 0.8), `LARGE_GAP` (gap ≥ 3), `UNLOCKS_MANY` (≥ 3 descendants with gap > 0), `QUICK_WIN` (gap = 1); if none apply, `REQUIRED_BY_CAREER`.
 
 ### 5.6 Next skills
 `readySet` under the **current** profile, sorted by priority (same tie-break as the path), top N (default 3). By construction **next skill #1 is always path step 1**. This is the baseline recommender; ML (§6) re-scores the same candidate set.

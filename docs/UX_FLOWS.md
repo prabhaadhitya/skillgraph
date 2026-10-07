@@ -88,7 +88,7 @@ Edge cases: very large subgraphs → toolbar `Fit view`; empty profile → all n
 
 ### F4 — Follow the learning path
 1. `/app/path` lists ordered steps. Step 1–3 are marked `READY NOW` when `isReadyNow`; later steps show "Needs: <prerequisites>".
-2. Each step shows `from → to` levels, effort chip (`effortPoints`), reason tags (`HIGH_IMPORTANCE` → "High importance", `LARGE_GAP` → "Big gap", `UNLOCKS_MANY` → "Unlocks many skills", `QUICK_WIN` → "Quick win").
+2. Each step shows `from → to` levels, effort chip (`effortPoints`), reason tags (`HIGH_IMPORTANCE` → "High importance", `LARGE_GAP` → "Big gap", `UNLOCKS_MANY` → "Unlocks many skills", `QUICK_WIN` → "Quick win", `REQUIRED_BY_CAREER` → "Required for this career").
 3. After learning, the student sets the new level in-line (F2). Completed steps disappear from the path and celebrate with a small confetti-free "✓ Done" stamp.
 4. `Ask why` opens the assistant with a prefilled question.
 

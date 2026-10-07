@@ -142,7 +142,7 @@ Password rules: ≥ 8 chars, at least one letter and one number. Login failure a
                "unlocks": [ { "slug": "machine-learning-fundamentals", "name": "Machine Learning Fundamentals" } ],
                "reasons": ["HIGH_IMPORTANCE", "LARGE_GAP", "UNLOCKS_MANY"] } ] }
 ```
-Reason codes: `HIGH_IMPORTANCE`, `LARGE_GAP`, `UNLOCKS_MANY`, `QUICK_WIN`.
+Reason codes: `HIGH_IMPORTANCE`, `LARGE_GAP`, `UNLOCKS_MANY`, `QUICK_WIN`; when none of these apply the list is `["REQUIRED_BY_CAREER"]`. Every step and every next-skill item has at least one code.
 
 ### `GET /analysis/graph?career=&includeRelated=false`
 Edges point from **prerequisite → dependent**. Layout is the client's job.
