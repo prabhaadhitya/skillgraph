@@ -3,6 +3,7 @@ import { respond } from '../utils/respond.js';
 import { authRouter } from './auth.routes.js';
 import { userRouter } from './user.routes.js';
 import { skillsRouter, careersRouter } from './catalog.routes.js';
+import { settingsRouter } from './settings.routes.js';
 import { getMeta } from '../controllers/meta.controller.js';
 
 export const apiRouter = Router();
@@ -24,5 +25,8 @@ apiRouter.use('/users', userRouter);
 // Catalog routers
 apiRouter.use('/skills', skillsRouter);
 apiRouter.use('/careers', careersRouter);
+
+// LLM settings router
+apiRouter.use('/settings/llm', settingsRouter);
 
 export default apiRouter;
