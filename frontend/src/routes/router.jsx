@@ -13,6 +13,8 @@ import AdminLayout from '../pages/admin/AdminLayout.jsx';
 import Skills from '../pages/admin/Skills.jsx';
 import Relationships from '../pages/admin/Relationships.jsx';
 import Careers from '../pages/admin/Careers.jsx';
+import Overview from '../pages/admin/Overview.jsx';
+import CareerExplorer from '../pages/careers/CareerExplorer.jsx';
 import AppShell from '../components/layout/AppShell.jsx';
 import ProtectedRoute from './ProtectedRoute.jsx';
 import AdminRoute from './AdminRoute.jsx';
@@ -59,7 +61,11 @@ export const routes = [
     children: [
       {
         index: true,
-        element: <Navigate to="/admin/skills" replace />,
+        element: <Navigate to="/admin/overview" replace />,
+      },
+      {
+        path: 'overview',
+        element: <Overview />,
       },
       {
         path: 'skills',
@@ -101,7 +107,7 @@ export const routes = [
       },
       {
         path: 'careers',
-        element: <PlaceholderPage title="CAREER EXPLORER" />,
+        element: <CareerExplorer />,
       },
       {
         path: 'analytics',

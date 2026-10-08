@@ -1,8 +1,9 @@
 import { NavLink, Outlet } from 'react-router';
-import { Database, GitFork, Briefcase, ShieldCheck } from 'lucide-react';
+import { Database, GitFork, Briefcase, ShieldCheck, LayoutDashboard } from 'lucide-react';
 
 export function AdminLayout() {
   const navItems = [
+    { to: '/admin/overview', label: 'OVERVIEW', icon: LayoutDashboard },
     { to: '/admin/skills', label: 'SKILLS', icon: Database },
     { to: '/admin/relationships', label: 'RELATIONSHIPS', icon: GitFork },
     { to: '/admin/careers', label: 'CAREERS', icon: Briefcase },

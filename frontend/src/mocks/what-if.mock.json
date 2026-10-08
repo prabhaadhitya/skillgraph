@@ -1,0 +1,57 @@
+{
+  "current": {
+    "career": {
+      "slug": "machine-learning-engineer",
+      "name": "Machine Learning Engineer"
+    },
+    "fitScore": 61,
+    "pathSteps": 9,
+    "topPriority": [
+      {
+        "slug": "statistics",
+        "name": "Statistics"
+      },
+      {
+        "slug": "docker",
+        "name": "Docker"
+      }
+    ]
+  },
+  "alternative": {
+    "career": {
+      "slug": "data-scientist",
+      "name": "Data Scientist"
+    },
+    "fitScore": 74,
+    "pathSteps": 6,
+    "topPriority": [
+      {
+        "slug": "data-visualization",
+        "name": "Data Visualization"
+      },
+      {
+        "slug": "pandas",
+        "name": "Pandas"
+      }
+    ]
+  },
+  "delta": 13,
+  "newlyRequired": [
+    {
+      "slug": "data-visualization",
+      "name": "Data Visualization",
+      "requiredLevel": 4
+    },
+    {
+      "slug": "pandas",
+      "name": "Pandas",
+      "requiredLevel": 4
+    }
+  ],
+  "noLongerRequired": [
+    {
+      "slug": "docker",
+      "name": "Docker"
+    }
+  ]
+}
