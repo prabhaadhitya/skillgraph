@@ -1,8 +1,10 @@
 import { useState } from 'react';
-import { X, ArrowRight, ArrowLeft, Loader2, Sparkles } from 'lucide-react';
+import { Link } from 'react-router';
+import { X, ArrowRight, ArrowLeft, Loader2, Sparkles, AlertTriangle } from 'lucide-react';
 import { Tag, Badge, LevelPicker, Button } from '../ui';
 import { getNodeConnections } from './graphUtils.js';
 import { useSkillDetail, useUpdateSkill } from '../../hooks';
+import { explainSkill } from '../../services/aiService.js';
 
 /**
  * 360px right-hand live detail panel (bottom sheet on tablet/mobile)
@@ -34,6 +36,32 @@ export function SkillDetailPanel({
   const updateSkillMutation = useUpdateSkill();
 
   const [optimisticState, setOptimisticState] = useState(null);
+  const [explainState, setExplainState] = useState({ slug: null, loading: false, result: null, error: null });
+
+  const explainLoading = explainState.slug === slug && explainState.loading;
+  const explainResult = explainState.slug === slug ? explainState.result : null;
+  const explainError = explainState.slug === slug ? explainState.error : null;
+
+  const handleExplain = async () => {
+    if (onExplain) {
+      onExplain(slug);
+      return;
+    }
+    if (!slug || explainLoading) return;
+    setExplainState({ slug, loading: true, result: null, error: null });
+    try {
+      const res = await explainSkill(slug);
+      setExplainState({ slug, loading: false, result: res, error: null });
+    } catch (err) {
+      const errMsg =
+        err?.status === 429
+          ? 'Too many requests. Slow down a little and try again in a minute.'
+          : err?.status === 502
+            ? 'Upstream AI service error (502).'
+            : err?.message || 'Failed to explain skill.';
+      setExplainState({ slug, loading: false, result: null, error: errMsg });
+    }
+  };
 
   const localLevel =
     (optimisticState && optimisticState.id === selectedNode?.id
@@ -206,26 +234,77 @@ export function SkillDetailPanel({
           </div>
         </div>
 
-        {/* "Why this?" Button Slot */}
-        <div className="pt-1">
-          {onExplain ? (
-            <Button
-              variant="secondary"
-              onClick={() => onExplain(slug)}
-              className="w-full text-xs font-mono font-bold uppercase tracking-wider flex items-center justify-center gap-1.5"
-            >
+        {/* "Why this?" Section */}
+        <div className="pt-1 space-y-2">
+          <Button
+            variant="secondary"
+            onClick={handleExplain}
+            disabled={explainLoading}
+            className="w-full text-xs font-mono font-bold uppercase tracking-wider flex items-center justify-center gap-1.5"
+          >
+            {explainLoading ? (
+              <Loader2 size={14} className="animate-spin text-brand" />
+            ) : (
               <Sparkles size={14} className="text-brand" />
-              <span>Why this?</span>
-            </Button>
-          ) : (
-            <button
-              type="button"
-              disabled
-              title="Assistant coming soon"
-              className="w-full py-2 px-3 text-xs font-mono font-bold uppercase tracking-wider border-2 border-ink bg-paper/60 text-muted cursor-not-allowed opacity-75 shadow-xs"
-            >
-              Why this? (Assistant coming soon)
-            </button>
+            )}
+            <span>{explainLoading ? 'Explaining...' : 'Why this?'}</span>
+          </Button>
+
+          {explainError && (
+            <div className="p-2.5 bg-state-missing/20 border-2 border-state-missing text-xs font-mono text-ink flex items-center justify-between">
+              <span>{explainError}</span>
+              <button
+                type="button"
+                onClick={handleExplain}
+                className="font-bold underline text-ink ml-2 cursor-pointer"
+              >
+                RETRY
+              </button>
+            </div>
+          )}
+
+          {explainResult && (
+            <div className="p-3 bg-paper border-2 border-ink shadow-xs text-xs space-y-2 text-left">
+              <p className="leading-relaxed text-ink whitespace-pre-wrap">{explainResult.reply}</p>
+
+              {/* Degraded Notice */}
+              {explainResult.degraded && (
+                <div className="flex items-center gap-1.5 text-[11px] font-bold text-state-major">
+                  <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
+                  <span>Quick answer (AI is unavailable right now)</span>
+                </div>
+              )}
+
+              {/* Quota Notice with Link to Settings */}
+              {explainResult.notice && (
+                <div className="p-2 bg-surface border border-ink text-[11px] text-ink flex items-center justify-between gap-2">
+                  <span>{explainResult.notice}</span>
+                  <Link
+                    to="/app/settings"
+                    className="font-bold text-brand hover:underline shrink-0"
+                  >
+                    Settings →
+                  </Link>
+                </div>
+              )}
+
+              {/* Grounding & Key tags */}
+              <div className="flex flex-wrap items-center gap-2 pt-1 border-t border-line text-[10px] text-muted font-mono">
+                {((explainResult.grounding?.skills && explainResult.grounding.skills.length > 0) ||
+                  (explainResult.grounding?.careers && explainResult.grounding.careers.length > 0)) && (
+                  <span>
+                    grounded in:{' '}
+                    <strong className="text-ink">
+                      {[...(explainResult.grounding.skills || []), ...(explainResult.grounding.careers || [])].join(', ')}
+                    </strong>
+                  </span>
+                )}
+
+                <Badge variant={explainResult.keySource === 'user' ? 'mastered' : 'neutral'}>
+                  {explainResult.keySource === 'user' ? 'Your key' : 'Shared key'}
+                </Badge>
+              </div>
+            </div>
           )}
         </div>
 

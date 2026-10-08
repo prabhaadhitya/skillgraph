@@ -14,6 +14,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ToastProvider } from '../components/ui/Toast.jsx';
 import SkillGraph from './SkillGraph.jsx';
 import * as analysisService from '../services/analysisService.js';
+import * as aiService from '../services/aiService.js';
 
 function renderSkillGraph() {
   const queryClient = new QueryClient({
@@ -116,6 +117,40 @@ describe('SkillGraph Page', () => {
     // Check updateSkill was called with right arguments
     await waitFor(() => {
       expect(updateSkillSpy).toHaveBeenCalledWith('statistics', 3);
+    });
+  });
+
+  it('clicking "Why this?" in detail panel calls explainSkill and shows answer with degraded/grounding info', async () => {
+    const explainSpy = vi.spyOn(aiService, 'explainSkill').mockResolvedValueOnce({
+      reply: 'Statistics is vital for interpreting machine learning models and evaluating data distributions.',
+      intent: 'explain_recommendation',
+      degraded: true,
+      keySource: 'user',
+      grounding: { skills: ['statistics'], careers: ['machine-learning-engineer'] },
+      notice: 'Add your own OpenRouter key in Settings for unlimited chat',
+    });
+
+    renderSkillGraph();
+
+    // Wait for node to load and click it
+    const statNode = await screen.findByText('Statistics', {}, { timeout: 8000 });
+    fireEvent.click(statNode);
+
+    // Wait for "Why this?" button
+    const whyThisBtn = await screen.findByRole('button', { name: /Why this\?/i });
+    expect(whyThisBtn).toBeInTheDocument();
+
+    fireEvent.click(whyThisBtn);
+
+    // Check explain was called with skill slug
+    await waitFor(() => {
+      expect(explainSpy).toHaveBeenCalledWith('statistics');
+      expect(screen.getByText(/Statistics is vital for interpreting machine learning models/i)).toBeInTheDocument();
+      expect(screen.getByText(/Quick answer \(AI is unavailable right now\)/i)).toBeInTheDocument();
+      expect(screen.getByText(/grounded in:/i)).toBeInTheDocument();
+      expect(screen.getByText(/statistics, machine-learning-engineer/i)).toBeInTheDocument();
+      expect(screen.getByText(/Add your own OpenRouter key in Settings/i)).toBeInTheDocument();
+      expect(screen.getByText('Your key')).toBeInTheDocument();
     });
   });
 });
