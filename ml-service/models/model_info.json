@@ -1,0 +1,52 @@
+{
+  "modelVersion": "v1",
+  "chosenModel": "GradientBoosting",
+  "validationHitRateAt3": 0.616,
+  "modelsCompared": [
+    {
+      "model": "LogisticRegression",
+      "val_hit_rate_at_3": 0.612
+    },
+    {
+      "model": "RandomForest",
+      "val_hit_rate_at_3": 0.6027
+    },
+    {
+      "model": "GradientBoosting",
+      "val_hit_rate_at_3": 0.616
+    }
+  ],
+  "featureNames": [
+    "gap",
+    "importance",
+    "required_level",
+    "difficulty",
+    "dependency_impact",
+    "ready",
+    "prereqs_with_gap",
+    "current_proficiency",
+    "career_data-analyst",
+    "career_data-scientist",
+    "career_full-stack-developer",
+    "career_machine-learning-engineer",
+    "career_software-developer",
+    "category_ai-llm",
+    "category_backend",
+    "category_cloud",
+    "category_cybersecurity",
+    "category_data-analytics",
+    "category_database",
+    "category_deep-learning",
+    "category_devops",
+    "category_frontend",
+    "category_machine-learning",
+    "category_programming",
+    "category_tools",
+    "category_web-development"
+  ],
+  "nProfilesTotal": 5000,
+  "nProfilesTrain": 3500,
+  "nProfilesVal": 750,
+  "nProfilesTest": 750,
+  "seed": 42
+}
