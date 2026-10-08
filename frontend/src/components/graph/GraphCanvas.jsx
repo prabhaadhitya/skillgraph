@@ -52,19 +52,22 @@ export function GraphCanvas({
       height: 64,
       style: { width: 168, height: 64 },
       selected: node.id === selectedNodeId,
-      data: node.data || {
-        id: node.id,
-        name: node.name,
-        state: node.state,
-        proficiency: node.proficiency,
-        requiredLevel: node.requiredLevel,
-        category: node.category,
-        difficulty: node.difficulty,
-        importance: node.importance,
-        isReadyNow: node.isReadyNow,
+      data: {
+        ...(node.data || {
+          id: node.id,
+          name: node.name,
+          state: node.state,
+          proficiency: node.proficiency,
+          requiredLevel: node.requiredLevel,
+          category: node.category,
+          difficulty: node.difficulty,
+          importance: node.importance,
+          isReadyNow: node.isReadyNow,
+        }),
+        onSelect: onSelectNode,
       },
     }));
-  }, [nodes, selectedNodeId]);
+  }, [nodes, selectedNodeId, onSelectNode]);
 
   // Compute highlighted vs faded edges
   const displayEdges = useMemo(() => {

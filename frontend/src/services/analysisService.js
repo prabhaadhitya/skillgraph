@@ -25,7 +25,10 @@ export async function getGraph(career, options = {}) {
 
   const params = new URLSearchParams();
   if (career) params.append('career', career);
-  if (includeRelated) params.append('includeRelated', 'true');
+  if (includeRelated) {
+    params.append('related', 'true');
+    params.append('includeRelated', 'true');
+  }
   const qs = params.toString();
   return api.get(`/analysis/graph${qs ? `?${qs}` : ''}`);
 }
