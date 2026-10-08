@@ -11,6 +11,9 @@ import { computePriorities, getNextSkills, compareCandidates } from './priority.
 import { buildLearningPath } from './path.js';
 import { reasonsFor } from './reasons.js';
 import { getNodeState } from './nodeState.js';
+import { computeWhatIf } from './whatIf.js';
+import { compareCareers } from './compare.js';
+import { planWithinBudget } from './budget.js';
 
 export {
   buildCareerModel,
@@ -24,6 +27,9 @@ export {
   buildLearningPath,
   reasonsFor,
   getNodeState,
+  computeWhatIf,
+  compareCareers,
+  planWithinBudget,
 };
 
 export default {
@@ -38,4 +44,7 @@ export default {
   buildLearningPath,
   reasonsFor,
   getNodeState,
+  computeWhatIf,
+  compareCareers,
+  planWithinBudget,
 };

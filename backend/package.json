@@ -10,6 +10,7 @@
     "test:engine": "vitest run tests/engine",
     "lint": "eslint src seed tests",
     "seed": "node seed/seed.js",
+    "seed:demo": "node seed/seedDemo.js",
     "seed:reset": "node seed/seed.js --reset",
     "seed:validate": "node seed/validate.cli.js"
   },
