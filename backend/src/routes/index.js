@@ -4,6 +4,7 @@ import { authRouter } from './auth.routes.js';
 import { userRouter } from './user.routes.js';
 import { skillsRouter, careersRouter } from './catalog.routes.js';
 import { settingsRouter } from './settings.routes.js';
+import { adminRouter } from './admin.routes.js';
 import { getMeta } from '../controllers/meta.controller.js';
 
 export const apiRouter = Router();
@@ -28,5 +29,8 @@ apiRouter.use('/careers', careersRouter);
 
 // LLM settings router
 apiRouter.use('/settings/llm', settingsRouter);
+
+// Admin knowledge base management router
+apiRouter.use('/admin', adminRouter);
 
 export default apiRouter;

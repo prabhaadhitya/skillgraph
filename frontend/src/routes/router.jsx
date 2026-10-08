@@ -9,6 +9,10 @@ import Analytics from '../pages/Analytics.jsx';
 import OnboardingPage from '../pages/onboarding/OnboardingPage.jsx';
 import DashboardPage from '../pages/dashboard/DashboardPage.jsx';
 import ProfilePage from '../pages/profile/ProfilePage.jsx';
+import AdminLayout from '../pages/admin/AdminLayout.jsx';
+import Skills from '../pages/admin/Skills.jsx';
+import Relationships from '../pages/admin/Relationships.jsx';
+import Careers from '../pages/admin/Careers.jsx';
 import AppShell from '../components/layout/AppShell.jsx';
 import ProtectedRoute from './ProtectedRoute.jsx';
 import AdminRoute from './AdminRoute.jsx';
@@ -49,9 +53,27 @@ export const routes = [
     path: '/admin',
     element: (
       <AdminRoute>
-        <PlaceholderPage title="ADMIN DASHBOARD" />
+        <AdminLayout />
       </AdminRoute>
     ),
+    children: [
+      {
+        index: true,
+        element: <Navigate to="/admin/skills" replace />,
+      },
+      {
+        path: 'skills',
+        element: <Skills />,
+      },
+      {
+        path: 'relationships',
+        element: <Relationships />,
+      },
+      {
+        path: 'careers',
+        element: <Careers />,
+      },
+    ],
   },
   {
     path: '/app',
