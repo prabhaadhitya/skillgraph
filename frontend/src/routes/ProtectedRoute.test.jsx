@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import { MemoryRouter, Routes, Route } from 'react-router';
+import { MemoryRouter, Routes, Route, useLocation } from 'react-router';
 import { AuthContext } from '../context/AuthContext.jsx';
 import { ProtectedRoute } from './ProtectedRoute.jsx';
 
@@ -10,6 +10,11 @@ describe('ProtectedRoute guard', () => {
       user: null,
       isLoading: false,
     };
+
+    function LoginTarget() {
+      const location = useLocation();
+      return <div>Login Page Target: {location.search}</div>;
+    }
 
     render(
       <AuthContext.Provider value={authValue}>
@@ -23,14 +28,14 @@ describe('ProtectedRoute guard', () => {
                 </ProtectedRoute>
               }
             />
-            <Route path="/login" element={<div>Login Page Target</div>} />
+            <Route path="/login" element={<LoginTarget />} />
           </Routes>
         </MemoryRouter>
       </AuthContext.Provider>,
     );
 
     expect(screen.queryByText('Secret Dashboard')).not.toBeInTheDocument();
-    expect(screen.getByText('Login Page Target')).toBeInTheDocument();
+    expect(screen.getByText(/Login Page Target: \?next=%2Fapp%2Fdashboard/)).toBeInTheDocument();
   });
 
   it('redirects authenticated user without onboarding to /onboarding', () => {

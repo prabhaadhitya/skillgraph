@@ -20,10 +20,13 @@ import Settings from '../pages/Settings.jsx';
 import AppShell from '../components/layout/AppShell.jsx';
 import ProtectedRoute from './ProtectedRoute.jsx';
 import AdminRoute from './AdminRoute.jsx';
+import ErrorBoundary from '../components/feedback/ErrorBoundary.jsx';
+import NotFoundPage from '../components/feedback/NotFoundPage.jsx';
 
 export const routes = [
   {
     path: '/',
+    errorElement: <ErrorBoundary />,
     element: <Landing />,
   },
   {
@@ -117,6 +120,11 @@ export const routes = [
         element: <Settings />,
       },
     ],
+  },
+  {
+    path: '*',
+    errorElement: <ErrorBoundary />,
+    element: <NotFoundPage />,
   },
 ];
 

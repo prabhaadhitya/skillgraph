@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { Search } from 'lucide-react';
 import { useGraph } from '../hooks/useGraph.js';
 import { layoutGraph } from '../components/graph/layout.js';
@@ -13,6 +13,10 @@ import { Tag, Button, Skeleton, ErrorState, EmptyState } from '../components/ui'
  * related-links toggle, and live detail panel.
  */
 export default function SkillGraph({ career }) {
+  useEffect(() => {
+    document.title = 'SkillGraph — Skill Graph';
+  }, []);
+
   const [includeRelated, setIncludeRelated] = useState(false);
   const [selectedNodeId, setSelectedNodeId] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
