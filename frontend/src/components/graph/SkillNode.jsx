@@ -5,41 +5,49 @@ import { Check, CircleDot, X, Sparkles, Minus } from 'lucide-react';
 const STATE_CONFIG = {
   mastered: {
     bgClass: 'bg-state-mastered',
-    label: 'mastered',
+    colorHex: '#3DDC97',
+    label: 'Mastered',
     Icon: Check,
   },
   partial: {
     bgClass: 'bg-state-partial',
-    label: 'in progress',
+    colorHex: '#FFC93C',
+    label: 'In progress',
     Icon: CircleDot,
   },
   missing: {
     bgClass: 'bg-state-missing',
-    label: 'missing',
+    colorHex: '#FF5A5F',
+    label: 'Missing',
     Icon: X,
   },
   recommended: {
     bgClass: 'bg-state-next',
-    label: 'recommended',
+    colorHex: '#4CC9F0',
+    label: 'Learn next',
     Icon: Sparkles,
   },
   not_relevant: {
     bgClass: 'bg-state-muted',
-    label: 'not in target',
+    colorHex: '#D7D7DC',
+    label: 'Not in target',
     Icon: Minus,
   },
 };
 
 /**
  * Custom React Flow node rendering a skill in the graph.
- * 168 x 64 px, 2px ink border, fill from node state, icon + name + level.
+ * Rounded box (168 x 64 px), 2px ink border, fill from node state token,
+ * state icon + skill name + level info + category dot.
+ * Focusable via keyboard, Enter/Space opens the skill detail panel.
  */
-export const SkillNode = memo(function SkillNode({ data = {}, selected = false }) {
+export const SkillNode = memo(function SkillNode({ id, data = {}, selected = false }) {
   const {
     name = 'Skill',
     state = 'missing',
     proficiency = 0,
     requiredLevel = 1,
+    onSelect,
   } = data;
 
   const config = STATE_CONFIG[state] || STATE_CONFIG.missing;
@@ -48,14 +56,29 @@ export const SkillNode = memo(function SkillNode({ data = {}, selected = false }
 
   const ariaLabel = `${name}, ${state}, level ${proficiency} of ${requiredLevel} required`;
 
+  const handleTrigger = () => {
+    onSelect?.(data.id || id);
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      handleTrigger();
+    }
+  };
+
   return (
     <div
       tabIndex={0}
       role="button"
       aria-label={ariaLabel}
+      onKeyDown={handleKeyDown}
+      onClick={handleTrigger}
       style={{ width: '168px', height: '64px' }}
-      className={`relative w-[168px] h-[64px] p-2 border-2 border-ink rounded-none text-ink select-none flex flex-col justify-between transition-all duration-120 ease-out focus:outline-none focus-visible:outline-3 focus-visible:outline-brand focus-visible:outline-offset-2 ${config.bgClass} ${
-        selected ? 'shadow-lg outline-3 outline-brand outline-offset-[2px]' : 'shadow-sm hover:shadow-md'
+      className={`relative w-[168px] h-[64px] p-2 border-2 border-ink rounded-lg text-ink select-none flex flex-col justify-between transition-all duration-120 ease-out cursor-pointer focus:outline-none focus-visible:outline-3 focus-visible:outline-brand focus-visible:outline-offset-2 ${config.bgClass} ${
+        selected
+          ? 'shadow-lg outline-3 outline-brand outline-offset-[2px]'
+          : 'shadow-sm hover:shadow-md'
       }`}
     >
       <Handle
@@ -66,7 +89,7 @@ export const SkillNode = memo(function SkillNode({ data = {}, selected = false }
 
       {/* Row 1: State Icon + Skill Name */}
       <div className="flex items-start gap-1.5 overflow-hidden">
-        <span className="shrink-0 mt-0.5" aria-hidden="true">
+        <span className="shrink-0 mt-0.5" aria-hidden="true" title={config.label}>
           <StateIcon size={14} strokeWidth={2.5} />
         </span>
         <span
@@ -91,7 +114,7 @@ export const SkillNode = memo(function SkillNode({ data = {}, selected = false }
 
       {/* NEXT sticker for recommended nodes */}
       {isRecommended && (
-        <span className="absolute -top-2.5 -right-2.5 bg-pop text-ink border-2 border-ink font-mono text-[9px] font-black px-1.5 py-0.5 leading-none uppercase tracking-wider shadow-sm">
+        <span className="absolute -top-2.5 -right-2 bg-pop text-ink border-2 border-ink font-mono text-[9px] font-black px-1.5 py-0.5 leading-none uppercase tracking-wider shadow-sm rounded-xs">
           NEXT
         </span>
       )}
