@@ -1,0 +1,124 @@
+{
+  "a": {
+    "career": {
+      "slug": "data-scientist",
+      "name": "Data Scientist"
+    },
+    "fitScore": 74,
+    "pathSteps": 6,
+    "effortPoints": 40,
+    "missingCount": 5
+  },
+  "b": {
+    "career": {
+      "slug": "machine-learning-engineer",
+      "name": "Machine Learning Engineer"
+    },
+    "fitScore": 61,
+    "pathSteps": 9,
+    "effortPoints": 61,
+    "missingCount": 9
+  },
+  "common": [
+    {
+      "skill": {
+        "slug": "python",
+        "name": "Python",
+        "category": "programming"
+      },
+      "a": {
+        "importance": 0.9,
+        "requiredLevel": 4
+      },
+      "b": {
+        "importance": 0.9,
+        "requiredLevel": 4
+      }
+    },
+    {
+      "skill": {
+        "slug": "statistics",
+        "name": "Statistics",
+        "category": "data-analytics"
+      },
+      "a": {
+        "importance": 0.95,
+        "requiredLevel": 4
+      },
+      "b": {
+        "importance": 0.85,
+        "requiredLevel": 4
+      }
+    },
+    {
+      "skill": {
+        "slug": "sql",
+        "name": "SQL",
+        "category": "database"
+      },
+      "a": {
+        "importance": 0.8,
+        "requiredLevel": 3
+      },
+      "b": {
+        "importance": 0.7,
+        "requiredLevel": 3
+      }
+    },
+    {
+      "skill": {
+        "slug": "machine-learning-fundamentals",
+        "name": "Machine Learning Fundamentals",
+        "category": "machine-learning"
+      },
+      "a": {
+        "importance": 0.9,
+        "requiredLevel": 4
+      },
+      "b": {
+        "importance": 0.9,
+        "requiredLevel": 4
+      }
+    }
+  ],
+  "uniqueToA": [
+    {
+      "skill": {
+        "slug": "data-visualization",
+        "name": "Data Visualization",
+        "category": "data-analytics"
+      },
+      "importance": 0.8,
+      "requiredLevel": 4
+    },
+    {
+      "skill": {
+        "slug": "pandas",
+        "name": "Pandas",
+        "category": "data-analytics"
+      },
+      "importance": 0.75,
+      "requiredLevel": 4
+    }
+  ],
+  "uniqueToB": [
+    {
+      "skill": {
+        "slug": "docker",
+        "name": "Docker",
+        "category": "devops"
+      },
+      "importance": 0.7,
+      "requiredLevel": 3
+    },
+    {
+      "skill": {
+        "slug": "ci-cd",
+        "name": "CI/CD",
+        "category": "devops"
+      },
+      "importance": 0.65,
+      "requiredLevel": 3
+    }
+  ]
+}

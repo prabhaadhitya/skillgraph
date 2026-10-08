@@ -1,0 +1,225 @@
+{
+  "overview": {
+    "totalStudents": 24,
+    "onboardedStudents": 18,
+    "avgFitScore": 54,
+    "totalSkills": 71,
+    "totalCareers": 5
+  },
+  "skillGaps": {
+    "items": [
+      {
+        "skill": {
+          "id": "sk_docker",
+          "slug": "docker",
+          "name": "Docker",
+          "category": "devops"
+        },
+        "percentWithGap": 75,
+        "avgGap": 2.2,
+        "studentsConsidered": 16
+      },
+      {
+        "skill": {
+          "id": "sk_stats",
+          "slug": "statistics",
+          "name": "Statistics",
+          "category": "data-analytics"
+        },
+        "percentWithGap": 68,
+        "avgGap": 1.9,
+        "studentsConsidered": 19
+      },
+      {
+        "skill": {
+          "id": "sk_ml",
+          "slug": "machine-learning-fundamentals",
+          "name": "Machine Learning Fundamentals",
+          "category": "machine-learning"
+        },
+        "percentWithGap": 63,
+        "avgGap": 2.5,
+        "studentsConsidered": 16
+      },
+      {
+        "skill": {
+          "id": "sk_sql",
+          "slug": "sql",
+          "name": "SQL",
+          "category": "database"
+        },
+        "percentWithGap": 48,
+        "avgGap": 1.2,
+        "studentsConsidered": 22
+      },
+      {
+        "skill": {
+          "id": "sk_dsa",
+          "slug": "dsa",
+          "name": "Data Structures & Algorithms",
+          "category": "cs-fundamentals"
+        },
+        "percentWithGap": 45,
+        "avgGap": 1.8,
+        "studentsConsidered": 20
+      }
+    ]
+  },
+  "careerDistribution": {
+    "items": [
+      {
+        "career": {
+          "id": "car_mle",
+          "slug": "machine-learning-engineer",
+          "name": "Machine Learning Engineer",
+          "category": "ai"
+        },
+        "students": 10,
+        "percent": 42
+      },
+      {
+        "career": {
+          "id": "car_ds",
+          "slug": "data-scientist",
+          "name": "Data Scientist",
+          "category": "data"
+        },
+        "students": 6,
+        "percent": 25
+      },
+      {
+        "career": {
+          "id": "car_swe",
+          "slug": "software-developer",
+          "name": "Software Developer",
+          "category": "software"
+        },
+        "students": 4,
+        "percent": 17
+      },
+      {
+        "career": {
+          "id": "car_da",
+          "slug": "data-analyst",
+          "name": "Data Analyst",
+          "category": "data"
+        },
+        "students": 3,
+        "percent": 12
+      },
+      {
+        "career": {
+          "id": "car_cde",
+          "slug": "cloud-devops-engineer",
+          "name": "Cloud DevOps Engineer",
+          "category": "cloud"
+        },
+        "students": 1,
+        "percent": 4
+      }
+    ]
+  },
+  "skillPopularity": {
+    "items": [
+      {
+        "skill": {
+          "id": "sk_python",
+          "slug": "python",
+          "name": "Python",
+          "category": "programming"
+        },
+        "students": 21,
+        "avgProficiency": 3.4
+      },
+      {
+        "skill": {
+          "id": "sk_prog_fund",
+          "slug": "programming-fundamentals",
+          "name": "Programming Fundamentals",
+          "category": "cs-fundamentals"
+        },
+        "students": 20,
+        "avgProficiency": 3.8
+      },
+      {
+        "skill": {
+          "id": "sk_git",
+          "slug": "git",
+          "name": "Git",
+          "category": "tools"
+        },
+        "students": 19,
+        "avgProficiency": 3.1
+      },
+      {
+        "skill": {
+          "id": "sk_sql",
+          "slug": "sql",
+          "name": "SQL",
+          "category": "database"
+        },
+        "students": 17,
+        "avgProficiency": 2.9
+      },
+      {
+        "skill": {
+          "id": "sk_js",
+          "slug": "javascript",
+          "name": "JavaScript",
+          "category": "programming"
+        },
+        "students": 15,
+        "avgProficiency": 2.7
+      }
+    ]
+  },
+  "semesterDistribution": {
+    "items": [
+      {
+        "semester": 1,
+        "students": 3,
+        "avgFitScore": 22,
+        "avgSkillsPerStudent": 4.0
+      },
+      {
+        "semester": 3,
+        "students": 5,
+        "avgFitScore": 38,
+        "avgSkillsPerStudent": 7.2
+      },
+      {
+        "semester": 5,
+        "students": 9,
+        "avgFitScore": 58,
+        "avgSkillsPerStudent": 11.4
+      },
+      {
+        "semester": 7,
+        "students": 7,
+        "avgFitScore": 72,
+        "avgSkillsPerStudent": 16.8
+      }
+    ]
+  },
+  "modelInfo": {
+    "available": true,
+    "modelVersion": "v1",
+    "algorithm": "RandomForestClassifier",
+    "trainingData": "synthetic",
+    "trainingProfiles": 5000,
+    "metrics": {
+      "ml": {
+        "precisionAt3": 0.72,
+        "recallAt3": 0.65,
+        "hitRateAt3": 0.88,
+        "mrr": 0.76
+      },
+      "baseline": {
+        "precisionAt3": 0.51,
+        "recallAt3": 0.44,
+        "hitRateAt3": 0.68,
+        "mrr": 0.58
+      }
+    }
+  }
+}
