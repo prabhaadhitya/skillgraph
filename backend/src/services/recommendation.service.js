@@ -1,7 +1,7 @@
 import { mlClient as defaultMlClient } from './mlClient.js';
 import * as careerModelService from './careerModel.service.js';
 import * as profileService from './profile.service.js';
-import engine, { isReady, reasonsFor, getNextSkills as engineGetNextSkills } from './engine/index.js';
+import engine, { isReady, getNextSkills as engineGetNextSkills } from './engine/index.js';
 import { User } from '../models/user.model.js';
 import { ApiError } from '../utils/ApiError.js';
 

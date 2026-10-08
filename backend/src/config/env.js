@@ -28,6 +28,8 @@ const envSchema = z.object({
   ADMIN_EMAIL: z.string().optional(),
   ADMIN_PASSWORD: z.string().optional(),
   DEMO_PASSWORD: z.string().optional(),
+  AUTH_RATE_LIMIT_MAX: z.coerce.number().optional(),
+  GLOBAL_RATE_LIMIT_MAX: z.coerce.number().optional(),
 });
 
 const parsed = envSchema.safeParse(process.env);
