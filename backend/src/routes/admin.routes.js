@@ -72,4 +72,7 @@ adminRouter.put(
   adminController.updateCareerSkills,
 );
 
+// ML model info — docs/API.md §8 & §12
+adminRouter.get('/ml/info', adminController.getMlInfo);
+
 export default adminRouter;

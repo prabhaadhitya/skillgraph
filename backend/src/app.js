@@ -9,6 +9,9 @@ import { globalLimiter } from './middleware/rateLimit.js';
 import { mongoSanitizer } from './middleware/sanitize.js';
 import { requestLogger } from './middleware/requestLogger.js';
 import { getHealth } from './controllers/health.controller.js';
+import { auth } from './middleware/auth.js';
+import { requireRole } from './middleware/requireRole.js';
+import { getMlInfo } from './controllers/admin.controller.js';
 import { apiRouter } from './routes/index.js';
 
 export const app = express();
@@ -44,6 +47,9 @@ app.use(globalLimiter);
 
 // Public root health check endpoint: reports db and cached ml status
 app.get('/health', getHealth);
+
+// Admin ML model info root route — docs/API.md §8 & §12
+app.get('/admin/ml/info', auth, requireRole('admin'), getMlInfo);
 
 // Mount API routes
 app.use('/api', apiRouter);

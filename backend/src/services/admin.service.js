@@ -6,6 +6,7 @@ import { UserSkill } from '../models/userSkill.model.js';
 import { ApiError } from '../utils/ApiError.js';
 import { invalidateCareerModels } from './careerModel.service.js';
 import { findCycle } from '../../seed/validate.js';
+import { mlClient } from './mlClient.js';
 
 // =============================================================================
 // SKILLS
@@ -366,6 +367,18 @@ export async function updateCareerSkills(careerSlug, skillsList) {
   };
 }
 
+// =============================================================================
+// ML MODEL INFO
+// =============================================================================
+
+export async function getMlInfo() {
+  const info = await mlClient.modelInfo('/model-info');
+  if (!info) {
+    return { available: false };
+  }
+  return { available: true, ...info };
+}
+
 export default {
   createSkill,
   updateSkill,
@@ -376,4 +389,5 @@ export default {
   createCareer,
   updateCareer,
   updateCareerSkills,
+  getMlInfo,
 };
