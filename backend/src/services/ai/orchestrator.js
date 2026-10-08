@@ -6,10 +6,46 @@ import { createOpenRouterClient } from './openrouterClient.js';
 import { keywordRouter } from './keywordRouter.js';
 import { renderTemplateAnswer } from './templates.js';
 import { ALLOWED_INTENTS, validateIntent, parseIntentJson } from '../llm/intents.js';
-import { buildIntentMessages, buildComposeMessages } from '../llm/prompts.js';
+import { buildIntentMessages, buildComposeMessages } from './prompts.js';
 import { resolveKey, nextUsage } from '../llm/keyResolver.js';
 import { decryptSecret } from '../../utils/crypto.js';
 import { executeRetriever, getDefaultDeps } from './retrievers/index.js';
+
+/**
+ * Normalizes user or model skill references to catalog slugs.
+ */
+function normalizeSkillSlug(raw, catalogSkills = []) {
+  if (!raw || typeof raw !== 'string') return undefined;
+  const val = raw.trim();
+  const lower = val.toLowerCase();
+  const slugified = lower.replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+
+  for (const s of catalogSkills) {
+    if (s.slug === val || s.slug === lower || s.slug === slugified) return s.slug;
+    if (s.name && (s.name.toLowerCase() === lower || s.name.toLowerCase().replace(/[^a-z0-9]+/g, '-') === slugified)) {
+      return s.slug;
+    }
+  }
+  return val;
+}
+
+/**
+ * Normalizes user or model career references to catalog slugs.
+ */
+function normalizeCareerSlug(raw, catalogCareers = []) {
+  if (!raw || typeof raw !== 'string') return undefined;
+  const val = raw.trim();
+  const lower = val.toLowerCase();
+  const slugified = lower.replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+
+  for (const c of catalogCareers) {
+    if (c.slug === val || c.slug === lower || c.slug === slugified) return c.slug;
+    if (c.name && (c.name.toLowerCase() === lower || c.name.toLowerCase().replace(/[^a-z0-9]+/g, '-') === slugified)) {
+      return c.slug;
+    }
+  }
+  return val;
+}
 
 const rawIntentSchema = z
   .object({
@@ -141,10 +177,12 @@ export async function orchestrateChat({
     today: todayStr,
   });
 
+  const configuredModel =
+    user?.llmSettings?.model || env.OPENROUTER_DEFAULT_MODEL;
   const effectiveModel =
-    user?.llmSettings?.model ||
-    env.OPENROUTER_DEFAULT_MODEL ||
-    'meta-llama/llama-3.3-70b-instruct:free';
+    configuredModel && configuredModel !== 'google/gemini-2.0-flash-exp:free'
+      ? configuredModel
+      : 'openrouter/free';
 
   const timeoutMs = Number(env.LLM_TIMEOUT_MS) || 15000;
   const client =
@@ -177,7 +215,7 @@ export async function orchestrateChat({
           model: effectiveModel,
           messages: intentMessages,
           temperature: 0.1,
-          maxTokens: 100,
+          maxTokens: 250,
           timeoutMs,
         });
 
@@ -194,9 +232,9 @@ export async function orchestrateChat({
         const data = parsedSchema.data;
         const rawParams = {
           ...(data.params || {}),
-          skillSlug: data.skillSlug || data.params?.skillSlug,
-          careerSlug: data.careerSlug || data.params?.careerSlug,
-          otherSkillSlug: data.otherSkillSlug || data.params?.otherSkillSlug,
+          skillSlug: normalizeSkillSlug(data.skillSlug || data.params?.skillSlug, catalog.skills),
+          careerSlug: normalizeCareerSlug(data.careerSlug || data.params?.careerSlug, catalog.careers),
+          otherSkillSlug: normalizeSkillSlug(data.otherSkillSlug || data.params?.otherSkillSlug, catalog.skills),
           weeks: data.weeks !== undefined ? data.weeks : data.params?.weeks,
         };
 
@@ -206,6 +244,15 @@ export async function orchestrateChat({
         );
         intent = validated.intent;
         params = validated.params;
+
+        // If LLM returned out_of_scope but query matches a high-confidence intent keyword pattern, recover
+        if (intent === 'out_of_scope') {
+          const kwFallback = keywordRouter(message, catalog);
+          if (kwFallback.intent !== 'out_of_scope') {
+            intent = kwFallback.intent;
+            params = kwFallback.params;
+          }
+        }
       } catch {
         // Degradation Ladder Step 1: Fall back to keyword router
         const kwResult = keywordRouter(message, catalog);
@@ -246,7 +293,7 @@ export async function orchestrateChat({
         model: effectiveModel,
         messages: composeMessages,
         temperature: 0.3,
-        maxTokens: 400,
+        maxTokens: 250,
         timeoutMs,
       });
 
@@ -304,6 +351,7 @@ export async function orchestrateChat({
       skills: grounding.skills || [],
       careers: grounding.careers || [],
     },
+    facts,
     meta: {
       keySource: keyResolution.source,
       model: effectiveModel,
