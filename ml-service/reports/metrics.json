@@ -1,0 +1,30 @@
+{
+  "ml": {
+    "hit_rate_at_3": 0.5867,
+    "precision_at_3": 0.1956,
+    "recall_at_3": 0.5867,
+    "mrr": 0.4726
+  },
+  "baseline": {
+    "hit_rate_at_3": 0.5907,
+    "precision_at_3": 0.1969,
+    "recall_at_3": 0.5907,
+    "mrr": 0.464
+  },
+  "models_compared": [
+    {
+      "model": "LogisticRegression",
+      "val_hit_rate_at_3": 0.612
+    },
+    {
+      "model": "RandomForest",
+      "val_hit_rate_at_3": 0.6027
+    },
+    {
+      "model": "GradientBoosting",
+      "val_hit_rate_at_3": 0.616
+    }
+  ],
+  "n_profiles": 5000,
+  "seed": 42
+}
