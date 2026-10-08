@@ -10,6 +10,7 @@ import {
   getSuggestedModels,
   removeLlmKey,
 } from '../../services/llmSettingsService.js';
+import { emitToast } from '../../services/http.js';
 
 function ApiKeyForm({ onClose, currentSettings, onSuccess }) {
   const [apiKey, setApiKey] = useState('');
@@ -95,7 +96,11 @@ function ApiKeyForm({ onClose, currentSettings, onSuccess }) {
 
       await updateLlmSettings(payload);
       setApiKey('');
+      if (payload.apiKey) {
+        emitToast('success', 'Key saved. The assistant will use it from now on.');
+      }
       onSuccess?.();
+      await new Promise((r) => setTimeout(r, 10));
       onClose();
     } catch (err) {
       setError(err.message || 'Failed to save settings.');
@@ -149,7 +154,7 @@ function ApiKeyForm({ onClose, currentSettings, onSuccess }) {
           <a
             href="https://openrouter.ai/keys"
             target="_blank"
-            rel="noreferrer"
+            rel="noopener noreferrer"
             className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-brand hover:text-brand-dark transition-colors"
           >
             OpenRouter Keys <ExternalLink className="w-3.5 h-3.5" />
