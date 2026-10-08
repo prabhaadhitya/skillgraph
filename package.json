@@ -1,0 +1,24 @@
+{
+  "name": "skillgraph",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "SkillGraph — AI-Powered Student Skill Graph and Career Pathway Platform",
+  "scripts": {
+    "dev": "concurrently -n \"fe,be,ml\" -c \"cyan,magenta,yellow\" --kill-others-on-fail \"npm run dev:frontend\" \"npm run dev:backend\" \"npm run dev:ml\"",
+    "dev:frontend": "npm run dev --prefix frontend",
+    "dev:backend": "npm run dev --prefix backend",
+    "dev:ml": "node scripts/start-ml.js",
+    "seed": "npm run seed --prefix backend && npm run seed:demo --prefix backend",
+    "seed:reset": "npm run seed:reset --prefix backend && npm run seed:demo --prefix backend",
+    "seed:validate": "npm run seed:validate --prefix backend",
+    "test": "npm run test:backend && npm run test:frontend && npm run test:ml",
+    "test:backend": "npm test --prefix backend",
+    "test:frontend": "npm test --prefix frontend",
+    "test:ml": "node scripts/test-ml.js",
+    "lint": "npm run lint --prefix backend && npm run lint --prefix frontend"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}
