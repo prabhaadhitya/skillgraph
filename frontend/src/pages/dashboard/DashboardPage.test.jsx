@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { MemoryRouter } from 'react-router';
 import { SummaryStats } from './SummaryStats.jsx';
 import { AlignmentCard } from './AlignmentCard.jsx';
@@ -67,6 +67,46 @@ describe('Dashboard Components', () => {
     expect(screen.getByText('Pandas')).toBeInTheDocument();
     expect(screen.getByText('RULES')).toBeInTheDocument();
     expect(screen.getByText(/Using rule engine fallback/i)).toBeInTheDocument();
+  });
+
+  it('NextSkillsList renders ML strategy badge with UX_FLOWS section 4 tooltip when strategy is ml', () => {
+    render(
+      <MemoryRouter>
+        <NextSkillsList
+          nextSkills={mockDashboardData.nextSkills}
+          strategy="ml"
+        />
+      </MemoryRouter>,
+    );
+
+    expect(screen.getByText('ML')).toBeInTheDocument();
+    expect(screen.queryByText(/Using rule engine fallback/i)).not.toBeInTheDocument();
+
+    // Trigger tooltip on hover
+    fireEvent.mouseEnter(screen.getByText('ML'));
+    expect(
+      screen.getByText('Ranked by a model trained on synthetic student data.'),
+    ).toBeInTheDocument();
+  });
+
+  it('NextSkillsList renders RULES strategy badge with UX_FLOWS section 4 tooltip on hover', () => {
+    render(
+      <MemoryRouter>
+        <NextSkillsList
+          nextSkills={mockDashboardData.nextSkills}
+          strategy="rule"
+          fallbackReason="ML_UNAVAILABLE"
+        />
+      </MemoryRouter>,
+    );
+
+    expect(screen.getByText('RULES')).toBeInTheDocument();
+
+    // Trigger tooltip on hover
+    fireEvent.mouseEnter(screen.getByText('RULES'));
+    expect(
+      screen.getByText('Ranked by importance, gap and prerequisites.'),
+    ).toBeInTheDocument();
   });
 
   it('DashboardPage renders full dashboard matching prabha mock data (fit 26, summary 6/5/24/35)', () => {

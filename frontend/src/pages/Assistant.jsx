@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Link } from 'react-router';
+import { Link, useSearchParams } from 'react-router';
 import { Send, Trash2, Bot, User, AlertTriangle } from 'lucide-react';
 import { Button } from '../components/ui/Button.jsx';
 import { Badge } from '../components/ui/Badge.jsx';
@@ -14,21 +14,40 @@ function createTempId(prefix) {
 
 const SUGGESTED_PROMPTS = [
   'Why should I learn SQL?',
-  'I only have 2 months — what should I focus on?',
+  'I only have 2 months - what should I focus on?',
   'What if I switch to Data Scientist?',
-  'How is my progress towards my target career?',
 ];
 
 export function Assistant() {
+  const [searchParams] = useSearchParams();
+  const rawQ = searchParams.get('q') || '';
+
   const [messages, setMessages] = useState([]);
-  const [inputMessage, setInputMessage] = useState('');
+  const [prevQ, setPrevQ] = useState(rawQ);
+  const [inputMessage, setInputMessage] = useState(rawQ);
   const [loading, setLoading] = useState(false);
   const [initialLoading, setInitialLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // Sync state during render when URL ?q= param changes
+  if (rawQ !== prevQ) {
+    setPrevQ(rawQ);
+    if (rawQ.trim()) {
+      setInputMessage(rawQ.trim());
+    }
+  }
+
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
 
+  // Focus input when URL ?q= is provided
+  useEffect(() => {
+    if (rawQ.trim()) {
+      inputRef.current?.focus();
+    }
+  }, [rawQ]);
+
+  // Load chat history on mount
   useEffect(() => {
     let active = true;
     getChatHistory(30)
@@ -38,9 +57,14 @@ export function Assistant() {
           setInitialLoading(false);
         }
       })
-      .catch(() => {
+      .catch((err) => {
         if (active) {
           setInitialLoading(false);
+          if (err?.status === 429) {
+            setError('Too many requests. Slow down a little and try again in a minute.');
+          } else if (err?.status === 502) {
+            setError('Upstream AI service error (502). Please try again shortly.');
+          }
         }
       });
     return () => {
@@ -87,15 +111,21 @@ export function Assistant() {
           keySource: res.keySource,
           model: res.model,
         },
-        degraded: res.degraded,
-        keySource: res.keySource,
+        degraded: Boolean(res.degraded),
+        keySource: res.keySource || 'server',
         model: res.model,
         notice: res.notice,
         createdAt: new Date().toISOString(),
       };
       setMessages((prev) => [...prev, assistantMsg]);
     } catch (err) {
-      setError(err.message || 'Failed to send message.');
+      if (err?.status === 429) {
+        setError('Too many requests. Slow down a little and try again in a minute.');
+      } else if (err?.status === 502) {
+        setError('Upstream AI service error (502). Please check your key in Settings or try again shortly.');
+      } else {
+        setError(err?.message || 'Failed to send message.');
+      }
     } finally {
       setLoading(false);
       inputRef.current?.focus();
@@ -103,21 +133,30 @@ export function Assistant() {
   };
 
   const handleClear = async () => {
-    if (!confirm('Are you sure you want to clear your chat history?')) return;
+    if (!window.confirm('Are you sure you want to clear your chat history?')) return;
     try {
       await clearChatHistory();
       setMessages([]);
     } catch (err) {
-      setError(err.message || 'Failed to clear chat.');
+      if (err?.status === 429) {
+        setError('Too many requests. Slow down a little and try again in a minute.');
+      } else {
+        setError(err?.message || 'Failed to clear chat.');
+      }
     }
   };
 
   const handleKeyDown = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
-      handleSend();
+      if (inputMessage.trim().length <= 500) {
+        handleSend();
+      }
     }
   };
+
+  const isOverLimit = inputMessage.length > 500;
+  const isSendDisabled = !inputMessage.trim() || isOverLimit || loading;
 
   return (
     <div className="max-w-4xl mx-auto h-[calc(100vh-5rem)] flex flex-col p-4 md:p-6 text-left font-sans">
@@ -187,9 +226,13 @@ export function Assistant() {
         ) : (
           messages.map((msg) => {
             const isUser = msg.role === 'user';
-            const isDegraded = msg.degraded || msg.meta?.degraded;
+            const isDegraded = Boolean(msg.degraded ?? msg.meta?.degraded);
             const keySource = msg.keySource || msg.meta?.keySource;
             const groundingSkills = msg.grounding?.skills || [];
+            const groundingCareers = msg.grounding?.careers || [];
+            const groundingItems = Array.isArray(msg.grounding)
+              ? msg.grounding
+              : [...groundingSkills, ...groundingCareers];
 
             return (
               <div
@@ -221,11 +264,11 @@ export function Assistant() {
 
                   {/* Assistant Meta & Badges */}
                   {!isUser && (
-                    <div className="space-y-1 px-1">
+                    <div className="space-y-1.5 px-1">
                       {/* Degraded Notice */}
                       {isDegraded && (
                         <div className="flex items-center gap-1.5 text-[11px] font-bold text-state-major">
-                          <AlertTriangle className="w-3.5 h-3.5" />
+                          <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
                           <span>Quick answer (AI is unavailable right now)</span>
                         </div>
                       )}
@@ -245,20 +288,18 @@ export function Assistant() {
 
                       {/* Grounding and Key Tags */}
                       <div className="flex flex-wrap items-center gap-2 pt-0.5 text-[11px] text-muted">
-                        {groundingSkills.length > 0 && (
-                          <span>
+                        {groundingItems.length > 0 && (
+                          <span data-testid="grounding-info">
                             grounded in:{' '}
                             <strong className="text-ink">
-                              {groundingSkills.join(', ')}
+                              {groundingItems.join(', ')}
                             </strong>
                           </span>
                         )}
 
-                        {keySource && (
-                          <Badge variant={keySource === 'user' ? 'mastered' : 'neutral'}>
-                            {keySource === 'user' ? 'Your key' : 'Shared key'}
-                          </Badge>
-                        )}
+                        <Badge variant={keySource === 'user' ? 'mastered' : 'neutral'}>
+                          {keySource === 'user' ? 'Your key' : 'Shared key'}
+                        </Badge>
                       </div>
                     </div>
                   )}
@@ -301,6 +342,24 @@ export function Assistant() {
 
       {/* Input Form */}
       <div className="pt-2 flex-shrink-0">
+        {/* Suggested chips above input when conversation has messages */}
+        {messages.length > 0 && (
+          <div className="flex flex-wrap items-center gap-2 mb-2">
+            <span className="text-[11px] font-mono font-bold uppercase text-muted">Suggested:</span>
+            {SUGGESTED_PROMPTS.map((prompt) => (
+              <button
+                key={prompt}
+                type="button"
+                onClick={() => handleSend(prompt)}
+                disabled={loading}
+                className="px-2.5 py-1 bg-surface hover:bg-paper border border-ink text-xs font-bold text-ink cursor-pointer shadow-xs hover:shadow-sm transition-all disabled:opacity-50 text-left"
+              >
+                {prompt}
+              </button>
+            ))}
+          </div>
+        )}
+
         <form
           onSubmit={(e) => {
             e.preventDefault();
@@ -316,14 +375,17 @@ export function Assistant() {
             onKeyDown={handleKeyDown}
             placeholder="Ask about your skills, learning path, or target career... (Press Enter to send)"
             disabled={loading}
-            maxLength={500}
             className="w-full p-3.5 pr-28 bg-surface border-2 border-ink font-sans text-sm text-ink placeholder:text-muted focus:outline-none focus:border-brand resize-none shadow-sm"
           />
 
           <div className="absolute right-3 bottom-3.5 flex items-center gap-2">
             <span
               className={`text-[11px] font-mono ${
-                inputMessage.length >= 480 ? 'text-state-missing font-bold' : 'text-muted'
+                isOverLimit
+                  ? 'text-state-missing font-bold'
+                  : inputMessage.length >= 480
+                    ? 'text-state-partial font-bold'
+                    : 'text-muted'
               }`}
             >
               {inputMessage.length}/500
@@ -333,7 +395,7 @@ export function Assistant() {
               type="submit"
               variant="primary"
               size="sm"
-              disabled={!inputMessage.trim() || loading}
+              disabled={isSendDisabled}
               icon={<Send className="w-3.5 h-3.5" />}
             >
               SEND
