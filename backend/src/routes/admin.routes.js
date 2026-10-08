@@ -15,12 +15,16 @@ import {
   putCareerSkillsSchema,
 } from '../validators/admin.validator.js';
 import * as adminController from '../controllers/admin.controller.js';
+import { adminAnalyticsRouter } from './analytics.routes.js';
 
 export const adminRouter = Router();
 
 // Protect all admin endpoints
 adminRouter.use(auth);
 adminRouter.use(requireRole('admin'));
+
+// Admin aggregate analytics — docs/API.md §8
+adminRouter.use('/analytics', adminAnalyticsRouter);
 
 // Skills management — docs/API.md §9
 adminRouter.post('/skills', validate(postSkillSchema, 'body'), adminController.createSkill);

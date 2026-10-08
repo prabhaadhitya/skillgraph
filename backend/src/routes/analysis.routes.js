@@ -8,11 +8,15 @@ import {
   careerCompareQuerySchema,
 } from '../validators/analysis.validator.js';
 import * as analysisController from '../controllers/analysis.controller.js';
+import * as analyticsController from '../controllers/analytics.controller.js';
 
 export const analysisRouter = Router();
 
 // All analysis routes require authentication
 analysisRouter.use(auth);
+
+// Student analytics insights — docs/API.md §6
+analysisRouter.get('/insights', analyticsController.getStudentInsights);
 
 analysisRouter.get(
   '/skill-gap',
