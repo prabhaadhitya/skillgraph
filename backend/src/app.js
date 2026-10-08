@@ -2,13 +2,13 @@ import express from 'express';
 import helmet from 'helmet';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
-import morgan from 'morgan';
 import { env } from './config/env.js';
-import { logger } from './utils/logger.js';
 import { notFound } from './middleware/notFound.js';
 import { errorHandler } from './middleware/errorHandler.js';
 import { globalLimiter } from './middleware/rateLimit.js';
 import { mongoSanitizer } from './middleware/sanitize.js';
+import { requestLogger } from './middleware/requestLogger.js';
+import { getHealth } from './controllers/health.controller.js';
 import { apiRouter } from './routes/index.js';
 
 export const app = express();
@@ -36,18 +36,14 @@ app.use(mongoSanitizer);
 // Cookie parsing for sg_token
 app.use(cookieParser());
 
-// HTTP request logging via morgan streaming into logger.info
-app.use(
-  morgan(':method :url :status :response-time ms', {
-    stream: {
-      write: (message) => logger.info(message.trim()),
-    },
-    skip: () => env.NODE_ENV === 'test',
-  }),
-);
+// Structured HTTP request logging: method, path, status, duration ms (never bodies/cookies/headers)
+app.use(requestLogger);
 
 // Global rate limiter
 app.use(globalLimiter);
+
+// Public root health check endpoint: reports db and cached ml status
+app.get('/health', getHealth);
 
 // Mount API routes
 app.use('/api', apiRouter);

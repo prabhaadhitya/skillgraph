@@ -15,7 +15,7 @@ let studentCookie = '';
 let adminCookie = '';
 
 beforeAll(async () => {
-  mongoServer = await MongoMemoryServer.create({ spawn: { timeout: 30000 } });
+  mongoServer = await MongoMemoryServer.create({ spawn: { timeout: 60000 } });
   await mongoose.connect(mongoServer.getUri());
 
   await User.deleteMany({});
@@ -56,7 +56,7 @@ beforeAll(async () => {
   });
   await User.updateOne({ email: 'secadmin@example.com' }, { role: 'admin' });
   adminCookie = regAdmin.headers['set-cookie'].find((c) => c.startsWith(`${COOKIE_NAME}=`));
-});
+}, 90000);
 
 afterAll(async () => {
   try {
