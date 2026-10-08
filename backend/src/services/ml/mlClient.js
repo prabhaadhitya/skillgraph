@@ -75,12 +75,25 @@ export function createMlClient({
 
     /**
      * Fetch ML model metadata and metrics.
-     * GET /model/info (requires X-Internal-Key)
+     * GET /model-info or /model/info (requires X-Internal-Key)
      *
+     * @param {string} [endpoint='/model/info']
      * @returns {Promise<Object|null>}
      */
-    async modelInfo() {
-      return safeFetch('/model/info', {
+    async modelInfo(endpoint = '/model/info') {
+      const res = await safeFetch(endpoint, {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+          'X-Internal-Key': internalKey,
+        },
+      });
+
+      if (res) return res;
+
+      // Fallback to alternate endpoint if primary fails
+      const fallbackEndpoint = endpoint === '/model-info' ? '/model/info' : '/model-info';
+      return safeFetch(fallbackEndpoint, {
         method: 'GET',
         headers: {
           Accept: 'application/json',
@@ -94,21 +107,28 @@ export function createMlClient({
      * POST /recommend (requires X-Internal-Key)
      *
      * @param {Object} params
-     * @param {string} params.careerSlug
-     * @param {Object} params.proficiencies
+     * @param {string} [params.careerSlug]
+     * @param {string} [params.career]
+     * @param {Object} [params.proficiencies]
+     * @param {Object} [params.profile]
      * @param {number} [params.semester]
      * @param {number} [params.topK]
+     * @param {number} [params.limit]
      * @returns {Promise<Object|null>}
      */
-    async recommend({ careerSlug, proficiencies = {}, semester, topK } = {}) {
+    async recommend(params = {}) {
+      const careerSlug = params.careerSlug || params.career;
+      const proficiencies = params.proficiencies || params.profile || {};
+      const topK = params.topK ?? params.limit;
+
       const payload = {
         careerSlug,
         proficiencies,
-        ...(semester !== undefined ? { semester } : {}),
+        ...(params.semester !== undefined ? { semester: params.semester } : {}),
         ...(topK !== undefined ? { topK } : {}),
       };
 
-      return safeFetch('/recommend', {
+      const data = await safeFetch('/recommend', {
         method: 'POST',
         headers: {
           Accept: 'application/json',
@@ -117,6 +137,15 @@ export function createMlClient({
         },
         body: JSON.stringify(payload),
       });
+
+      if (!data) return null;
+
+      // Ensure modelVersion is populated if ML service returns model: { version }
+      if (!data.modelVersion && data.model?.version) {
+        data.modelVersion = data.model.version;
+      }
+
+      return data;
     },
   };
 }

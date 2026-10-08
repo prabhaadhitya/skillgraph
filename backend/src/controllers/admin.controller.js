@@ -50,6 +50,11 @@ export const updateCareerSkills = asyncHandler(async (req, res) => {
   respond.ok(res, data);
 });
 
+export const getMlInfo = asyncHandler(async (req, res) => {
+  const data = await adminService.getMlInfo();
+  respond.ok(res, data);
+});
+
 export default {
   createSkill,
   updateSkill,
@@ -60,4 +65,5 @@ export default {
   createCareer,
   updateCareer,
   updateCareerSkills,
+  getMlInfo,
 };

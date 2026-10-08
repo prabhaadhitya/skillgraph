@@ -191,13 +191,15 @@ export async function getDashboardAnalysis(userId, requestedCareerSlug) {
   // Next skills recommendation
   let nextSkills = [];
   let strategy = 'rule';
+  let fallbackReason = null;
 
   try {
     const recommendationService = await import('./recommendation.service.js').catch(() => null);
     if (recommendationService && typeof recommendationService.getNextSkills === 'function') {
       const res = await recommendationService.getNextSkills(userId, careerSlug, { limit: 3, strategy: 'auto' });
       nextSkills = res.items || res;
-      strategy = res.strategy || 'auto';
+      strategy = res.strategy || 'rule';
+      fallbackReason = res.fallbackReason || (strategy === 'rule' ? 'ML_UNAVAILABLE' : null);
     } else {
       nextSkills = getNextSkills(model, profile, 3).map((item) => ({
         skill: item.skill,
@@ -205,6 +207,7 @@ export async function getDashboardAnalysis(userId, requestedCareerSlug) {
         reasons: item.reasons,
       }));
       strategy = 'rule';
+      fallbackReason = 'ML_UNAVAILABLE';
     }
   } catch {
     nextSkills = getNextSkills(model, profile, 3).map((item) => ({
@@ -213,6 +216,7 @@ export async function getDashboardAnalysis(userId, requestedCareerSlug) {
       reasons: item.reasons,
     }));
     strategy = 'rule';
+    fallbackReason = 'ML_UNAVAILABLE';
   }
 
   // Top 5 gaps
@@ -249,6 +253,7 @@ export async function getDashboardAnalysis(userId, requestedCareerSlug) {
     summary,
     nextSkills,
     strategy,
+    fallbackReason,
     topGaps,
     updatedAt,
   };
