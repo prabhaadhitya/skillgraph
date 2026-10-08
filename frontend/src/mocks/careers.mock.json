@@ -1,0 +1,47 @@
+[
+  {
+    "id": "car_swe_2026",
+    "slug": "software-developer",
+    "name": "Software Developer",
+    "category": "software",
+    "icon": "code",
+    "description": "Designs, builds, tests and maintains software. Strong on programming fundamentals, data structures, design and engineering practice.",
+    "skillCount": 26
+  },
+  {
+    "id": "car_fsd_2026",
+    "slug": "full-stack-developer",
+    "name": "Full Stack Developer",
+    "category": "software",
+    "icon": "layers",
+    "description": "Builds complete web applications: React front ends, Node.js back ends, databases and deployment.",
+    "skillCount": 28
+  },
+  {
+    "id": "car_da_2026",
+    "slug": "data-analyst",
+    "name": "Data Analyst",
+    "category": "data",
+    "icon": "bar-chart",
+    "description": "Turns data into answers with SQL, spreadsheets, Python and dashboards.",
+    "skillCount": 20
+  },
+  {
+    "id": "car_ds_2026",
+    "slug": "data-scientist",
+    "name": "Data Scientist",
+    "category": "data",
+    "icon": "flask-conical",
+    "description": "Uses statistics and machine learning to find insights and build predictive models.",
+    "skillCount": 25
+  },
+  {
+    "id": "car_mle_2026",
+    "slug": "machine-learning-engineer",
+    "name": "Machine Learning Engineer",
+    "category": "ai",
+    "icon": "brain",
+    "description": "Builds, ships and maintains machine learning systems, from models to deployment.",
+    "skillCount": 27
+  }
+]

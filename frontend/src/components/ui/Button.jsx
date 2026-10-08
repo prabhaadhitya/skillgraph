@@ -1,3 +1,4 @@
+import { isValidElement } from 'react';
 import { Loader2 } from 'lucide-react';
 
 /**
@@ -53,6 +54,16 @@ export function Button({
 
   const isDisabled = disabled || loading;
 
+  const renderIcon = () => {
+    if (!icon) return null;
+    if (isValidElement(icon)) return icon;
+    if (typeof icon === 'function' || (typeof icon === 'object' && icon !== null)) {
+      const IconComponent = icon;
+      return <IconComponent size={spinnerSizes[size] || 18} />;
+    }
+    return icon;
+  };
+
   return (
     <button
       type={type}
@@ -73,7 +84,7 @@ export function Button({
       <span
         className={`inline-flex items-center justify-center gap-2 ${loading ? 'invisible' : ''}`}
       >
-        {icon && <span className="inline-flex shrink-0">{icon}</span>}
+        {icon && <span className="inline-flex shrink-0">{renderIcon()}</span>}
         {children}
       </span>
     </button>

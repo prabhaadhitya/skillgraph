@@ -1,4 +1,4 @@
-import { createBrowserRouter } from 'react-router';
+import { createBrowserRouter, Navigate } from 'react-router';
 import Landing from '../pages/Landing.jsx';
 import Login from '../pages/Login.jsx';
 import Register from '../pages/Register.jsx';
@@ -6,13 +6,15 @@ import ComponentKit from '../pages/ComponentKit.jsx';
 import SkillGraph from '../pages/SkillGraph.jsx';
 import LearningPath from '../pages/LearningPath.jsx';
 import Analytics from '../pages/Analytics.jsx';
+import OnboardingPage from '../pages/onboarding/OnboardingPage.jsx';
+import AppShell from '../components/layout/AppShell.jsx';
 import ProtectedRoute from './ProtectedRoute.jsx';
 import AdminRoute from './AdminRoute.jsx';
 import { EmptyState } from '../components/ui/EmptyState.jsx';
 
 function PlaceholderPage({ title }) {
   return (
-    <div className="min-h-screen bg-paper text-ink p-8 flex items-center justify-center font-sans">
+    <div className="bg-paper text-ink p-8 flex items-center justify-center font-sans">
       <div className="max-w-md w-full">
         <EmptyState title={title} text="Coming soon" />
       </div>
@@ -37,7 +39,7 @@ export const routes = [
     path: '/onboarding',
     element: (
       <ProtectedRoute>
-        <PlaceholderPage title="ONBOARDING WIZARD" />
+        <OnboardingPage />
       </ProtectedRoute>
     ),
   },
@@ -51,8 +53,16 @@ export const routes = [
   },
   {
     path: '/app',
-    element: <ProtectedRoute />,
+    element: (
+      <ProtectedRoute>
+        <AppShell />
+      </ProtectedRoute>
+    ),
     children: [
+      {
+        index: true,
+        element: <Navigate to="/app/dashboard" replace />,
+      },
       {
         path: 'dashboard',
         element: <PlaceholderPage title="STUDENT DASHBOARD" />,
@@ -66,8 +76,24 @@ export const routes = [
         element: <LearningPath />,
       },
       {
+        path: 'careers',
+        element: <PlaceholderPage title="CAREER EXPLORER" />,
+      },
+      {
         path: 'analytics',
         element: <Analytics />,
+      },
+      {
+        path: 'assistant',
+        element: <PlaceholderPage title="AI ASSISTANT" />,
+      },
+      {
+        path: 'profile',
+        element: <PlaceholderPage title="STUDENT PROFILE" />,
+      },
+      {
+        path: 'settings',
+        element: <PlaceholderPage title="SETTINGS" />,
       },
     ],
   },

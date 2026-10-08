@@ -18,6 +18,30 @@ export const MOCK_USER = {
   createdAt: '2026-10-07T08:00:00.000Z',
 };
 
+export const MOCK_NEWBIE = {
+  id: 'usr_mock_newbie',
+  name: 'Newbie',
+  email: 'newbie@demo.skillgraph.dev',
+  role: 'student',
+  college: 'Chaitanya',
+  degree: 'B.Tech',
+  branch: 'ECE',
+  semester: 1,
+  targetCareer: null,
+  onboardingCompleted: false,
+  createdAt: '2026-10-07T08:00:00.000Z',
+};
+
+let activeMockUser = MOCK_USER;
+
+export function setActiveMockUser(user) {
+  activeMockUser = user;
+}
+
+export function getActiveMockUser() {
+  return activeMockUser;
+}
+
 /**
  * Register a new student account.
  *
@@ -29,7 +53,14 @@ export const MOCK_USER = {
  */
 export async function register(body) {
   if (USE_MOCKS) {
-    return { user: { ...MOCK_USER, name: body.name || MOCK_USER.name, email: body.email || MOCK_USER.email, onboardingCompleted: false, targetCareer: null } };
+    activeMockUser = {
+      ...MOCK_NEWBIE,
+      name: body.name || MOCK_NEWBIE.name,
+      email: body.email || MOCK_NEWBIE.email,
+      onboardingCompleted: false,
+      targetCareer: null,
+    };
+    return { user: activeMockUser };
   }
   return api.post('/auth/register', body);
 }
@@ -44,7 +75,12 @@ export async function register(body) {
  */
 export async function login(body) {
   if (USE_MOCKS) {
-    return { user: MOCK_USER };
+    if (body?.email?.toLowerCase().includes('newbie')) {
+      activeMockUser = { ...MOCK_NEWBIE };
+    } else {
+      activeMockUser = { ...MOCK_USER };
+    }
+    return { user: activeMockUser };
   }
   return api.post('/auth/login', body);
 }
@@ -56,6 +92,7 @@ export async function login(body) {
  */
 export async function logout() {
   if (USE_MOCKS) {
+    activeMockUser = null;
     return { loggedOut: true };
   }
   return api.post('/auth/logout');
@@ -68,7 +105,7 @@ export async function logout() {
  */
 export async function me() {
   if (USE_MOCKS) {
-    return { user: MOCK_USER };
+    return { user: activeMockUser };
   }
   return api.get('/auth/me');
 }
