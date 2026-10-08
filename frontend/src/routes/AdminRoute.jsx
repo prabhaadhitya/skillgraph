@@ -1,8 +1,7 @@
-import { Navigate, Outlet, useNavigate } from 'react-router';
-import { ShieldAlert } from 'lucide-react';
+import { Navigate, Outlet } from 'react-router';
 import { useAuth } from '../hooks/useAuth.js';
-import { EmptyState } from '../components/ui/EmptyState.jsx';
 import { Skeleton } from '../components/ui/Skeleton.jsx';
+import { ForbiddenPage } from '../components/feedback/ForbiddenPage.jsx';
 
 /**
  * Route guard that ensures caller has role 'admin'.
@@ -13,7 +12,6 @@ import { Skeleton } from '../components/ui/Skeleton.jsx';
  */
 export function AdminRoute({ children }) {
   const { user, isLoading } = useAuth();
-  const navigate = useNavigate();
 
   if (isLoading) {
     return (
@@ -31,19 +29,7 @@ export function AdminRoute({ children }) {
   }
 
   if (user.role !== 'admin') {
-    return (
-      <div className="min-h-screen bg-paper flex items-center justify-center p-6">
-        <div className="max-w-md w-full">
-          <EmptyState
-            icon={<ShieldAlert size={28} className="text-state-missing" />}
-            title="THIS AREA IS FOR ADMINS"
-            text="You do not have administrative privileges to view this section. Please return to your student dashboard."
-            actionLabel="BACK TO DASHBOARD"
-            onAction={() => navigate('/app/dashboard')}
-          />
-        </div>
-      </div>
-    );
+    return <ForbiddenPage />;
   }
 
   return children ? children : <Outlet />;

@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { Link } from 'react-router';
 import { Briefcase, ArrowRight, Sparkles } from 'lucide-react';
 import { useDashboard } from '../../hooks/useDashboard.js';
@@ -17,6 +18,10 @@ import { GraphPreview } from './GraphPreview.jsx';
 export function DashboardPage() {
   const { user } = useAuth();
   const { data, isLoading, error, refetch } = useDashboard();
+
+  useEffect(() => {
+    document.title = 'SkillGraph — Dashboard';
+  }, []);
 
   if (isLoading) {
     return (

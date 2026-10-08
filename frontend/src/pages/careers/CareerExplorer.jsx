@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { GitCompare } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth.js';
 import { useToast } from '../../components/ui/Toast.jsx';
@@ -26,6 +26,10 @@ import ConfirmTargetDialog from './ConfirmTargetDialog.jsx';
  * compare two careers side-by-side, and switch target careers.
  */
 export function CareerExplorer() {
+  useEffect(() => {
+    document.title = 'SkillGraph — Career Explorer';
+  }, []);
+
   const { user } = useAuth();
   const { toast } = useToast();
   const compareRef = useRef(null);

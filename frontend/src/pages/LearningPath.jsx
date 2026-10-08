@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import { ArrowRight, HelpCircle } from 'lucide-react';
 import { useLearningPath } from '../hooks/useLearningPath.js';
@@ -13,6 +13,10 @@ import { Card, Tag, Button, LevelPicker, Skeleton, ErrorState, EmptyState } from
  * inline proficiency updates and AI explanations.
  */
 export default function LearningPath({ career }) {
+  useEffect(() => {
+    document.title = 'SkillGraph — Learning Path';
+  }, []);
+
   const navigate = useNavigate();
   const [showAll, setShowAll] = useState(false);
   const { data, isLoading, isError, error, refetch } = useLearningPath(career);

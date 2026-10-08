@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useCallback, useRef, useMemo } from 'react';
+import { createContext, useContext, useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { CheckCircle2, AlertCircle, Info, X } from 'lucide-react';
 
 const ToastContext = createContext(null);
@@ -43,6 +43,30 @@ export function ToastProvider({ children }) {
     }),
     [showToast],
   );
+
+  // Global event listener for toast events from services
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const handler = (event) => {
+      const detail = event.detail;
+      if (detail && detail.message) {
+        showToast({
+          type: detail.type || 'info',
+          message: detail.message,
+          duration: detail.duration || 4000,
+        });
+      }
+    };
+
+    window.addEventListener('app:toast', handler);
+    window.addEventListener('toast:show', handler);
+
+    return () => {
+      window.removeEventListener('app:toast', handler);
+      window.removeEventListener('toast:show', handler);
+    };
+  }, [showToast]);
 
   return (
     <ToastContext.Provider value={{ showToast, toast, dismissToast }}>

@@ -18,6 +18,7 @@ export function Input({
   id,
   type = 'text',
   disabled = false,
+  endAdornment,
   className = '',
   ...props
 }) {
@@ -41,15 +42,22 @@ export function Input({
         </label>
       )}
 
-      <input
-        id={inputId}
-        type={type}
-        disabled={disabled}
-        aria-invalid={Boolean(error)}
-        aria-describedby={describedBy}
-        className={`w-full h-12 px-3.5 bg-surface text-ink border-2 ${borderClass} rounded-none font-sans text-base shadow-sm transition-all duration-120 ease-out placeholder:text-muted focus:outline-none focus-visible:outline-3 focus-visible:outline-brand focus-visible:outline-offset-[3px] disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none ${className}`}
-        {...props}
-      />
+      <div className="relative flex items-center">
+        <input
+          id={inputId}
+          type={type}
+          disabled={disabled}
+          aria-invalid={Boolean(error)}
+          aria-describedby={describedBy}
+          className={`w-full h-12 px-3.5 ${endAdornment ? 'pr-11' : ''} bg-surface text-ink border-2 ${borderClass} rounded-none font-sans text-base shadow-sm transition-all duration-120 ease-out placeholder:text-muted focus:outline-none focus-visible:outline-3 focus-visible:outline-brand focus-visible:outline-offset-[3px] disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none ${className}`}
+          {...props}
+        />
+        {endAdornment && (
+          <div className="absolute right-2.5 top-1/2 -translate-y-1/2 flex items-center">
+            {endAdornment}
+          </div>
+        )}
+      </div>
 
       {error ? (
         <p
