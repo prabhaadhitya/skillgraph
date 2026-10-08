@@ -15,20 +15,11 @@ import Relationships from '../pages/admin/Relationships.jsx';
 import Careers from '../pages/admin/Careers.jsx';
 import Overview from '../pages/admin/Overview.jsx';
 import CareerExplorer from '../pages/careers/CareerExplorer.jsx';
+import Assistant from '../pages/Assistant.jsx';
+import Settings from '../pages/Settings.jsx';
 import AppShell from '../components/layout/AppShell.jsx';
 import ProtectedRoute from './ProtectedRoute.jsx';
 import AdminRoute from './AdminRoute.jsx';
-import { EmptyState } from '../components/ui/EmptyState.jsx';
-
-function PlaceholderPage({ title }) {
-  return (
-    <div className="bg-paper text-ink p-8 flex items-center justify-center font-sans">
-      <div className="max-w-md w-full">
-        <EmptyState title={title} text="Coming soon" />
-      </div>
-    </div>
-  );
-}
 
 export const routes = [
   {
@@ -115,7 +106,7 @@ export const routes = [
       },
       {
         path: 'assistant',
-        element: <PlaceholderPage title="AI ASSISTANT" />,
+        element: <Assistant />,
       },
       {
         path: 'profile',
@@ -123,7 +114,7 @@ export const routes = [
       },
       {
         path: 'settings',
-        element: <PlaceholderPage title="SETTINGS" />,
+        element: <Settings />,
       },
     ],
   },

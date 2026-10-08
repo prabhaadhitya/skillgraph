@@ -6,6 +6,8 @@ import { skillsRouter, careersRouter } from './catalog.routes.js';
 import { settingsRouter } from './settings.routes.js';
 import { adminRouter } from './admin.routes.js';
 import { analysisRouter } from './analysis.routes.js';
+import { aiRouter } from './ai.routes.js';
+import { recommendationRouter } from './recommendation.routes.js';
 import { getMeta } from '../controllers/meta.controller.js';
 
 export const apiRouter = Router();
@@ -31,6 +33,12 @@ apiRouter.use('/careers', careersRouter);
 // Analysis engine router
 apiRouter.use('/analysis', analysisRouter);
 
+// Recommendations router
+apiRouter.use('/recommendations', recommendationRouter);
+
+// AI assistant router
+apiRouter.use('/ai', aiRouter);
+
 // LLM settings router
 apiRouter.use('/settings/llm', settingsRouter);
 
@@ -38,3 +46,4 @@ apiRouter.use('/settings/llm', settingsRouter);
 apiRouter.use('/admin', adminRouter);
 
 export default apiRouter;
+

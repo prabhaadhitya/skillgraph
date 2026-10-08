@@ -131,12 +131,19 @@ export async function isSkillSlugAllowed(deps, skillSlug, careerModel = null) {
     }
   }
 
-  // 3. Check catalogService
+  // 3. Check catalogService and database
   try {
     if (typeof deps.catalogService?.getSkill === 'function') {
       const skill = await deps.catalogService.getSkill(skillSlug);
       if (skill) return true;
     }
+    if (typeof deps.catalogService?.getSkillDetail === 'function') {
+      const skill = await deps.catalogService.getSkillDetail(skillSlug);
+      if (skill) return true;
+    }
+    const { Skill } = await import('../../../models/skill.model.js');
+    const skillDoc = await Skill.findOne({ slug: skillSlug }).lean();
+    if (skillDoc) return true;
   } catch {
     // Ignore and fallback
   }
