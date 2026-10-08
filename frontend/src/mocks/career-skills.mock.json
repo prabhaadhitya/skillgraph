@@ -1,0 +1,806 @@
+[
+  {
+    "career": "software-developer",
+    "skill": "programming-fundamentals",
+    "importance": 0.7,
+    "requiredLevel": 4
+  },
+  {
+    "career": "software-developer",
+    "skill": "python",
+    "importance": 0.6,
+    "requiredLevel": 3
+  },
+  {
+    "career": "software-developer",
+    "skill": "java",
+    "importance": 0.7,
+    "requiredLevel": 3
+  },
+  {
+    "career": "software-developer",
+    "skill": "c-programming",
+    "importance": 0.3,
+    "requiredLevel": 2
+  },
+  {
+    "career": "software-developer",
+    "skill": "cpp",
+    "importance": 0.3,
+    "requiredLevel": 2
+  },
+  {
+    "career": "software-developer",
+    "skill": "oop",
+    "importance": 0.9,
+    "requiredLevel": 4
+  },
+  {
+    "career": "software-developer",
+    "skill": "dsa",
+    "importance": 1.0,
+    "requiredLevel": 4
+  },
+  {
+    "career": "software-developer",
+    "skill": "design-patterns",
+    "importance": 0.6,
+    "requiredLevel": 3
+  },
+  {
+    "career": "software-developer",
+    "skill": "unit-testing",
+    "importance": 0.7,
+    "requiredLevel": 3
+  },
+  {
+    "career": "software-developer",
+    "skill": "git",
+    "importance": 0.8,
+    "requiredLevel": 4
+  },
+  {
+    "career": "software-developer",
+    "skill": "github",
+    "importance": 0.6,
+    "requiredLevel": 3
+  },
+  {
+    "career": "software-developer",
+    "skill": "command-line",
+    "importance": 0.5,
+    "requiredLevel": 3
+  },
+  {
+    "career": "software-developer",
+    "skill": "linux",
+    "importance": 0.5,
+    "requiredLevel": 3
+  },
+  {
+    "career": "software-developer",
+    "skill": "networking-basics",
+    "importance": 0.4,
+    "requiredLevel": 2
+  },
+  {
+    "career": "software-developer",
+    "skill": "http-fundamentals",
+    "importance": 0.5,
+    "requiredLevel": 3
+  },
+  {
+    "career": "software-developer",
+    "skill": "rest-apis",
+    "importance": 0.7,
+    "requiredLevel": 3
+  },
+  {
+    "career": "software-developer",
+    "skill": "sql",
+    "importance": 0.7,
+    "requiredLevel": 3
+  },
+  {
+    "career": "software-developer",
+    "skill": "relational-database-design",
+    "importance": 0.6,
+    "requiredLevel": 3
+  },
+  {
+    "career": "software-developer",
+    "skill": "postgresql",
+    "importance": 0.4,
+    "requiredLevel": 2
+  },
+  {
+    "career": "software-developer",
+    "skill": "system-design-basics",
+    "importance": 0.6,
+    "requiredLevel": 3
+  },
+  {
+    "career": "software-developer",
+    "skill": "web-security-basics",
+    "importance": 0.5,
+    "requiredLevel": 2
+  },
+  {
+    "career": "software-developer",
+    "skill": "ci-cd",
+    "importance": 0.4,
+    "requiredLevel": 2
+  },
+  {
+    "career": "software-developer",
+    "skill": "docker",
+    "importance": 0.4,
+    "requiredLevel": 2
+  },
+  {
+    "career": "software-developer",
+    "skill": "agile-scrum",
+    "importance": 0.4,
+    "requiredLevel": 2
+  },
+  {
+    "career": "software-developer",
+    "skill": "cloud-fundamentals",
+    "importance": 0.3,
+    "requiredLevel": 2
+  },
+  {
+    "career": "software-developer",
+    "skill": "aws",
+    "importance": 0.3,
+    "requiredLevel": 2
+  },
+  {
+    "career": "full-stack-developer",
+    "skill": "programming-fundamentals",
+    "importance": 0.5,
+    "requiredLevel": 3
+  },
+  {
+    "career": "full-stack-developer",
+    "skill": "html",
+    "importance": 0.8,
+    "requiredLevel": 4
+  },
+  {
+    "career": "full-stack-developer",
+    "skill": "css",
+    "importance": 0.8,
+    "requiredLevel": 4
+  },
+  {
+    "career": "full-stack-developer",
+    "skill": "responsive-design",
+    "importance": 0.5,
+    "requiredLevel": 3
+  },
+  {
+    "career": "full-stack-developer",
+    "skill": "javascript",
+    "importance": 1.0,
+    "requiredLevel": 4
+  },
+  {
+    "career": "full-stack-developer",
+    "skill": "typescript",
+    "importance": 0.6,
+    "requiredLevel": 3
+  },
+  {
+    "career": "full-stack-developer",
+    "skill": "react",
+    "importance": 1.0,
+    "requiredLevel": 4
+  },
+  {
+    "career": "full-stack-developer",
+    "skill": "state-management",
+    "importance": 0.5,
+    "requiredLevel": 3
+  },
+  {
+    "career": "full-stack-developer",
+    "skill": "nextjs",
+    "importance": 0.5,
+    "requiredLevel": 3
+  },
+  {
+    "career": "full-stack-developer",
+    "skill": "nodejs",
+    "importance": 0.9,
+    "requiredLevel": 4
+  },
+  {
+    "career": "full-stack-developer",
+    "skill": "express",
+    "importance": 0.9,
+    "requiredLevel": 4
+  },
+  {
+    "career": "full-stack-developer",
+    "skill": "networking-basics",
+    "importance": 0.3,
+    "requiredLevel": 2
+  },
+  {
+    "career": "full-stack-developer",
+    "skill": "http-fundamentals",
+    "importance": 0.6,
+    "requiredLevel": 3
+  },
+  {
+    "career": "full-stack-developer",
+    "skill": "rest-apis",
+    "importance": 0.9,
+    "requiredLevel": 4
+  },
+  {
+    "career": "full-stack-developer",
+    "skill": "authentication",
+    "importance": 0.7,
+    "requiredLevel": 3
+  },
+  {
+    "career": "full-stack-developer",
+    "skill": "web-security-basics",
+    "importance": 0.5,
+    "requiredLevel": 2
+  },
+  {
+    "career": "full-stack-developer",
+    "skill": "sql",
+    "importance": 0.6,
+    "requiredLevel": 3
+  },
+  {
+    "career": "full-stack-developer",
+    "skill": "mongodb",
+    "importance": 0.8,
+    "requiredLevel": 3
+  },
+  {
+    "career": "full-stack-developer",
+    "skill": "postgresql",
+    "importance": 0.5,
+    "requiredLevel": 3
+  },
+  {
+    "career": "full-stack-developer",
+    "skill": "relational-database-design",
+    "importance": 0.4,
+    "requiredLevel": 2
+  },
+  {
+    "career": "full-stack-developer",
+    "skill": "redis",
+    "importance": 0.3,
+    "requiredLevel": 2
+  },
+  {
+    "career": "full-stack-developer",
+    "skill": "git",
+    "importance": 0.8,
+    "requiredLevel": 3
+  },
+  {
+    "career": "full-stack-developer",
+    "skill": "github",
+    "importance": 0.6,
+    "requiredLevel": 3
+  },
+  {
+    "career": "full-stack-developer",
+    "skill": "command-line",
+    "importance": 0.4,
+    "requiredLevel": 2
+  },
+  {
+    "career": "full-stack-developer",
+    "skill": "linux",
+    "importance": 0.3,
+    "requiredLevel": 2
+  },
+  {
+    "career": "full-stack-developer",
+    "skill": "docker",
+    "importance": 0.4,
+    "requiredLevel": 2
+  },
+  {
+    "career": "full-stack-developer",
+    "skill": "unit-testing",
+    "importance": 0.5,
+    "requiredLevel": 3
+  },
+  {
+    "career": "full-stack-developer",
+    "skill": "ci-cd",
+    "importance": 0.4,
+    "requiredLevel": 2
+  },
+  {
+    "career": "full-stack-developer",
+    "skill": "system-design-basics",
+    "importance": 0.4,
+    "requiredLevel": 2
+  },
+  {
+    "career": "full-stack-developer",
+    "skill": "agile-scrum",
+    "importance": 0.3,
+    "requiredLevel": 2
+  },
+  {
+    "career": "full-stack-developer",
+    "skill": "cloud-fundamentals",
+    "importance": 0.3,
+    "requiredLevel": 2
+  },
+  {
+    "career": "full-stack-developer",
+    "skill": "aws",
+    "importance": 0.3,
+    "requiredLevel": 2
+  },
+  {
+    "career": "data-analyst",
+    "skill": "excel",
+    "importance": 0.8,
+    "requiredLevel": 4
+  },
+  {
+    "career": "data-analyst",
+    "skill": "sql",
+    "importance": 1.0,
+    "requiredLevel": 4
+  },
+  {
+    "career": "data-analyst",
+    "skill": "statistics",
+    "importance": 0.8,
+    "requiredLevel": 3
+  },
+  {
+    "career": "data-analyst",
+    "skill": "programming-fundamentals",
+    "importance": 0.4,
+    "requiredLevel": 2
+  },
+  {
+    "career": "data-analyst",
+    "skill": "python",
+    "importance": 0.7,
+    "requiredLevel": 3
+  },
+  {
+    "career": "data-analyst",
+    "skill": "numpy",
+    "importance": 0.4,
+    "requiredLevel": 2
+  },
+  {
+    "career": "data-analyst",
+    "skill": "pandas",
+    "importance": 0.8,
+    "requiredLevel": 3
+  },
+  {
+    "career": "data-analyst",
+    "skill": "data-cleaning",
+    "importance": 0.8,
+    "requiredLevel": 4
+  },
+  {
+    "career": "data-analyst",
+    "skill": "data-visualization",
+    "importance": 0.8,
+    "requiredLevel": 4
+  },
+  {
+    "career": "data-analyst",
+    "skill": "eda",
+    "importance": 0.7,
+    "requiredLevel": 3
+  },
+  {
+    "career": "data-analyst",
+    "skill": "bi-tools",
+    "importance": 0.8,
+    "requiredLevel": 4
+  },
+  {
+    "career": "data-analyst",
+    "skill": "jupyter-notebooks",
+    "importance": 0.4,
+    "requiredLevel": 3
+  },
+  {
+    "career": "data-analyst",
+    "skill": "git",
+    "importance": 0.4,
+    "requiredLevel": 2
+  },
+  {
+    "career": "data-analyst",
+    "skill": "github",
+    "importance": 0.3,
+    "requiredLevel": 2
+  },
+  {
+    "career": "data-analyst",
+    "skill": "command-line",
+    "importance": 0.3,
+    "requiredLevel": 2
+  },
+  {
+    "career": "data-analyst",
+    "skill": "postgresql",
+    "importance": 0.3,
+    "requiredLevel": 2
+  },
+  {
+    "career": "data-analyst",
+    "skill": "agile-scrum",
+    "importance": 0.3,
+    "requiredLevel": 2
+  },
+  {
+    "career": "data-scientist",
+    "skill": "programming-fundamentals",
+    "importance": 0.4,
+    "requiredLevel": 3
+  },
+  {
+    "career": "data-scientist",
+    "skill": "python",
+    "importance": 1.0,
+    "requiredLevel": 4
+  },
+  {
+    "career": "data-scientist",
+    "skill": "numpy",
+    "importance": 0.7,
+    "requiredLevel": 3
+  },
+  {
+    "career": "data-scientist",
+    "skill": "pandas",
+    "importance": 0.9,
+    "requiredLevel": 4
+  },
+  {
+    "career": "data-scientist",
+    "skill": "data-cleaning",
+    "importance": 0.7,
+    "requiredLevel": 3
+  },
+  {
+    "career": "data-scientist",
+    "skill": "data-visualization",
+    "importance": 0.8,
+    "requiredLevel": 4
+  },
+  {
+    "career": "data-scientist",
+    "skill": "eda",
+    "importance": 0.8,
+    "requiredLevel": 4
+  },
+  {
+    "career": "data-scientist",
+    "skill": "statistics",
+    "importance": 1.0,
+    "requiredLevel": 4
+  },
+  {
+    "career": "data-scientist",
+    "skill": "linear-algebra",
+    "importance": 0.6,
+    "requiredLevel": 3
+  },
+  {
+    "career": "data-scientist",
+    "skill": "sql",
+    "importance": 0.7,
+    "requiredLevel": 3
+  },
+  {
+    "career": "data-scientist",
+    "skill": "jupyter-notebooks",
+    "importance": 0.5,
+    "requiredLevel": 3
+  },
+  {
+    "career": "data-scientist",
+    "skill": "ml-fundamentals",
+    "importance": 0.9,
+    "requiredLevel": 4
+  },
+  {
+    "career": "data-scientist",
+    "skill": "supervised-learning",
+    "importance": 0.8,
+    "requiredLevel": 4
+  },
+  {
+    "career": "data-scientist",
+    "skill": "unsupervised-learning",
+    "importance": 0.6,
+    "requiredLevel": 3
+  },
+  {
+    "career": "data-scientist",
+    "skill": "regression",
+    "importance": 0.8,
+    "requiredLevel": 4
+  },
+  {
+    "career": "data-scientist",
+    "skill": "classification",
+    "importance": 0.8,
+    "requiredLevel": 4
+  },
+  {
+    "career": "data-scientist",
+    "skill": "clustering",
+    "importance": 0.5,
+    "requiredLevel": 3
+  },
+  {
+    "career": "data-scientist",
+    "skill": "feature-engineering",
+    "importance": 0.7,
+    "requiredLevel": 3
+  },
+  {
+    "career": "data-scientist",
+    "skill": "model-evaluation",
+    "importance": 0.8,
+    "requiredLevel": 4
+  },
+  {
+    "career": "data-scientist",
+    "skill": "scikit-learn",
+    "importance": 0.8,
+    "requiredLevel": 4
+  },
+  {
+    "career": "data-scientist",
+    "skill": "neural-networks",
+    "importance": 0.4,
+    "requiredLevel": 2
+  },
+  {
+    "career": "data-scientist",
+    "skill": "deep-learning",
+    "importance": 0.4,
+    "requiredLevel": 2
+  },
+  {
+    "career": "data-scientist",
+    "skill": "nlp",
+    "importance": 0.4,
+    "requiredLevel": 2
+  },
+  {
+    "career": "data-scientist",
+    "skill": "git",
+    "importance": 0.5,
+    "requiredLevel": 3
+  },
+  {
+    "career": "machine-learning-engineer",
+    "skill": "programming-fundamentals",
+    "importance": 0.4,
+    "requiredLevel": 3
+  },
+  {
+    "career": "machine-learning-engineer",
+    "skill": "python",
+    "importance": 0.9,
+    "requiredLevel": 4
+  },
+  {
+    "career": "machine-learning-engineer",
+    "skill": "statistics",
+    "importance": 0.8,
+    "requiredLevel": 4
+  },
+  {
+    "career": "machine-learning-engineer",
+    "skill": "linear-algebra",
+    "importance": 0.6,
+    "requiredLevel": 3
+  },
+  {
+    "career": "machine-learning-engineer",
+    "skill": "numpy",
+    "importance": 0.6,
+    "requiredLevel": 3
+  },
+  {
+    "career": "machine-learning-engineer",
+    "skill": "pandas",
+    "importance": 0.6,
+    "requiredLevel": 3
+  },
+  {
+    "career": "machine-learning-engineer",
+    "skill": "ml-fundamentals",
+    "importance": 1.0,
+    "requiredLevel": 5
+  },
+  {
+    "career": "machine-learning-engineer",
+    "skill": "supervised-learning",
+    "importance": 0.8,
+    "requiredLevel": 4
+  },
+  {
+    "career": "machine-learning-engineer",
+    "skill": "unsupervised-learning",
+    "importance": 0.4,
+    "requiredLevel": 3
+  },
+  {
+    "career": "machine-learning-engineer",
+    "skill": "regression",
+    "importance": 0.5,
+    "requiredLevel": 3
+  },
+  {
+    "career": "machine-learning-engineer",
+    "skill": "classification",
+    "importance": 0.6,
+    "requiredLevel": 4
+  },
+  {
+    "career": "machine-learning-engineer",
+    "skill": "clustering",
+    "importance": 0.3,
+    "requiredLevel": 2
+  },
+  {
+    "career": "machine-learning-engineer",
+    "skill": "feature-engineering",
+    "importance": 0.6,
+    "requiredLevel": 3
+  },
+  {
+    "career": "machine-learning-engineer",
+    "skill": "model-evaluation",
+    "importance": 0.7,
+    "requiredLevel": 4
+  },
+  {
+    "career": "machine-learning-engineer",
+    "skill": "scikit-learn",
+    "importance": 0.8,
+    "requiredLevel": 4
+  },
+  {
+    "career": "machine-learning-engineer",
+    "skill": "neural-networks",
+    "importance": 0.7,
+    "requiredLevel": 3
+  },
+  {
+    "career": "machine-learning-engineer",
+    "skill": "deep-learning",
+    "importance": 0.6,
+    "requiredLevel": 4
+  },
+  {
+    "career": "machine-learning-engineer",
+    "skill": "pytorch",
+    "importance": 0.6,
+    "requiredLevel": 3
+  },
+  {
+    "career": "machine-learning-engineer",
+    "skill": "tensorflow",
+    "importance": 0.3,
+    "requiredLevel": 2
+  },
+  {
+    "career": "machine-learning-engineer",
+    "skill": "nlp",
+    "importance": 0.4,
+    "requiredLevel": 3
+  },
+  {
+    "career": "machine-learning-engineer",
+    "skill": "computer-vision",
+    "importance": 0.4,
+    "requiredLevel": 3
+  },
+  {
+    "career": "machine-learning-engineer",
+    "skill": "sql",
+    "importance": 0.5,
+    "requiredLevel": 3
+  },
+  {
+    "career": "machine-learning-engineer",
+    "skill": "git",
+    "importance": 0.5,
+    "requiredLevel": 3
+  },
+  {
+    "career": "machine-learning-engineer",
+    "skill": "command-line",
+    "importance": 0.3,
+    "requiredLevel": 2
+  },
+  {
+    "career": "machine-learning-engineer",
+    "skill": "linux",
+    "importance": 0.4,
+    "requiredLevel": 3
+  },
+  {
+    "career": "machine-learning-engineer",
+    "skill": "docker",
+    "importance": 0.5,
+    "requiredLevel": 3
+  },
+  {
+    "career": "machine-learning-engineer",
+    "skill": "cloud-fundamentals",
+    "importance": 0.3,
+    "requiredLevel": 2
+  },
+  {
+    "career": "machine-learning-engineer",
+    "skill": "aws",
+    "importance": 0.4,
+    "requiredLevel": 2
+  },
+  {
+    "career": "machine-learning-engineer",
+    "skill": "mlops",
+    "importance": 0.5,
+    "requiredLevel": 3
+  },
+  {
+    "career": "machine-learning-engineer",
+    "skill": "prompt-engineering",
+    "importance": 0.3,
+    "requiredLevel": 2
+  },
+  {
+    "career": "machine-learning-engineer",
+    "skill": "llm-apis",
+    "importance": 0.4,
+    "requiredLevel": 3
+  },
+  {
+    "career": "machine-learning-engineer",
+    "skill": "embeddings",
+    "importance": 0.4,
+    "requiredLevel": 2
+  },
+  {
+    "career": "machine-learning-engineer",
+    "skill": "vector-databases",
+    "importance": 0.3,
+    "requiredLevel": 2
+  },
+  {
+    "career": "machine-learning-engineer",
+    "skill": "rag",
+    "importance": 0.4,
+    "requiredLevel": 2
+  },
+  {
+    "career": "machine-learning-engineer",
+    "skill": "ai-agents",
+    "importance": 0.2,
+    "requiredLevel": 2
+  }
+]

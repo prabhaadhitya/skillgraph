@@ -1,0 +1,499 @@
+[
+  {
+    "slug": "programming-fundamentals",
+    "name": "Programming Fundamentals",
+    "description": "Variables, control flow, functions and basic problem solving in any language.",
+    "category": "programming",
+    "difficulty": 1
+  },
+  {
+    "slug": "python",
+    "name": "Python",
+    "description": "General-purpose language used across web, data science and machine learning.",
+    "category": "programming",
+    "difficulty": 2
+  },
+  {
+    "slug": "javascript",
+    "name": "JavaScript",
+    "description": "The language of the web, used in browsers and on servers.",
+    "category": "programming",
+    "difficulty": 2
+  },
+  {
+    "slug": "typescript",
+    "name": "TypeScript",
+    "description": "JavaScript with static types for safer, larger codebases.",
+    "category": "programming",
+    "difficulty": 3
+  },
+  {
+    "slug": "java",
+    "name": "Java",
+    "description": "Statically typed object-oriented language common in enterprise software.",
+    "category": "programming",
+    "difficulty": 3
+  },
+  {
+    "slug": "c-programming",
+    "name": "C",
+    "description": "Low-level language that teaches memory, pointers and how computers work.",
+    "category": "programming",
+    "difficulty": 3
+  },
+  {
+    "slug": "cpp",
+    "name": "C++",
+    "description": "Systems language with classes, templates and fine control over performance.",
+    "category": "programming",
+    "difficulty": 4
+  },
+  {
+    "slug": "dsa",
+    "name": "Data Structures & Algorithms",
+    "description": "Arrays, trees, graphs, sorting, searching and complexity analysis.",
+    "category": "programming",
+    "difficulty": 4
+  },
+  {
+    "slug": "oop",
+    "name": "Object-Oriented Programming",
+    "description": "Classes, inheritance, encapsulation and polymorphism.",
+    "category": "programming",
+    "difficulty": 3
+  },
+  {
+    "slug": "design-patterns",
+    "name": "Design Patterns",
+    "description": "Reusable solutions to common software design problems.",
+    "category": "programming",
+    "difficulty": 4
+  },
+  {
+    "slug": "html",
+    "name": "HTML",
+    "description": "Markup that structures every web page.",
+    "category": "web-development",
+    "difficulty": 1
+  },
+  {
+    "slug": "css",
+    "name": "CSS",
+    "description": "Styling, layout and visual design for the web.",
+    "category": "web-development",
+    "difficulty": 2
+  },
+  {
+    "slug": "http-fundamentals",
+    "name": "HTTP Fundamentals",
+    "description": "Requests, responses, status codes, headers and cookies.",
+    "category": "web-development",
+    "difficulty": 2
+  },
+  {
+    "slug": "rest-apis",
+    "name": "REST APIs",
+    "description": "Designing and consuming resource-based HTTP APIs.",
+    "category": "web-development",
+    "difficulty": 3
+  },
+  {
+    "slug": "responsive-design",
+    "name": "Responsive Design",
+    "description": "Layouts that adapt to phones, tablets and desktops.",
+    "category": "frontend",
+    "difficulty": 2
+  },
+  {
+    "slug": "react",
+    "name": "React",
+    "description": "Component-based library for building interactive user interfaces.",
+    "category": "frontend",
+    "difficulty": 3
+  },
+  {
+    "slug": "state-management",
+    "name": "State Management",
+    "description": "Organising shared application state in front-end apps.",
+    "category": "frontend",
+    "difficulty": 3
+  },
+  {
+    "slug": "nextjs",
+    "name": "Next.js",
+    "description": "React framework with routing, server rendering and API routes.",
+    "category": "frontend",
+    "difficulty": 3
+  },
+  {
+    "slug": "nodejs",
+    "name": "Node.js",
+    "description": "JavaScript runtime for building servers and tooling.",
+    "category": "backend",
+    "difficulty": 3
+  },
+  {
+    "slug": "express",
+    "name": "Express",
+    "description": "Minimal Node.js web framework for building APIs.",
+    "category": "backend",
+    "difficulty": 3
+  },
+  {
+    "slug": "authentication",
+    "name": "Authentication & JWT",
+    "description": "Sign-up, login, sessions, password hashing and token-based auth.",
+    "category": "backend",
+    "difficulty": 3
+  },
+  {
+    "slug": "system-design-basics",
+    "name": "System Design Basics",
+    "description": "Scaling, caching, databases and trade-offs in designing services.",
+    "category": "backend",
+    "difficulty": 4
+  },
+  {
+    "slug": "sql",
+    "name": "SQL",
+    "description": "Querying and manipulating relational data.",
+    "category": "database",
+    "difficulty": 2
+  },
+  {
+    "slug": "relational-database-design",
+    "name": "Relational Database Design",
+    "description": "Tables, keys, normalisation and relationships.",
+    "category": "database",
+    "difficulty": 3
+  },
+  {
+    "slug": "postgresql",
+    "name": "PostgreSQL",
+    "description": "Powerful open-source relational database.",
+    "category": "database",
+    "difficulty": 3
+  },
+  {
+    "slug": "mongodb",
+    "name": "MongoDB",
+    "description": "Document database popular in JavaScript stacks.",
+    "category": "database",
+    "difficulty": 3
+  },
+  {
+    "slug": "redis",
+    "name": "Redis",
+    "description": "In-memory store used for caching and fast lookups.",
+    "category": "database",
+    "difficulty": 3
+  },
+  {
+    "slug": "statistics",
+    "name": "Statistics",
+    "description": "Distributions, hypothesis testing, correlation and inference.",
+    "category": "data-analytics",
+    "difficulty": 3
+  },
+  {
+    "slug": "numpy",
+    "name": "NumPy",
+    "description": "Fast numerical arrays and maths in Python.",
+    "category": "data-analytics",
+    "difficulty": 2
+  },
+  {
+    "slug": "pandas",
+    "name": "Pandas",
+    "description": "Tabular data analysis and manipulation in Python.",
+    "category": "data-analytics",
+    "difficulty": 3
+  },
+  {
+    "slug": "data-cleaning",
+    "name": "Data Cleaning",
+    "description": "Handling missing values, duplicates and inconsistent data.",
+    "category": "data-analytics",
+    "difficulty": 2
+  },
+  {
+    "slug": "data-visualization",
+    "name": "Data Visualization",
+    "description": "Communicating data with clear charts and dashboards.",
+    "category": "data-analytics",
+    "difficulty": 3
+  },
+  {
+    "slug": "eda",
+    "name": "Exploratory Data Analysis",
+    "description": "Investigating a dataset to find patterns, outliers and questions.",
+    "category": "data-analytics",
+    "difficulty": 3
+  },
+  {
+    "slug": "excel",
+    "name": "Excel",
+    "description": "Spreadsheets, formulas, pivot tables and quick analysis.",
+    "category": "data-analytics",
+    "difficulty": 1
+  },
+  {
+    "slug": "bi-tools",
+    "name": "BI Tools (Power BI / Tableau)",
+    "description": "Interactive dashboards and reporting for business users.",
+    "category": "data-analytics",
+    "difficulty": 2
+  },
+  {
+    "slug": "linear-algebra",
+    "name": "Linear Algebra",
+    "description": "Vectors, matrices and transformations behind most ML methods.",
+    "category": "machine-learning",
+    "difficulty": 3
+  },
+  {
+    "slug": "ml-fundamentals",
+    "name": "Machine Learning Fundamentals",
+    "description": "Core ideas: learning from data, overfitting, bias-variance, training and testing.",
+    "category": "machine-learning",
+    "difficulty": 4
+  },
+  {
+    "slug": "supervised-learning",
+    "name": "Supervised Learning",
+    "description": "Learning a mapping from labelled examples.",
+    "category": "machine-learning",
+    "difficulty": 3
+  },
+  {
+    "slug": "unsupervised-learning",
+    "name": "Unsupervised Learning",
+    "description": "Finding structure in unlabelled data.",
+    "category": "machine-learning",
+    "difficulty": 3
+  },
+  {
+    "slug": "regression",
+    "name": "Regression",
+    "description": "Predicting continuous values with linear and non-linear models.",
+    "category": "machine-learning",
+    "difficulty": 3
+  },
+  {
+    "slug": "classification",
+    "name": "Classification",
+    "description": "Predicting categories with models such as logistic regression and trees.",
+    "category": "machine-learning",
+    "difficulty": 3
+  },
+  {
+    "slug": "clustering",
+    "name": "Clustering",
+    "description": "Grouping similar data points, e.g. k-means.",
+    "category": "machine-learning",
+    "difficulty": 3
+  },
+  {
+    "slug": "feature-engineering",
+    "name": "Feature Engineering",
+    "description": "Turning raw data into inputs that models can learn from.",
+    "category": "machine-learning",
+    "difficulty": 4
+  },
+  {
+    "slug": "model-evaluation",
+    "name": "Model Evaluation",
+    "description": "Metrics, cross-validation and diagnosing model quality.",
+    "category": "machine-learning",
+    "difficulty": 3
+  },
+  {
+    "slug": "scikit-learn",
+    "name": "Scikit-learn",
+    "description": "Python library for classical machine learning workflows.",
+    "category": "machine-learning",
+    "difficulty": 3
+  },
+  {
+    "slug": "neural-networks",
+    "name": "Neural Networks",
+    "description": "Layers, activations, backpropagation and training basics.",
+    "category": "deep-learning",
+    "difficulty": 4
+  },
+  {
+    "slug": "deep-learning",
+    "name": "Deep Learning",
+    "description": "Deep architectures such as CNNs, RNNs and transformers.",
+    "category": "deep-learning",
+    "difficulty": 4
+  },
+  {
+    "slug": "pytorch",
+    "name": "PyTorch",
+    "description": "Flexible deep learning framework popular in research and industry.",
+    "category": "deep-learning",
+    "difficulty": 4
+  },
+  {
+    "slug": "tensorflow",
+    "name": "TensorFlow",
+    "description": "End-to-end deep learning framework with Keras.",
+    "category": "deep-learning",
+    "difficulty": 4
+  },
+  {
+    "slug": "nlp",
+    "name": "Natural Language Processing",
+    "description": "Working with text: tokenisation, classification, language models.",
+    "category": "deep-learning",
+    "difficulty": 4
+  },
+  {
+    "slug": "computer-vision",
+    "name": "Computer Vision",
+    "description": "Teaching models to understand images and video.",
+    "category": "deep-learning",
+    "difficulty": 4
+  },
+  {
+    "slug": "prompt-engineering",
+    "name": "Prompt Engineering",
+    "description": "Writing clear instructions and examples for large language models.",
+    "category": "ai-llm",
+    "difficulty": 1
+  },
+  {
+    "slug": "llm-apis",
+    "name": "LLM APIs",
+    "description": "Calling hosted language models from code with structured outputs.",
+    "category": "ai-llm",
+    "difficulty": 2
+  },
+  {
+    "slug": "embeddings",
+    "name": "Embeddings",
+    "description": "Vector representations of text and other data for similarity search.",
+    "category": "ai-llm",
+    "difficulty": 3
+  },
+  {
+    "slug": "vector-databases",
+    "name": "Vector Databases",
+    "description": "Storing and searching embeddings at scale.",
+    "category": "ai-llm",
+    "difficulty": 3
+  },
+  {
+    "slug": "rag",
+    "name": "Retrieval-Augmented Generation",
+    "description": "Grounding LLM answers in retrieved documents.",
+    "category": "ai-llm",
+    "difficulty": 4
+  },
+  {
+    "slug": "ai-agents",
+    "name": "AI Agents",
+    "description": "LLM systems that plan, call tools and act step by step.",
+    "category": "ai-llm",
+    "difficulty": 4
+  },
+  {
+    "slug": "cloud-fundamentals",
+    "name": "Cloud Fundamentals",
+    "description": "Core cloud ideas: compute, storage, networking and shared responsibility.",
+    "category": "cloud",
+    "difficulty": 2
+  },
+  {
+    "slug": "aws",
+    "name": "AWS",
+    "description": "Amazon's cloud platform: EC2, S3, IAM and managed services.",
+    "category": "cloud",
+    "difficulty": 3
+  },
+  {
+    "slug": "linux",
+    "name": "Linux",
+    "description": "Using the Linux operating system, file system and permissions.",
+    "category": "devops",
+    "difficulty": 2
+  },
+  {
+    "slug": "docker",
+    "name": "Docker",
+    "description": "Packaging applications in containers for consistent deployment.",
+    "category": "devops",
+    "difficulty": 3
+  },
+  {
+    "slug": "ci-cd",
+    "name": "CI/CD",
+    "description": "Automating build, test and deployment pipelines.",
+    "category": "devops",
+    "difficulty": 3
+  },
+  {
+    "slug": "mlops",
+    "name": "MLOps",
+    "description": "Deploying, monitoring and maintaining machine learning models.",
+    "category": "devops",
+    "difficulty": 4
+  },
+  {
+    "slug": "networking-basics",
+    "name": "Networking Basics",
+    "description": "IP, DNS, TCP and how data moves across networks.",
+    "category": "cybersecurity",
+    "difficulty": 2
+  },
+  {
+    "slug": "web-security-basics",
+    "name": "Web Security Basics",
+    "description": "Common web vulnerabilities (OWASP) and how to prevent them.",
+    "category": "cybersecurity",
+    "difficulty": 3
+  },
+  {
+    "slug": "git",
+    "name": "Git",
+    "description": "Version control: commits, branches, merging and history.",
+    "category": "tools",
+    "difficulty": 2
+  },
+  {
+    "slug": "github",
+    "name": "GitHub",
+    "description": "Hosting repositories, pull requests and collaboration.",
+    "category": "tools",
+    "difficulty": 1
+  },
+  {
+    "slug": "command-line",
+    "name": "Command Line",
+    "description": "Navigating and automating tasks from the terminal.",
+    "category": "tools",
+    "difficulty": 1
+  },
+  {
+    "slug": "jupyter-notebooks",
+    "name": "Jupyter Notebooks",
+    "description": "Interactive notebooks for exploring data and prototyping.",
+    "category": "tools",
+    "difficulty": 1
+  },
+  {
+    "slug": "unit-testing",
+    "name": "Unit Testing",
+    "description": "Writing automated tests to verify small pieces of code.",
+    "category": "tools",
+    "difficulty": 2
+  },
+  {
+    "slug": "agile-scrum",
+    "name": "Agile & Scrum",
+    "description": "Iterative teamwork: sprints, stand-ups and backlogs.",
+    "category": "tools",
+    "difficulty": 1
+  }
+]
