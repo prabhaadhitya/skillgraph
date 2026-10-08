@@ -2,6 +2,7 @@ import { User } from '../models/user.model.js';
 import { Career } from '../models/career.model.js';
 import { ApiError } from '../utils/ApiError.js';
 import { formatUser } from '../utils/formatUser.js';
+import { getAlignmentService } from './userSkills.service.js';
 
 /**
  * Get current user profile.
@@ -19,6 +20,7 @@ export const getProfile = async (userId) => {
 /**
  * Update current user profile.
  * Validates active career existence for targetCareerSlug and enforces onboarding rules.
+ * Records an alignment snapshot with trigger 'target_change' when target career changes.
  *
  * @param {string} userId
  * @param {Object} patchData
@@ -29,6 +31,8 @@ export const updateProfile = async (userId, patchData) => {
   if (!user) {
     throw new ApiError(401, 'UNAUTHENTICATED', 'User no longer exists');
   }
+
+  let careerChanged = false;
 
   // Handle targetCareerSlug change
   if (patchData.targetCareerSlug !== undefined) {
@@ -47,7 +51,7 @@ export const updateProfile = async (userId, patchData) => {
 
     if (currentCareerId !== career._id.toString()) {
       user.targetCareerId = career._id;
-      // TODO(Member 3): record alignment snapshot with trigger target_change
+      careerChanged = true;
     }
   }
 
@@ -72,6 +76,12 @@ export const updateProfile = async (userId, patchData) => {
 
   await user.save();
   await user.populate('targetCareerId');
+
+  // Record alignment snapshot with trigger target_change
+  if (careerChanged) {
+    const alignmentService = getAlignmentService();
+    await alignmentService.recordSnapshot(userId, 'target_change');
+  }
 
   return formatUser(user);
 };
