@@ -15,14 +15,6 @@ import {
  */
 export async function retrieveExplainRecommendation(deps, userId, params = {}) {
   try {
-    // If specific skill is queried, validate allow-list
-    if (params?.skillSlug) {
-      const allowed = await isSkillSlugAllowed(deps, params.skillSlug);
-      if (!allowed) {
-        return { needsClarification: true };
-      }
-    }
-
     const careerSlug = await resolveUserTargetCareerSlug(deps, userId, params?.careerSlug);
     if (!careerSlug) {
       return { needsClarification: true };
@@ -34,6 +26,14 @@ export async function retrieveExplainRecommendation(deps, userId, params = {}) {
     }
 
     const { career, model } = careerData;
+
+    // If specific skill is queried, validate allow-list against catalog and career model
+    if (params?.skillSlug) {
+      const allowed = await isSkillSlugAllowed(deps, params.skillSlug, model);
+      if (!allowed) {
+        return { needsClarification: true };
+      }
+    }
 
     // Read only caller's profile
     const profile = (await deps.profileService?.getProfileMap(userId)) || {};
