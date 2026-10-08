@@ -9,7 +9,7 @@ import { logger } from '../utils/logger.js';
  * Maps Mongo duplicate key 11000 to 409 CONFLICT.
  * Maps ApiError to its status and code.
  * Maps any other error to 500 INTERNAL_ERROR.
- * Never leaks stack trace in production.
+ * Never leaks stack traces or internal messages in production.
  */
 // eslint-disable-next-line no-unused-vars
 export const errorHandler = (err, req, res, next) => {
@@ -42,13 +42,22 @@ export const errorHandler = (err, req, res, next) => {
     logger.error('Unhandled error:', err);
   }
 
+  const isProduction = env.NODE_ENV === 'production' || process.env.NODE_ENV === 'production';
+
+  // Never leak internal messages or details for 500 internal errors in production
+  if (isProduction && status === 500) {
+    code = 'INTERNAL_ERROR';
+    message = 'Internal server error';
+    details = undefined;
+  }
+
   const response = {
     success: false,
     error: {
       code,
       message,
       ...(details !== undefined ? { details } : {}),
-      ...(env.NODE_ENV !== 'production' && status === 500 ? { stack: err.stack } : {}),
+      ...(!isProduction && status === 500 ? { stack: err.stack } : {}),
     },
   };
 

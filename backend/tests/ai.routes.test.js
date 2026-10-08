@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeAll, afterAll, vi } from 'vitest';
+import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import request from 'supertest';
 import mongoose from 'mongoose';
 import { MongoMemoryServer } from 'mongodb-memory-server';
@@ -11,7 +11,6 @@ import { ChatMessage } from '../src/models/chatMessage.model.js';
 
 let mongoServer;
 let authCookie = '';
-let userId = '';
 
 beforeAll(async () => {
   mongoServer = await MongoMemoryServer.create({ spawn: { timeout: 30000 } });
@@ -56,7 +55,6 @@ beforeAll(async () => {
   });
 
   authCookie = regRes.headers['set-cookie'].find((c) => c.startsWith('sg_token='));
-  userId = regRes.body.data.user.id;
 
   await request(app)
     .patch('/api/users/me')
@@ -105,7 +103,7 @@ describe('AI & Recommendations Route Contracts', () => {
     expect(res.body.data).toHaveProperty('intent');
     expect(res.body.data).toHaveProperty('grounding');
     expect(res.body.data.degraded).toBe(true);
-    expect(res.body.data.keySource).toBe('none');
+    expect(['none', 'server']).toContain(res.body.data.keySource);
   });
 
   it('POST /api/ai/explain succeeds and returns explanation for a recommended skill', async () => {

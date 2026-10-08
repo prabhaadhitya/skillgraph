@@ -7,6 +7,8 @@ import { env } from './config/env.js';
 import { logger } from './utils/logger.js';
 import { notFound } from './middleware/notFound.js';
 import { errorHandler } from './middleware/errorHandler.js';
+import { globalLimiter } from './middleware/rateLimit.js';
+import { mongoSanitizer } from './middleware/sanitize.js';
 import { apiRouter } from './routes/index.js';
 
 export const app = express();
@@ -28,6 +30,9 @@ app.use(
 // Body parsing with 100kb limit
 app.use(express.json({ limit: '100kb' }));
 
+// Reject any request body, query, or params containing MongoDB operators ($ prefix)
+app.use(mongoSanitizer);
+
 // Cookie parsing for sg_token
 app.use(cookieParser());
 
@@ -40,6 +45,9 @@ app.use(
     skip: () => env.NODE_ENV === 'test',
   }),
 );
+
+// Global rate limiter
+app.use(globalLimiter);
 
 // Mount API routes
 app.use('/api', apiRouter);

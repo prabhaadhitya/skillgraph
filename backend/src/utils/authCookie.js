@@ -10,7 +10,10 @@ export const COOKIE_NAME = 'sg_token';
 export const getCookieOptions = () => ({
   httpOnly: true,
   sameSite: 'lax',
-  secure: env.COOKIE_SECURE !== undefined ? Boolean(env.COOKIE_SECURE) : env.NODE_ENV === 'production',
+  secure:
+    env.NODE_ENV === 'production' || process.env.NODE_ENV === 'production'
+      ? true
+      : (env.COOKIE_SECURE !== undefined ? Boolean(env.COOKIE_SECURE) : false),
   path: '/',
   maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in milliseconds
 });
