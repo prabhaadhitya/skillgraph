@@ -142,27 +142,60 @@ export async function retrieveSkillRelationship(deps, userId, params = {}) {
       }
     }
 
+    const unlocksSlugs = model?.directDependents instanceof Map
+      ? model.directDependents.get(skillSlug) || []
+      : [];
+    const prereqsSlugs = model?.directPrereqs instanceof Map
+      ? model.directPrereqs.get(skillSlug) || []
+      : [];
+
+    const prerequisites = prereqsSlugs.map((pSlug) => {
+      const pSkill = getSkillData(model, pSlug);
+      const pProf = profile[pSlug] ?? 0;
+      return {
+        slug: pSlug,
+        name: pSkill.name || pSlug,
+        proficiency: pProf,
+        levelLabel: getLevelLabel(pProf),
+      };
+    });
+
+    const unlocks = unlocksSlugs.map((uSlug) => {
+      const uSkill = getSkillData(model, uSlug);
+      const uProf = profile[uSlug] ?? 0;
+      return {
+        slug: uSlug,
+        name: uSkill.name || uSlug,
+        proficiency: uProf,
+        levelLabel: getLevelLabel(uProf),
+      };
+    });
+
     const facts = {
       skill: {
         slug: skillData.slug,
         name: skillData.name,
       },
-      other: {
-        slug: otherData.slug,
-        name: otherData.name,
-      },
+      other: resolvedOtherSlug
+        ? {
+            slug: otherData.slug,
+            name: otherData.name,
+          }
+        : null,
       relation,
       pathBetween: pathBetweenNames,
+      prerequisites,
+      unlocks,
       youKnow: {
         skill: getLevelLabel(profile[skillSlug] ?? 0),
-        other: getLevelLabel(profile[resolvedOtherSlug] ?? 0),
+        other: resolvedOtherSlug ? getLevelLabel(profile[resolvedOtherSlug] ?? 0) : null,
       },
     };
 
     const grounding = {
-      skills: Array.from(new Set([skillSlug, resolvedOtherSlug, ...pathBetweenSlugs])).filter(
-        (s) => s && s !== 'unknown',
-      ),
+      skills: Array.from(
+        new Set([skillSlug, resolvedOtherSlug, ...pathBetweenSlugs, ...prereqsSlugs, ...unlocksSlugs]),
+      ).filter((s) => s && s !== 'unknown'),
       careers: careerData?.career?.slug ? [careerData.career.slug] : [],
     };
 
