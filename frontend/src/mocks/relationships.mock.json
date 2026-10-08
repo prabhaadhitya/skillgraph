@@ -1,0 +1,608 @@
+[
+  {
+    "source": "programming-fundamentals",
+    "target": "python",
+    "type": "PREREQUISITE",
+    "strength": 1.0
+  },
+  {
+    "source": "programming-fundamentals",
+    "target": "javascript",
+    "type": "PREREQUISITE",
+    "strength": 1.0
+  },
+  {
+    "source": "programming-fundamentals",
+    "target": "java",
+    "type": "PREREQUISITE",
+    "strength": 1.0
+  },
+  {
+    "source": "programming-fundamentals",
+    "target": "c-programming",
+    "type": "PREREQUISITE",
+    "strength": 1.0
+  },
+  {
+    "source": "programming-fundamentals",
+    "target": "oop",
+    "type": "PREREQUISITE",
+    "strength": 1.0
+  },
+  {
+    "source": "programming-fundamentals",
+    "target": "dsa",
+    "type": "PREREQUISITE",
+    "strength": 1.0
+  },
+  {
+    "source": "programming-fundamentals",
+    "target": "unit-testing",
+    "type": "PREREQUISITE",
+    "strength": 1.0
+  },
+  {
+    "source": "c-programming",
+    "target": "cpp",
+    "type": "PREREQUISITE",
+    "strength": 1.0
+  },
+  {
+    "source": "oop",
+    "target": "design-patterns",
+    "type": "PREREQUISITE",
+    "strength": 1.0
+  },
+  {
+    "source": "javascript",
+    "target": "typescript",
+    "type": "PREREQUISITE",
+    "strength": 1.0
+  },
+  {
+    "source": "javascript",
+    "target": "react",
+    "type": "PREREQUISITE",
+    "strength": 1.0
+  },
+  {
+    "source": "javascript",
+    "target": "nodejs",
+    "type": "PREREQUISITE",
+    "strength": 1.0
+  },
+  {
+    "source": "python",
+    "target": "numpy",
+    "type": "PREREQUISITE",
+    "strength": 1.0
+  },
+  {
+    "source": "python",
+    "target": "pandas",
+    "type": "PREREQUISITE",
+    "strength": 1.0
+  },
+  {
+    "source": "numpy",
+    "target": "pandas",
+    "type": "PREREQUISITE",
+    "strength": 1.0
+  },
+  {
+    "source": "python",
+    "target": "ml-fundamentals",
+    "type": "PREREQUISITE",
+    "strength": 1.0
+  },
+  {
+    "source": "python",
+    "target": "jupyter-notebooks",
+    "type": "PREREQUISITE",
+    "strength": 1.0
+  },
+  {
+    "source": "python",
+    "target": "llm-apis",
+    "type": "PREREQUISITE",
+    "strength": 1.0
+  },
+  {
+    "source": "html",
+    "target": "css",
+    "type": "PREREQUISITE",
+    "strength": 1.0
+  },
+  {
+    "source": "css",
+    "target": "responsive-design",
+    "type": "PREREQUISITE",
+    "strength": 1.0
+  },
+  {
+    "source": "css",
+    "target": "react",
+    "type": "PREREQUISITE",
+    "strength": 1.0
+  },
+  {
+    "source": "react",
+    "target": "state-management",
+    "type": "PREREQUISITE",
+    "strength": 1.0
+  },
+  {
+    "source": "react",
+    "target": "nextjs",
+    "type": "PREREQUISITE",
+    "strength": 1.0
+  },
+  {
+    "source": "nodejs",
+    "target": "express",
+    "type": "PREREQUISITE",
+    "strength": 1.0
+  },
+  {
+    "source": "http-fundamentals",
+    "target": "express",
+    "type": "PREREQUISITE",
+    "strength": 1.0
+  },
+  {
+    "source": "networking-basics",
+    "target": "http-fundamentals",
+    "type": "PREREQUISITE",
+    "strength": 1.0
+  },
+  {
+    "source": "http-fundamentals",
+    "target": "rest-apis",
+    "type": "PREREQUISITE",
+    "strength": 1.0
+  },
+  {
+    "source": "http-fundamentals",
+    "target": "web-security-basics",
+    "type": "PREREQUISITE",
+    "strength": 1.0
+  },
+  {
+    "source": "rest-apis",
+    "target": "authentication",
+    "type": "PREREQUISITE",
+    "strength": 1.0
+  },
+  {
+    "source": "web-security-basics",
+    "target": "authentication",
+    "type": "PREREQUISITE",
+    "strength": 1.0
+  },
+  {
+    "source": "rest-apis",
+    "target": "system-design-basics",
+    "type": "PREREQUISITE",
+    "strength": 1.0
+  },
+  {
+    "source": "relational-database-design",
+    "target": "system-design-basics",
+    "type": "PREREQUISITE",
+    "strength": 1.0
+  },
+  {
+    "source": "sql",
+    "target": "relational-database-design",
+    "type": "PREREQUISITE",
+    "strength": 1.0
+  },
+  {
+    "source": "sql",
+    "target": "postgresql",
+    "type": "PREREQUISITE",
+    "strength": 1.0
+  },
+  {
+    "source": "sql",
+    "target": "mongodb",
+    "type": "PREREQUISITE",
+    "strength": 1.0
+  },
+  {
+    "source": "sql",
+    "target": "redis",
+    "type": "PREREQUISITE",
+    "strength": 1.0
+  },
+  {
+    "source": "sql",
+    "target": "bi-tools",
+    "type": "PREREQUISITE",
+    "strength": 1.0
+  },
+  {
+    "source": "pandas",
+    "target": "data-cleaning",
+    "type": "PREREQUISITE",
+    "strength": 1.0
+  },
+  {
+    "source": "pandas",
+    "target": "data-visualization",
+    "type": "PREREQUISITE",
+    "strength": 1.0
+  },
+  {
+    "source": "pandas",
+    "target": "feature-engineering",
+    "type": "PREREQUISITE",
+    "strength": 1.0
+  },
+  {
+    "source": "data-cleaning",
+    "target": "eda",
+    "type": "PREREQUISITE",
+    "strength": 1.0
+  },
+  {
+    "source": "data-visualization",
+    "target": "eda",
+    "type": "PREREQUISITE",
+    "strength": 1.0
+  },
+  {
+    "source": "statistics",
+    "target": "eda",
+    "type": "PREREQUISITE",
+    "strength": 1.0
+  },
+  {
+    "source": "excel",
+    "target": "bi-tools",
+    "type": "PREREQUISITE",
+    "strength": 1.0
+  },
+  {
+    "source": "statistics",
+    "target": "ml-fundamentals",
+    "type": "PREREQUISITE",
+    "strength": 1.0
+  },
+  {
+    "source": "linear-algebra",
+    "target": "ml-fundamentals",
+    "type": "PREREQUISITE",
+    "strength": 1.0
+  },
+  {
+    "source": "ml-fundamentals",
+    "target": "supervised-learning",
+    "type": "PREREQUISITE",
+    "strength": 1.0
+  },
+  {
+    "source": "ml-fundamentals",
+    "target": "unsupervised-learning",
+    "type": "PREREQUISITE",
+    "strength": 1.0
+  },
+  {
+    "source": "ml-fundamentals",
+    "target": "feature-engineering",
+    "type": "PREREQUISITE",
+    "strength": 1.0
+  },
+  {
+    "source": "ml-fundamentals",
+    "target": "scikit-learn",
+    "type": "PREREQUISITE",
+    "strength": 1.0
+  },
+  {
+    "source": "numpy",
+    "target": "scikit-learn",
+    "type": "PREREQUISITE",
+    "strength": 1.0
+  },
+  {
+    "source": "supervised-learning",
+    "target": "regression",
+    "type": "PREREQUISITE",
+    "strength": 1.0
+  },
+  {
+    "source": "supervised-learning",
+    "target": "classification",
+    "type": "PREREQUISITE",
+    "strength": 1.0
+  },
+  {
+    "source": "supervised-learning",
+    "target": "model-evaluation",
+    "type": "PREREQUISITE",
+    "strength": 1.0
+  },
+  {
+    "source": "supervised-learning",
+    "target": "neural-networks",
+    "type": "PREREQUISITE",
+    "strength": 1.0
+  },
+  {
+    "source": "linear-algebra",
+    "target": "neural-networks",
+    "type": "PREREQUISITE",
+    "strength": 1.0
+  },
+  {
+    "source": "unsupervised-learning",
+    "target": "clustering",
+    "type": "PREREQUISITE",
+    "strength": 1.0
+  },
+  {
+    "source": "classification",
+    "target": "nlp",
+    "type": "PREREQUISITE",
+    "strength": 1.0
+  },
+  {
+    "source": "neural-networks",
+    "target": "deep-learning",
+    "type": "PREREQUISITE",
+    "strength": 1.0
+  },
+  {
+    "source": "deep-learning",
+    "target": "pytorch",
+    "type": "PREREQUISITE",
+    "strength": 1.0
+  },
+  {
+    "source": "deep-learning",
+    "target": "tensorflow",
+    "type": "PREREQUISITE",
+    "strength": 1.0
+  },
+  {
+    "source": "deep-learning",
+    "target": "computer-vision",
+    "type": "PREREQUISITE",
+    "strength": 1.0
+  },
+  {
+    "source": "numpy",
+    "target": "pytorch",
+    "type": "PREREQUISITE",
+    "strength": 1.0
+  },
+  {
+    "source": "numpy",
+    "target": "tensorflow",
+    "type": "PREREQUISITE",
+    "strength": 1.0
+  },
+  {
+    "source": "prompt-engineering",
+    "target": "llm-apis",
+    "type": "PREREQUISITE",
+    "strength": 1.0
+  },
+  {
+    "source": "llm-apis",
+    "target": "embeddings",
+    "type": "PREREQUISITE",
+    "strength": 1.0
+  },
+  {
+    "source": "embeddings",
+    "target": "vector-databases",
+    "type": "PREREQUISITE",
+    "strength": 1.0
+  },
+  {
+    "source": "llm-apis",
+    "target": "rag",
+    "type": "PREREQUISITE",
+    "strength": 1.0
+  },
+  {
+    "source": "vector-databases",
+    "target": "rag",
+    "type": "PREREQUISITE",
+    "strength": 1.0
+  },
+  {
+    "source": "llm-apis",
+    "target": "ai-agents",
+    "type": "PREREQUISITE",
+    "strength": 1.0
+  },
+  {
+    "source": "rag",
+    "target": "ai-agents",
+    "type": "PREREQUISITE",
+    "strength": 1.0
+  },
+  {
+    "source": "command-line",
+    "target": "linux",
+    "type": "PREREQUISITE",
+    "strength": 1.0
+  },
+  {
+    "source": "linux",
+    "target": "docker",
+    "type": "PREREQUISITE",
+    "strength": 1.0
+  },
+  {
+    "source": "linux",
+    "target": "cloud-fundamentals",
+    "type": "PREREQUISITE",
+    "strength": 1.0
+  },
+  {
+    "source": "cloud-fundamentals",
+    "target": "aws",
+    "type": "PREREQUISITE",
+    "strength": 1.0
+  },
+  {
+    "source": "git",
+    "target": "github",
+    "type": "PREREQUISITE",
+    "strength": 1.0
+  },
+  {
+    "source": "github",
+    "target": "ci-cd",
+    "type": "PREREQUISITE",
+    "strength": 1.0
+  },
+  {
+    "source": "unit-testing",
+    "target": "ci-cd",
+    "type": "PREREQUISITE",
+    "strength": 1.0
+  },
+  {
+    "source": "docker",
+    "target": "mlops",
+    "type": "PREREQUISITE",
+    "strength": 1.0
+  },
+  {
+    "source": "scikit-learn",
+    "target": "mlops",
+    "type": "PREREQUISITE",
+    "strength": 1.0
+  },
+  {
+    "source": "linear-algebra",
+    "target": "numpy",
+    "type": "RELATED_TO",
+    "strength": 0.7
+  },
+  {
+    "source": "pandas",
+    "target": "sql",
+    "type": "RELATED_TO",
+    "strength": 0.6
+  },
+  {
+    "source": "pytorch",
+    "target": "tensorflow",
+    "type": "RELATED_TO",
+    "strength": 0.8
+  },
+  {
+    "source": "regression",
+    "target": "statistics",
+    "type": "RELATED_TO",
+    "strength": 0.7
+  },
+  {
+    "source": "model-evaluation",
+    "target": "statistics",
+    "type": "RELATED_TO",
+    "strength": 0.6
+  },
+  {
+    "source": "react",
+    "target": "typescript",
+    "type": "RELATED_TO",
+    "strength": 0.6
+  },
+  {
+    "source": "mongodb",
+    "target": "postgresql",
+    "type": "RELATED_TO",
+    "strength": 0.5
+  },
+  {
+    "source": "redis",
+    "target": "system-design-basics",
+    "type": "RELATED_TO",
+    "strength": 0.6
+  },
+  {
+    "source": "command-line",
+    "target": "git",
+    "type": "RELATED_TO",
+    "strength": 0.5
+  },
+  {
+    "source": "ci-cd",
+    "target": "docker",
+    "type": "RELATED_TO",
+    "strength": 0.7
+  },
+  {
+    "source": "design-patterns",
+    "target": "unit-testing",
+    "type": "RELATED_TO",
+    "strength": 0.4
+  },
+  {
+    "source": "bi-tools",
+    "target": "data-visualization",
+    "type": "RELATED_TO",
+    "strength": 0.7
+  },
+  {
+    "source": "eda",
+    "target": "jupyter-notebooks",
+    "type": "RELATED_TO",
+    "strength": 0.6
+  },
+  {
+    "source": "embeddings",
+    "target": "nlp",
+    "type": "RELATED_TO",
+    "strength": 0.7
+  },
+  {
+    "source": "llm-apis",
+    "target": "nlp",
+    "type": "RELATED_TO",
+    "strength": 0.6
+  },
+  {
+    "source": "ai-agents",
+    "target": "prompt-engineering",
+    "type": "RELATED_TO",
+    "strength": 0.5
+  },
+  {
+    "source": "cloud-fundamentals",
+    "target": "docker",
+    "type": "RELATED_TO",
+    "strength": 0.5
+  },
+  {
+    "source": "java",
+    "target": "oop",
+    "type": "RELATED_TO",
+    "strength": 0.7
+  },
+  {
+    "source": "cpp",
+    "target": "dsa",
+    "type": "RELATED_TO",
+    "strength": 0.5
+  },
+  {
+    "source": "data-cleaning",
+    "target": "feature-engineering",
+    "type": "RELATED_TO",
+    "strength": 0.6
+  },
+  {
+    "source": "express",
+    "target": "rest-apis",
+    "type": "RELATED_TO",
+    "strength": 0.7
+  }
+]
