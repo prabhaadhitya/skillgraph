@@ -7,6 +7,8 @@ import SkillGraph from '../pages/SkillGraph.jsx';
 import LearningPath from '../pages/LearningPath.jsx';
 import Analytics from '../pages/Analytics.jsx';
 import OnboardingPage from '../pages/onboarding/OnboardingPage.jsx';
+import DashboardPage from '../pages/dashboard/DashboardPage.jsx';
+import ProfilePage from '../pages/profile/ProfilePage.jsx';
 import AppShell from '../components/layout/AppShell.jsx';
 import ProtectedRoute from './ProtectedRoute.jsx';
 import AdminRoute from './AdminRoute.jsx';
@@ -65,7 +67,7 @@ export const routes = [
       },
       {
         path: 'dashboard',
-        element: <PlaceholderPage title="STUDENT DASHBOARD" />,
+        element: <DashboardPage />,
       },
       {
         path: 'graph',
@@ -89,7 +91,7 @@ export const routes = [
       },
       {
         path: 'profile',
-        element: <PlaceholderPage title="STUDENT PROFILE" />,
+        element: <ProfilePage />,
       },
       {
         path: 'settings',
