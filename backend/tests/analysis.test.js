@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeAll, afterAll } from 'vitest';
+import { describe, it, expect, beforeAll, afterAll, vi } from 'vitest';
 import request from 'supertest';
 import mongoose from 'mongoose';
 import { MongoMemoryServer } from 'mongodb-memory-server';
@@ -8,6 +8,7 @@ import { seedKnowledgeBase } from '../seed/seed.js';
 import { seedDemoUsers } from '../seed/seedDemo.js';
 import { loadSeedFiles } from '../seed/loadSeedFiles.js';
 import { invalidateCareerModels } from '../src/services/careerModel.service.js';
+import { mlClient } from '../src/services/mlClient.js';
 
 const { Skill, SkillRelationship, Career, CareerSkill, User, UserSkill, AlignmentSnapshot, UserProgress } = models;
 
@@ -38,6 +39,9 @@ beforeAll(async () => {
 
   // Invalidate any cached career models
   invalidateCareerModels();
+
+  // Mock ML service as unavailable for deterministic rule-based engine tests
+  vi.spyOn(mlClient, 'recommend').mockResolvedValue(null);
 
   // Log in as prabha (seeded demo user)
   const prabhaLoginRes = await request(app)

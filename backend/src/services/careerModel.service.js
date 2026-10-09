@@ -26,13 +26,13 @@ export async function getCareerModel(slug) {
     return cached.data;
   }
 
-  const career = await Career.findOne({ slug });
+  const career = await Career.findOne({ slug }).lean();
   if (!career) {
     throw new ApiError(404, 'NOT_FOUND', `Career '${slug}' not found`);
   }
 
   // Load career skills with populated skill data
-  const csDocs = await CareerSkill.find({ careerId: career._id }).populate('skillId');
+  const csDocs = await CareerSkill.find({ careerId: career._id }).populate('skillId').lean();
 
   const skills = [];
   const careerSkills = [];
@@ -65,7 +65,7 @@ export async function getCareerModel(slug) {
   const relDocs = await SkillRelationship.find({
     sourceSkillId: { $in: skillIds },
     targetSkillId: { $in: skillIds },
-  });
+  }).lean();
 
   const edges = [];
   for (const rel of relDocs) {
@@ -115,7 +115,20 @@ export function invalidateCareerModels(slug) {
   }
 }
 
+/**
+ * Pre-warm active career models in memory.
+ */
+export async function warmCareerModels() {
+  try {
+    const activeCareers = await Career.find({ isActive: true }).select('slug').lean();
+    await Promise.all(activeCareers.map((c) => getCareerModel(c.slug).catch(() => null)));
+  } catch {
+    // Non-fatal if warming fails
+  }
+}
+
 export default {
   getCareerModel,
   invalidateCareerModels,
+  warmCareerModels,
 };

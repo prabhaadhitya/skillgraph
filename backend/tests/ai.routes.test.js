@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeAll, afterAll } from 'vitest';
+import { describe, it, expect, beforeAll, afterAll, vi } from 'vitest';
 import request from 'supertest';
 import mongoose from 'mongoose';
 import { MongoMemoryServer } from 'mongodb-memory-server';
@@ -8,6 +8,7 @@ import { Skill } from '../src/models/skill.model.js';
 import { Career } from '../src/models/career.model.js';
 import { CareerSkill } from '../src/models/careerSkill.model.js';
 import { ChatMessage } from '../src/models/chatMessage.model.js';
+import { mlClient } from '../src/services/mlClient.js';
 
 let mongoServer;
 let authCookie = '';
@@ -15,6 +16,15 @@ let authCookie = '';
 beforeAll(async () => {
   mongoServer = await MongoMemoryServer.create({ spawn: { timeout: 30000 } });
   await mongoose.connect(mongoServer.getUri());
+
+  vi.spyOn(mlClient, 'recommend').mockResolvedValue(null);
+  const realFetch = globalThis.fetch;
+  vi.spyOn(globalThis, 'fetch').mockImplementation(async (url, opts) => {
+    if (typeof url === 'string' && url.includes('openrouter.ai')) {
+      throw new Error('OpenRouter external network disabled in unit tests');
+    }
+    return realFetch(url, opts);
+  });
 
   await Promise.all([
     User.deleteMany({}),
