@@ -25,20 +25,20 @@ export function MiniGraphIllustration({ className = '' }) {
             markerHeight="7"
             orient="auto-start-reverse"
           >
-            <path d="M 0 1 L 10 5 L 0 9 z" fill="#111111" />
+            <path d="M 0 1 L 10 5 L 0 9 z" fill="var(--color-ink)" />
           </marker>
 
           {/* Hard offset shadow filter */}
           <filter id="hard-shadow" x="0" y="0" width="200%" height="200%">
             <feOffset dx="4" dy="4" result="offset" />
-            <feFlood floodColor="#111111" result="color" />
+            <feFlood floodColor="var(--color-ink)" result="color" />
             <feComposite in2="offset" in="color" operator="in" />
             <feComposite in="SourceGraphic" operator="over" />
           </filter>
         </defs>
 
         {/* Directed Edges */}
-        <g stroke="#111111" strokeWidth="2.5">
+        <g stroke="var(--color-ink)" strokeWidth="2.5">
           {/* Node 1 -> Node 3 */}
           <path d="M 120 70 L 260 70" markerEnd="url(#arrow)" />
           {/* Node 2 -> Node 3 */}
@@ -58,25 +58,25 @@ export function MiniGraphIllustration({ className = '' }) {
             y="4"
             width="110"
             height="55"
-            fill="#111111"
+            fill="var(--color-ink)"
           />
           <rect
             x="0"
             y="0"
             width="110"
             height="55"
-            fill="#FFFFFF"
-            stroke="#111111"
+            fill="var(--color-surface)"
+            stroke="var(--color-ink)"
             strokeWidth="2.5"
           />
-          <rect x="0" y="0" width="110" height="8" fill="#3DDC97" />
+          <rect x="0" y="0" width="110" height="8" fill="var(--color-state-mastered)" />
           <text
             x="8"
             y="26"
             fontFamily="Inter, sans-serif"
             fontWeight="800"
             fontSize="10"
-            fill="#111111"
+            fill="var(--color-ink)"
             letterSpacing="0.04em"
           >
             DATA FOUNDATIONS
@@ -87,7 +87,7 @@ export function MiniGraphIllustration({ className = '' }) {
             fontFamily="JetBrains Mono, monospace"
             fontWeight="700"
             fontSize="9"
-            fill="#5B5B66"
+            fill="var(--color-muted)"
           >
             LVL 4/4 · MASTERED
           </text>
@@ -100,25 +100,25 @@ export function MiniGraphIllustration({ className = '' }) {
             y="4"
             width="110"
             height="55"
-            fill="#111111"
+            fill="var(--color-ink)"
           />
           <rect
             x="0"
             y="0"
             width="110"
             height="55"
-            fill="#FFFFFF"
-            stroke="#111111"
+            fill="var(--color-surface)"
+            stroke="var(--color-ink)"
             strokeWidth="2.5"
           />
-          <rect x="0" y="0" width="110" height="8" fill="#3DDC97" />
+          <rect x="0" y="0" width="110" height="8" fill="var(--color-state-mastered)" />
           <text
             x="8"
             y="26"
             fontFamily="Inter, sans-serif"
             fontWeight="800"
             fontSize="10"
-            fill="#111111"
+            fill="var(--color-ink)"
             letterSpacing="0.04em"
           >
             CORE LOGIC
@@ -129,7 +129,7 @@ export function MiniGraphIllustration({ className = '' }) {
             fontFamily="JetBrains Mono, monospace"
             fontWeight="700"
             fontSize="9"
-            fill="#5B5B66"
+            fill="var(--color-muted)"
           >
             LVL 3/3 · MASTERED
           </text>
@@ -142,25 +142,25 @@ export function MiniGraphIllustration({ className = '' }) {
             y="5"
             width="120"
             height="62"
-            fill="#6D4AFF"
+            fill="var(--color-brand)"
           />
           <rect
             x="0"
             y="0"
             width="120"
             height="62"
-            fill="#FFFFFF"
-            stroke="#111111"
+            fill="var(--color-surface)"
+            stroke="var(--color-ink)"
             strokeWidth="2.5"
           />
-          <rect x="0" y="0" width="120" height="10" fill="#4CC9F0" />
+          <rect x="0" y="0" width="120" height="10" fill="var(--color-state-next)" />
           <rect
             x="8"
             y="14"
             width="56"
             height="14"
-            fill="#4CC9F0"
-            stroke="#111111"
+            fill="var(--color-state-next)"
+            stroke="var(--color-ink)"
             strokeWidth="1.5"
           />
           <text
@@ -169,7 +169,7 @@ export function MiniGraphIllustration({ className = '' }) {
             fontFamily="JetBrains Mono, monospace"
             fontWeight="800"
             fontSize="8"
-            fill="#111111"
+            fill="var(--color-ink)"
           >
             LEARN NEXT
           </text>
@@ -179,7 +179,7 @@ export function MiniGraphIllustration({ className = '' }) {
             fontFamily="Inter, sans-serif"
             fontWeight="800"
             fontSize="11"
-            fill="#111111"
+            fill="var(--color-ink)"
             letterSpacing="0.04em"
           >
             MODEL ENGINE
@@ -190,7 +190,7 @@ export function MiniGraphIllustration({ className = '' }) {
             fontFamily="JetBrains Mono, monospace"
             fontWeight="700"
             fontSize="9"
-            fill="#6D4AFF"
+            fill="var(--color-brand)"
           >
             STEP 1 · READY NOW
           </text>
@@ -203,25 +203,25 @@ export function MiniGraphIllustration({ className = '' }) {
             y="4"
             width="115"
             height="55"
-            fill="#111111"
+            fill="var(--color-ink)"
           />
           <rect
             x="0"
             y="0"
             width="115"
             height="55"
-            fill="#FFFFFF"
-            stroke="#111111"
+            fill="var(--color-surface)"
+            stroke="var(--color-ink)"
             strokeWidth="2.5"
           />
-          <rect x="0" y="0" width="115" height="8" fill="#FFC93C" />
+          <rect x="0" y="0" width="115" height="8" fill="var(--color-state-partial)" />
           <text
             x="8"
             y="26"
             fontFamily="Inter, sans-serif"
             fontWeight="800"
             fontSize="10"
-            fill="#111111"
+            fill="var(--color-ink)"
             letterSpacing="0.04em"
           >
             SYSTEM DEPLOY
@@ -232,7 +232,7 @@ export function MiniGraphIllustration({ className = '' }) {
             fontFamily="JetBrains Mono, monospace"
             fontWeight="700"
             fontSize="9"
-            fill="#5B5B66"
+            fill="var(--color-muted)"
           >
             LVL 1/3 · IN PROGRESS
           </text>
@@ -245,25 +245,25 @@ export function MiniGraphIllustration({ className = '' }) {
             y="4"
             width="110"
             height="55"
-            fill="#111111"
+            fill="var(--color-ink)"
           />
           <rect
             x="0"
             y="0"
             width="110"
             height="55"
-            fill="#FFFFFF"
-            stroke="#111111"
+            fill="var(--color-surface)"
+            stroke="var(--color-ink)"
             strokeWidth="2.5"
           />
-          <rect x="0" y="0" width="110" height="8" fill="#FF5A5F" />
+          <rect x="0" y="0" width="110" height="8" fill="var(--color-state-missing)" />
           <text
             x="8"
             y="26"
             fontFamily="Inter, sans-serif"
             fontWeight="800"
             fontSize="10"
-            fill="#111111"
+            fill="var(--color-ink)"
             letterSpacing="0.04em"
           >
             KNOWLEDGE GRAPH
@@ -274,7 +274,7 @@ export function MiniGraphIllustration({ className = '' }) {
             fontFamily="JetBrains Mono, monospace"
             fontWeight="700"
             fontSize="9"
-            fill="#FF5A5F"
+            fill="var(--color-state-missing)"
           >
             LVL 0/4 · MISSING
           </text>
@@ -287,24 +287,24 @@ export function MiniGraphIllustration({ className = '' }) {
             y="0"
             width="150"
             height="46"
-            fill="#FFF7E8"
-            stroke="#111111"
+            fill="var(--color-paper)"
+            stroke="var(--color-ink)"
             strokeWidth="2"
           />
-          <circle cx="14" cy="15" r="5" fill="#3DDC97" stroke="#111111" strokeWidth="1.5" />
-          <text x="24" y="18" fontFamily="Inter, sans-serif" fontSize="9" fontWeight="700" fill="#111111">
+          <circle cx="14" cy="15" r="5" fill="var(--color-state-mastered)" stroke="var(--color-ink)" strokeWidth="1.5" />
+          <text x="24" y="18" fontFamily="Inter, sans-serif" fontSize="9" fontWeight="700" fill="var(--color-ink)">
             Mastered
           </text>
-          <circle cx="85" cy="15" r="5" fill="#4CC9F0" stroke="#111111" strokeWidth="1.5" />
-          <text x="95" y="18" fontFamily="Inter, sans-serif" fontSize="9" fontWeight="700" fill="#111111">
+          <circle cx="85" cy="15" r="5" fill="var(--color-state-next)" stroke="var(--color-ink)" strokeWidth="1.5" />
+          <text x="95" y="18" fontFamily="Inter, sans-serif" fontSize="9" fontWeight="700" fill="var(--color-ink)">
             Learn Next
           </text>
-          <circle cx="14" cy="33" r="5" fill="#FFC93C" stroke="#111111" strokeWidth="1.5" />
-          <text x="24" y="36" fontFamily="Inter, sans-serif" fontSize="9" fontWeight="700" fill="#111111">
+          <circle cx="14" cy="33" r="5" fill="var(--color-state-partial)" stroke="var(--color-ink)" strokeWidth="1.5" />
+          <text x="24" y="36" fontFamily="Inter, sans-serif" fontSize="9" fontWeight="700" fill="var(--color-ink)">
             Partial
           </text>
-          <circle cx="85" cy="33" r="5" fill="#FF5A5F" stroke="#111111" strokeWidth="1.5" />
-          <text x="95" y="36" fontFamily="Inter, sans-serif" fontSize="9" fontWeight="700" fill="#111111">
+          <circle cx="85" cy="33" r="5" fill="var(--color-state-missing)" stroke="var(--color-ink)" strokeWidth="1.5" />
+          <text x="95" y="36" fontFamily="Inter, sans-serif" fontSize="9" fontWeight="700" fill="var(--color-ink)">
             Missing
           </text>
         </g>

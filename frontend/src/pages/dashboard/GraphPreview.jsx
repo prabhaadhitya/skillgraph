@@ -53,39 +53,39 @@ export function GraphPreview({ careerName = 'Target Career' }) {
           xmlns="http://www.w3.org/2000/svg"
         >
           {/* Edges */}
-          <path d="M 60 80 L 160 50" stroke="#111111" strokeWidth="2.5" strokeDasharray="4 4" />
-          <path d="M 60 80 L 160 110" stroke="#111111" strokeWidth="2.5" />
-          <path d="M 160 50 L 260 80" stroke="#111111" strokeWidth="2.5" />
-          <path d="M 160 110 L 260 80" stroke="#111111" strokeWidth="2.5" />
+          <path d="M 60 80 L 160 50" stroke="var(--color-ink)" strokeWidth="2.5" strokeDasharray="4 4" />
+          <path d="M 60 80 L 160 110" stroke="var(--color-ink)" strokeWidth="2.5" />
+          <path d="M 160 50 L 260 80" stroke="var(--color-ink)" strokeWidth="2.5" />
+          <path d="M 160 110 L 260 80" stroke="var(--color-ink)" strokeWidth="2.5" />
 
           {/* Node 1: Mastered */}
           <g transform="translate(60, 80)">
-            <circle r="18" fill="#3DDC97" stroke="#111111" strokeWidth="2.5" />
-            <text textAnchor="middle" dy="4" fontSize="10" fontFamily="monospace" fontWeight="bold" fill="#111111">
+            <circle r="18" fill="var(--color-state-mastered)" stroke="var(--color-ink)" strokeWidth="2.5" />
+            <text textAnchor="middle" dy="4" fontSize="10" fontFamily="monospace" fontWeight="bold" fill="var(--color-ink)">
               PY
             </text>
           </g>
 
           {/* Node 2: Developing */}
           <g transform="translate(160, 50)">
-            <circle r="18" fill="#FFC93C" stroke="#111111" strokeWidth="2.5" />
-            <text textAnchor="middle" dy="4" fontSize="10" fontFamily="monospace" fontWeight="bold" fill="#111111">
+            <circle r="18" fill="var(--color-state-partial)" stroke="var(--color-ink)" strokeWidth="2.5" />
+            <text textAnchor="middle" dy="4" fontSize="10" fontFamily="monospace" fontWeight="bold" fill="var(--color-ink)">
               SQL
             </text>
           </g>
 
           {/* Node 3: Developing */}
           <g transform="translate(160, 110)">
-            <circle r="18" fill="#FFC93C" stroke="#111111" strokeWidth="2.5" />
-            <text textAnchor="middle" dy="4" fontSize="10" fontFamily="monospace" fontWeight="bold" fill="#111111">
+            <circle r="18" fill="var(--color-state-partial)" stroke="var(--color-ink)" strokeWidth="2.5" />
+            <text textAnchor="middle" dy="4" fontSize="10" fontFamily="monospace" fontWeight="bold" fill="var(--color-ink)">
               ML
             </text>
           </g>
 
           {/* Node 4: Target Career Capstone */}
           <g transform="translate(260, 80)">
-            <circle r="22" fill="#6D4AFF" stroke="#111111" strokeWidth="2.5" />
-            <text textAnchor="middle" dy="4" fontSize="11" fontFamily="sans-serif" fontWeight="900" fill="#FFFFFF">
+            <circle r="22" fill="var(--color-brand)" stroke="var(--color-ink)" strokeWidth="2.5" />
+            <text textAnchor="middle" dy="4" fontSize="11" fontFamily="sans-serif" fontWeight="900" fill="var(--color-surface)">
               GOAL
             </text>
           </g>
@@ -93,9 +93,9 @@ export function GraphPreview({ careerName = 'Target Career' }) {
 
         {/* Legend Overlay */}
         <div className="absolute bottom-2 left-2 flex items-center gap-2 bg-surface/90 px-2 py-0.5 border border-ink text-[10px] font-mono font-bold">
-          <span className="inline-block w-2 h-2 rounded-full bg-[#3DDC97] border border-ink" /> Strong
-          <span className="inline-block w-2 h-2 rounded-full bg-[#FFC93C] border border-ink" /> Developing
-          <span className="inline-block w-2 h-2 rounded-full bg-[#6D4AFF] border border-ink" /> Target
+          <span className="inline-block w-2 h-2 rounded-full bg-state-mastered border border-ink" /> Strong
+          <span className="inline-block w-2 h-2 rounded-full bg-state-partial border border-ink" /> Developing
+          <span className="inline-block w-2 h-2 rounded-full bg-brand border border-ink" /> Target
         </div>
       </div>
 
