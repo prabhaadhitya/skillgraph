@@ -44,7 +44,17 @@ export const errorHandler = (err, req, res, next) => {
 
   const isProduction = env.NODE_ENV === 'production' || process.env.NODE_ENV === 'production';
 
-  // Never leak internal messages or details for 500 internal errors in production
+const sanitizeErrorText = (val) => {
+  if (typeof val === 'string') {
+    return val
+      .replace(/bearer\s+[A-Za-z0-9-_.]+/gi, 'Bearer [REDACTED]')
+      .replace(/sk-[A-Za-z0-9-_]+/gi, 'sk-[REDACTED]')
+      .replace(/authorization:\s*[^\r\n,]+/gi, 'Authorization: [REDACTED]');
+  }
+  return val;
+};
+
+// Never leak internal messages or details for 500 internal errors in production
   if (isProduction && status === 500) {
     code = 'INTERNAL_ERROR';
     message = 'Internal server error';
@@ -55,9 +65,9 @@ export const errorHandler = (err, req, res, next) => {
     success: false,
     error: {
       code,
-      message,
+      message: sanitizeErrorText(message),
       ...(details !== undefined ? { details } : {}),
-      ...(!isProduction && status === 500 ? { stack: err.stack } : {}),
+      ...(!isProduction && status === 500 ? { stack: sanitizeErrorText(err.stack) } : {}),
     },
   };
 

@@ -216,6 +216,12 @@ export function createSettingsService({
       ) {
         friendlyMessage = 'The key was rejected by OpenRouter.';
       } else if (
+        (err instanceof LlmError && err.kind === 'bad_model') ||
+        err?.kind === 'bad_model' ||
+        err?.status === 404
+      ) {
+        friendlyMessage = `The model '${effectiveModel}' does not exist on OpenRouter.`;
+      } else if (
         (err instanceof LlmError && err.kind === 'rate_limit') ||
         err?.kind === 'rate_limit' ||
         err?.status === 429

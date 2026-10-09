@@ -199,14 +199,28 @@ export async function orchestrateChat({
 
   let intent = overrideIntent || null;
   let params = overrideParams || {};
+  let keyAuthFailed = false;
+  let modelNotFound = false;
+  let isLocalRoute = false;
+  let hasLlmError = false;
 
   // 2. Intent Classification Step
   if (!intent) {
-    if (keyResolution.source === 'none') {
+    const localKw = keywordRouter(message, catalog);
+    const isObviousOffTopic =
+      /\b(poem|poetry|story|joke|recipe|weather|song|riddle|horoscope|lyrics|bake|cook)\b/i.test(message) &&
+      localKw.intent === 'out_of_scope';
+
+    if (isObviousOffTopic) {
+      // Step 5: Obvious off-topic questions decided locally without an LLM call
+      intent = 'out_of_scope';
+      params = {};
+      isLocalRoute = true;
+    } else if (keyResolution.source === 'none') {
       // Degradation Ladder Step 3: No key available -> heuristic keyword router
-      const kwResult = keywordRouter(message, catalog);
-      intent = kwResult.intent;
-      params = kwResult.params;
+      intent = localKw.intent;
+      params = localKw.params;
+      isLocalRoute = true;
     } else {
       try {
         const intentMessages = buildIntentMessages({ message, history, catalog });
@@ -253,11 +267,27 @@ export async function orchestrateChat({
             params = kwFallback.params;
           }
         }
-      } catch {
+      } catch (err) {
+        hasLlmError = true;
+        if (
+          err?.kind === 'auth' ||
+          err?.message?.includes('401') ||
+          err?.message?.includes('authentication failed')
+        ) {
+          keyAuthFailed = true;
+        }
+        if (
+          err?.kind === 'bad_model' ||
+          err?.message?.includes('not found') ||
+          err?.message?.includes('404')
+        ) {
+          modelNotFound = true;
+        }
         // Degradation Ladder Step 1: Fall back to keyword router
         const kwResult = keywordRouter(message, catalog);
         intent = kwResult.intent;
         params = kwResult.params;
+        isLocalRoute = true;
       }
     }
   }
@@ -274,7 +304,11 @@ export async function orchestrateChat({
   let notice = null;
 
   // 4. Compose Step
-  if (keyResolution.source === 'none') {
+  if (isLocalRoute && intent === 'out_of_scope') {
+    // Step 5: If the router decided out_of_scope locally, polite redirect costs no second LLM call
+    reply = renderTemplateAnswer('out_of_scope', facts);
+    degraded = hasLlmError || keyResolution.source === 'none';
+  } else if (keyResolution.source === 'none') {
     // Degradation Ladder Step 3: Server key limit reached or no key configured
     reply = renderTemplateAnswer(intent, facts);
     degraded = true;
@@ -282,6 +316,14 @@ export async function orchestrateChat({
       keyResolution.reason === 'DAILY_LIMIT'
         ? 'Add your own OpenRouter key in Settings for unlimited chat'
         : 'Add your own OpenRouter key in Settings';
+  } else if (keyAuthFailed) {
+    reply = renderTemplateAnswer(intent, facts);
+    degraded = true;
+    notice = 'Your OpenRouter key was rejected. Check your key in Settings';
+  } else if (modelNotFound) {
+    reply = renderTemplateAnswer(intent, facts);
+    degraded = true;
+    notice = `The model '${effectiveModel}' was not found on OpenRouter. Check your model in Settings`;
   } else if (retrieverResult?.needsClarification) {
     reply = renderTemplateAnswer('out_of_scope', facts);
     degraded = true;
@@ -304,19 +346,65 @@ export async function orchestrateChat({
         throw new Error('Empty response from compose LLM');
       }
 
-      // If server fallback key succeeded, track daily quota usage
-      if (keyResolution.source === 'server' && user) {
+      // If server fallback key succeeded, track daily quota usage atomically
+      if (keyResolution.source === 'server' && UserModel) {
         try {
-          const updatedUsage = nextUsage(user.serverKeyUsage, todayStr);
-          await UserModel.findByIdAndUpdate(userId, { serverKeyUsage: updatedUsage });
+          const dailyLimit = Number(env.SERVER_KEY_DAILY_LIMIT) || 30;
+          if (typeof UserModel.findOneAndUpdate === 'function') {
+            const resetRes = await UserModel.findOneAndUpdate(
+              {
+                _id: userId,
+                $or: [
+                  { 'serverKeyUsage.date': { $ne: todayStr } },
+                  { 'serverKeyUsage.date': null },
+                  { serverKeyUsage: { $exists: false } },
+                ],
+              },
+              {
+                $set: {
+                  serverKeyUsage: { date: todayStr, count: 1 },
+                },
+              },
+              { returnDocument: 'after' },
+            );
+
+            if (!resetRes) {
+              await UserModel.findOneAndUpdate(
+                {
+                  _id: userId,
+                  'serverKeyUsage.date': todayStr,
+                  'serverKeyUsage.count': { $lt: dailyLimit },
+                },
+                {
+                  $inc: { 'serverKeyUsage.count': 1 },
+                },
+              );
+            }
+          } else if (typeof UserModel.findByIdAndUpdate === 'function') {
+            const updatedUsage = nextUsage(user?.serverKeyUsage, todayStr);
+            await UserModel.findByIdAndUpdate(userId, { serverKeyUsage: updatedUsage });
+          }
         } catch {
           // Non-critical background quota update failure
         }
       }
-    } catch {
+    } catch (err) {
       // Degradation Ladder Step 2: Failed or timed-out compose LLM call -> deterministic template answer
       reply = renderTemplateAnswer(intent, facts);
       degraded = true;
+      if (
+        err?.kind === 'auth' ||
+        err?.message?.includes('401') ||
+        err?.message?.includes('authentication failed')
+      ) {
+        notice = 'Your OpenRouter key was rejected. Check your key in Settings';
+      } else if (
+        err?.kind === 'bad_model' ||
+        err?.message?.includes('not found') ||
+        err?.message?.includes('404')
+      ) {
+        notice = `The model '${effectiveModel}' was not found on OpenRouter. Check your model in Settings`;
+      }
     }
   }
 

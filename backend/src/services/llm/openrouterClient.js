@@ -99,6 +99,13 @@ export function createOpenRouterClient({ baseUrl, fetchImpl = fetch } = {}) {
         if (response.status === 401 || response.status === 403) {
           throw new LlmError('auth', `OpenRouter authentication failed (status ${response.status})`);
         }
+        if (
+          response.status === 404 ||
+          (response.status === 400 &&
+            (sanitizedErr.toLowerCase().includes('model') && sanitizedErr.toLowerCase().includes('not found')))
+        ) {
+          throw new LlmError('bad_model', `Model '${model}' not found on OpenRouter`);
+        }
         if (response.status === 429) {
           throw new LlmError('rate_limit', 'OpenRouter rate limit exceeded (status 429)');
         }
