@@ -67,17 +67,17 @@ class CareerModel:
                     self.direct_prereqs[tgt].append(src)
                     self.direct_dependents[src].append(tgt)
 
-        # Transitive closure of descendants within the career
-        self.descendants: Dict[str, Set[str]] = {}
+        # Transitive closure of descendants within the career (preserves BFS insertion order matching JS Set)
+        self.descendants: Dict[str, List[str]] = {}
         for s in self.career_slugs:
-            visited = set()
+            visited: Dict[str, None] = {}
             queue = list(self.direct_dependents[s])
             while queue:
                 curr = queue.pop(0)
                 if curr not in visited:
-                    visited.add(curr)
+                    visited[curr] = None
                     queue.extend(self.direct_dependents.get(curr, []))
-            self.descendants[s] = visited
+            self.descendants[s] = list(visited.keys())
 
 
 def load_seed_data(seed_dir: Optional[Path] = None) -> Tuple[List[Dict[str, Any]], List[Dict[str, Any]], List[Dict[str, Any]]]:
@@ -220,7 +220,7 @@ def compute_priorities(model: CareerModel, profile: Dict[str, int]) -> Dict[str,
 
     for slug in gaps:
         sum_imp = 0.0
-        descendants = model.descendants.get(slug, set())
+        descendants = model.descendants.get(slug, [])
         for desc_slug in descendants:
             if desc_slug in gaps:
                 sum_imp += model.career_skill_map[desc_slug].importance

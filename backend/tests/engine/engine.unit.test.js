@@ -5,13 +5,16 @@ import {
   computeGapItems,
   computePriorities,
   isReady,
-  // getNextSkills,
+  getNextSkills,
   buildLearningPath,
   reasonsFor,
   getNodeState,
   buildGraphView,
+  computeWhatIf,
+  compareCareers,
 } from '../../src/services/engine/index.js';
 import { getGapStatus } from '../../src/utils/gapStatus.js';
+import { findCycle, validateSeed } from '../../seed/validate.js';
 
 describe('Engine Unit Tests (E1 to E14)', () => {
   // Helper to build tiny test models
@@ -262,5 +265,238 @@ describe('Engine Unit Tests (E1 to E14)', () => {
     const nodeA = view.nodes.find((n) => n.id === 'a');
     expect(nodeA.isReadyNow).toBe(true);
     expect(nodeA.state).toBe('recommended');
+  });
+
+  it('E15: What-if does not mutate input profile or target career models', () => {
+    const modelA = createSmallModel();
+    const modelB = buildCareerModel({
+      careerSlug: 'alt-career',
+      skills: [
+        { slug: 'a', name: 'Skill A', category: 'prog', difficulty: 1 },
+        { slug: 'b', name: 'Skill B', category: 'prog', difficulty: 2 },
+        { slug: 'e', name: 'Skill E', category: 'prog', difficulty: 3 },
+      ],
+      edges: [{ source: 'a', target: 'b', type: 'PREREQUISITE' }],
+      careerSkills: [
+        { skillSlug: 'a', importance: 0.7, requiredLevel: 3 },
+        { skillSlug: 'b', importance: 0.8, requiredLevel: 2 },
+        { skillSlug: 'e', importance: 0.9, requiredLevel: 4 },
+      ],
+    });
+
+    const profile = { a: 2, b: 1 };
+    const profileCopy = JSON.stringify(profile);
+    const modelACopy = JSON.stringify({
+      slugs: [...modelA.careerSlugs],
+      skills: modelA.careerSkillsList,
+    });
+    const modelBCopy = JSON.stringify({
+      slugs: [...modelB.careerSlugs],
+      skills: modelB.careerSkillsList,
+    });
+
+    const result = computeWhatIf(modelA, profile, modelB);
+
+    expect(JSON.stringify(profile)).toBe(profileCopy);
+    expect(
+      JSON.stringify({
+        slugs: [...modelA.careerSlugs],
+        skills: modelA.careerSkillsList,
+      })
+    ).toBe(modelACopy);
+    expect(
+      JSON.stringify({
+        slugs: [...modelB.careerSlugs],
+        skills: modelB.careerSkillsList,
+      })
+    ).toBe(modelBCopy);
+
+    expect(result.current).toBeDefined();
+    expect(result.projected).toBeDefined();
+    expect(result.delta).toBe(result.projected.score - result.current.score);
+    expect(result.newlyRequired).toEqual(['e']);
+  });
+
+  it('E16: Compare: common ∪ uniqueToA = careerA skills, common ∪ uniqueToB = careerB skills', () => {
+    const modelA = createSmallModel();
+    const modelB = buildCareerModel({
+      careerSlug: 'other-career',
+      skills: [
+        { slug: 'a', name: 'Skill A', category: 'prog', difficulty: 1 },
+        { slug: 'c', name: 'Skill C', category: 'prog', difficulty: 3 },
+        { slug: 'z', name: 'Skill Z', category: 'prog', difficulty: 2 },
+      ],
+      edges: [],
+      careerSkills: [
+        { skillSlug: 'a', importance: 0.5, requiredLevel: 2 },
+        { skillSlug: 'c', importance: 0.6, requiredLevel: 3 },
+        { skillSlug: 'z', importance: 0.8, requiredLevel: 4 },
+      ],
+    });
+
+    const result = compareCareers(modelA, modelB);
+
+    const aSlugs = new Set(modelA.careerSkillsList.map((cs) => cs.skillSlug));
+    const bSlugs = new Set(modelB.careerSkillsList.map((cs) => cs.skillSlug));
+
+    const commonSlugs = new Set(result.common.map((s) => s.slug));
+    const onlyASlugs = new Set(result.onlyA.map((s) => s.slug));
+    const onlyBSlugs = new Set(result.onlyB.map((s) => s.slug));
+
+    // Common and unique partition
+    expect(result.common.length + result.onlyA.length).toBe(aSlugs.size);
+    expect(result.common.length + result.onlyB.length).toBe(bSlugs.size);
+
+    // Set unions
+    const unionA = new Set([...commonSlugs, ...onlyASlugs]);
+    const unionB = new Set([...commonSlugs, ...onlyBSlugs]);
+    expect(unionA).toEqual(aSlugs);
+    expect(unionB).toEqual(bSlugs);
+  });
+
+  it('E17: Cycle detection rejects A->B->A cycle', () => {
+    const cycleEdges = [
+      { source: 'a', target: 'b', type: 'PREREQUISITE' },
+      { source: 'b', target: 'a', type: 'PREREQUISITE' },
+    ];
+    const cycle = findCycle(cycleEdges);
+    expect(cycle).toEqual(['a', 'b', 'a']);
+
+    const seedWithCycle = {
+      skills: [
+        { slug: 'a', name: 'A', category: 'programming', difficulty: 1 },
+        { slug: 'b', name: 'B', category: 'programming', difficulty: 2 },
+      ],
+      relationships: cycleEdges,
+      careers: [{ slug: 'career-test', name: 'Career Test' }],
+      careerSkills: [
+        { career: 'career-test', skill: 'a', importance: 1.0, requiredLevel: 3 },
+        { career: 'career-test', skill: 'b', importance: 0.8, requiredLevel: 2 },
+      ],
+    };
+
+    const { errors } = validateSeed(seedWithCycle);
+    expect(errors.some((e) => e.startsWith('V3 cycle'))).toBe(true);
+  });
+
+  it('E18: Closure checker reports missing prerequisites', () => {
+    // b requires a, but career only includes b
+    const seedMissingPrereq = {
+      skills: [
+        { slug: 'a', name: 'A', category: 'programming', difficulty: 1 },
+        { slug: 'b', name: 'B', category: 'programming', difficulty: 2 },
+      ],
+      relationships: [{ source: 'a', target: 'b', type: 'PREREQUISITE' }],
+      careers: [{ slug: 'career-closure-test', name: 'Career Test' }],
+      careerSkills: [
+        { career: 'career-closure-test', skill: 'b', importance: 1.0, requiredLevel: 3 },
+      ],
+    };
+
+    const { errors } = validateSeed(seedMissingPrereq);
+    expect(
+      errors.some(
+        (e) =>
+          e.startsWith('V5 closure') &&
+          e.includes('career-closure-test') &&
+          e.includes('skill b needs prerequisite a')
+      )
+    ).toBe(true);
+  });
+
+  describe('Edge Cases (Empty profile, max level, career with no gaps, unknown skill slug)', () => {
+    it('handles empty profile without crashing or returning NaN', () => {
+      const model = createSmallModel();
+      const emptyProfile = {};
+
+      const fit = computeFit(model, emptyProfile);
+      expect(Number.isFinite(fit.fitScore)).toBe(true);
+      expect(Number.isFinite(fit.coverage)).toBe(true);
+      expect(Number.isFinite(fit.readiness)).toBe(true);
+      expect(Number.isNaN(fit.fitScore)).toBe(false);
+      expect(fit.coverage).toBe(0);
+
+      const gapResult = computeGapItems(model, emptyProfile);
+      expect(gapResult.summary.missing).toBe(4);
+      expect(gapResult.summary.strong).toBe(0);
+      expect(gapResult.summary.developing).toBe(0);
+
+      const nextSkills = getNextSkills(model, emptyProfile, 3);
+      expect(nextSkills.length).toBeGreaterThan(0);
+      expect(Number.isNaN(nextSkills[0].score)).toBe(false);
+
+      const pathResult = buildLearningPath(model, emptyProfile);
+      expect(pathResult.totalSteps).toBe(4);
+      expect(Number.isNaN(pathResult.totalEffortPoints)).toBe(false);
+
+      const graphView = buildGraphView(model, emptyProfile);
+      expect(graphView.nodes.length).toBe(4);
+    });
+
+    it('handles profile at max level on everything without crashing or returning NaN', () => {
+      const model = createSmallModel();
+      const maxProfile = { a: 5, b: 5, c: 5, d: 5 };
+
+      const fit = computeFit(model, maxProfile);
+      expect(fit.fitScore).toBe(100);
+      expect(fit.coverage).toBe(1);
+      expect(fit.readiness).toBe(1);
+      expect(fit.band).toBe('strong');
+      expect(Number.isNaN(fit.fitScore)).toBe(false);
+
+      const gapResult = computeGapItems(model, maxProfile);
+      expect(gapResult.summary.strong).toBe(4);
+      expect(gapResult.summary.developing).toBe(0);
+      expect(gapResult.summary.missing).toBe(0);
+
+      const nextSkills = getNextSkills(model, maxProfile, 3);
+      expect(nextSkills).toEqual([]);
+
+      const pathResult = buildLearningPath(model, maxProfile);
+      expect(pathResult.totalSteps).toBe(0);
+      expect(pathResult.totalEffortPoints).toBe(0);
+      expect(pathResult.steps).toEqual([]);
+    });
+
+    it('handles a career with no gaps (profile meeting all required levels)', () => {
+      const model = createSmallModel();
+      // required: a:3, b:4, c:2, d:3
+      const noGapProfile = { a: 3, b: 4, c: 2, d: 3 };
+
+      const fit = computeFit(model, noGapProfile);
+      expect(fit.fitScore).toBe(100);
+
+      const pathResult = buildLearningPath(model, noGapProfile);
+      expect(pathResult.totalSteps).toBe(0);
+      expect(pathResult.steps).toEqual([]);
+
+      const gapResult = computeGapItems(model, noGapProfile);
+      expect(gapResult.items.every((item) => item.gap === 0)).toBe(true);
+    });
+
+    it('handles an unknown skill slug in profile gracefully without crashing or NaN', () => {
+      const model = createSmallModel();
+      const profileWithUnknown = {
+        'completely-unknown-skill': 5,
+        'another-ghost-skill': 3,
+        a: 2,
+      };
+
+      const fit = computeFit(model, profileWithUnknown);
+      expect(Number.isFinite(fit.fitScore)).toBe(true);
+      expect(Number.isNaN(fit.fitScore)).toBe(false);
+
+      const gapResult = computeGapItems(model, profileWithUnknown);
+      expect(Number.isFinite(gapResult.summary.total)).toBe(true);
+      // Unknown skills do not pollute career gap items
+      expect(gapResult.items.some((i) => i.skill.slug === 'completely-unknown-skill')).toBe(false);
+
+      const nextSkills = getNextSkills(model, profileWithUnknown, 3);
+      expect(nextSkills.every((n) => Number.isFinite(n.score))).toBe(true);
+
+      const pathResult = buildLearningPath(model, profileWithUnknown);
+      expect(Number.isFinite(pathResult.totalEffortPoints)).toBe(true);
+      expect(pathResult.steps.every((s) => s.skill.slug !== 'completely-unknown-skill')).toBe(true);
+    });
   });
 });
