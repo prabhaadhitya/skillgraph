@@ -5,6 +5,7 @@ import { UserProgress } from '../models/userProgress.model.js';
 import { AlignmentSnapshot } from '../models/alignmentSnapshot.model.js';
 import { LEVELS } from '../config/constants.js';
 import { ApiError } from '../utils/ApiError.js';
+import { invalidateProfile } from './profile.service.js';
 import * as defaultAlignmentService from './alignment.service.js';
 
 let alignmentService = defaultAlignmentService;
@@ -177,6 +178,8 @@ export const putSkills = async (userId, skillsArray) => {
     await UserProgress.insertMany(progressRowsToInsert);
   }
 
+  invalidateProfile(userId);
+
   // Recalculate alignment snapshot
   const hasSnapshot = await AlignmentSnapshot.exists({ userId });
   const trigger = hasSnapshot ? 'skills_update' : 'onboarding';
@@ -249,6 +252,8 @@ export const patchSkill = async (userId, skillSlug, proficiency) => {
       currentLevel,
     });
   }
+
+  invalidateProfile(userId);
 
   const hasSnapshot = await AlignmentSnapshot.exists({ userId });
   const trigger = hasSnapshot ? 'skills_update' : 'onboarding';

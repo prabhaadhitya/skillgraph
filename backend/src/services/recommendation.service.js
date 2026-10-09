@@ -58,19 +58,23 @@ export async function getNextSkills(
   const eng = deps.engine || engine;
   const ml = deps.mlClient || defaultMlClient;
 
-  const resolvedSlug = await resolveCareer(userId, careerSlug);
-  const { model } = await cms.getCareerModel(resolvedSlug);
-  const profile = (await ps.getProfileMap(userId)) || {};
+  const resolvedSlug = careerSlug && typeof careerSlug === 'string' && careerSlug.trim()
+    ? careerSlug.trim()
+    : await resolveCareer(userId, careerSlug);
+  const model = deps.model || (await cms.getCareerModel(resolvedSlug)).model;
+  const profile = deps.profile || (await ps.getProfileMap(userId)) || {};
 
   // If strategy is "ml" or "auto", attempt to query the ML service
   if (strategy === 'ml' || strategy === 'auto') {
     try {
-      let userSemester = undefined;
-      try {
-        const u = await User.findById(userId);
-        userSemester = u?.semester;
-      } catch {
-        // Ignore user lookup error
+      let userSemester = deps.user?.semester;
+      if (userSemester === undefined) {
+        try {
+          const u = await User.findById(userId).lean();
+          userSemester = u?.semester;
+        } catch {
+          // Ignore user lookup error
+        }
       }
 
       const mlRes = await ml.recommend({

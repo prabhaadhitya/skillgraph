@@ -4,7 +4,6 @@ import { Career } from '../models/career.model.js';
 import { UserSkill } from '../models/userSkill.model.js';
 import { AlignmentSnapshot } from '../models/alignmentSnapshot.model.js';
 import { getCareerModel } from './careerModel.service.js';
-import { getProfileMap } from './profile.service.js';
 import { computeGapItems } from './engine/gap.js';
 import { ApiError } from '../utils/ApiError.js';
 
@@ -44,30 +43,34 @@ function formatCategoryName(slug) {
  * @returns {Promise<{ data: Object, meta?: Object }>}
  */
 export async function getStudentInsights(userId) {
-  const user = await User.findById(userId).populate('targetCareerId');
+  const [user, userSkills, snapshots] = await Promise.all([
+    User.findById(userId).populate('targetCareerId').lean(),
+    UserSkill.find({ userId }).populate('skillId').lean(),
+    AlignmentSnapshot.find({ userId }).sort({ createdAt: 1 }).lean(),
+  ]);
+
   if (!user) {
     throw new ApiError(404, 'NOT_FOUND', 'User not found');
   }
 
-  const profile = await getProfileMap(userId);
-
-  // 1. Category Distribution: skills rated by the student grouped by category
-  const userSkills = await UserSkill.find({
-    userId,
-    proficiency: { $gt: 0 },
-  }).populate('skillId');
-
+  // 1. Category Distribution and student profile built in a single pass over userSkills
+  const profile = {};
   const catMap = new Map();
   for (const us of userSkills) {
     const skill = us.skillId;
-    if (!skill || !skill.category) continue;
-    const cat = skill.category;
-    if (!catMap.has(cat)) {
-      catMap.set(cat, { count: 0, sumProf: 0 });
+    const prof = us.proficiency;
+    if (skill?.slug && typeof prof === 'number' && prof > 0) {
+      profile[skill.slug] = prof;
     }
-    const entry = catMap.get(cat);
-    entry.count += 1;
-    entry.sumProf += us.proficiency;
+    if (skill && skill.category && typeof prof === 'number' && prof > 0) {
+      const cat = skill.category;
+      if (!catMap.has(cat)) {
+        catMap.set(cat, { count: 0, sumProf: 0 });
+      }
+      const entry = catMap.get(cat);
+      entry.count += 1;
+      entry.sumProf += prof;
+    }
   }
 
   const categoryDistribution = Array.from(catMap.entries())
@@ -85,10 +88,6 @@ export async function getStudentInsights(userId) {
     .sort((a, b) => b.skills - a.skills || a.name.localeCompare(b.name));
 
   // 2. Alignment History: snapshots over time
-  const snapshots = await AlignmentSnapshot.find({ userId })
-    .sort({ createdAt: 1 })
-    .lean();
-
   let alignmentHistory = [];
   let meta;
 
@@ -97,8 +96,8 @@ export async function getStudentInsights(userId) {
     meta = { empty: true };
   } else {
     alignmentHistory = snapshots.map((s) => ({
-      at: s.createdAt.toISOString(),
-      date: s.createdAt.toISOString(),
+      at: s.createdAt.toISOString ? s.createdAt.toISOString() : new Date(s.createdAt).toISOString(),
+      date: s.createdAt.toISOString ? s.createdAt.toISOString() : new Date(s.createdAt).toISOString(),
       fitScore: s.fitScore,
       score: s.fitScore,
     }));
@@ -145,29 +144,28 @@ export async function getStudentInsights(userId) {
  * @returns {Promise<Object>}
  */
 export async function getAdminOverview() {
-  const [totalStudents, onboardedStudents, totalSkills, totalCareers] =
+  const [totalStudents, onboardedStudents, totalSkills, totalCareers, avgFitAgg] =
     await Promise.all([
       User.countDocuments({ role: 'student' }),
       User.countDocuments({ role: 'student', onboardingCompleted: true }),
       Skill.countDocuments(),
       Career.countDocuments({ isActive: true }),
+      AlignmentSnapshot.aggregate([
+        { $sort: { userId: 1, createdAt: -1 } },
+        {
+          $group: {
+            _id: '$userId',
+            latestFit: { $first: '$fitScore' },
+          },
+        },
+        {
+          $group: {
+            _id: null,
+            avgFit: { $avg: '$latestFit' },
+          },
+        },
+      ]),
     ]);
-
-  const avgFitAgg = await AlignmentSnapshot.aggregate([
-    { $sort: { createdAt: -1 } },
-    {
-      $group: {
-        _id: '$userId',
-        latestFit: { $first: '$fitScore' },
-      },
-    },
-    {
-      $group: {
-        _id: null,
-        avgFit: { $avg: '$latestFit' },
-      },
-    },
-  ]);
 
   const avgFitScore =
     avgFitAgg.length > 0 ? Math.round(avgFitAgg[0].avgFit) : 0;
@@ -189,24 +187,44 @@ export async function getAdminOverview() {
  * @returns {Promise<{ items: Array<Object> }>}
  */
 export async function getAdminSkillGaps(limit = 10) {
-  // Load students who have chosen a target career
-  const students = await User.find({
-    role: 'student',
-    targetCareerId: { $ne: null },
-  })
-    .select('_id targetCareerId')
-    .lean();
+  const [students, allSkills, careers] = await Promise.all([
+    User.find({
+      role: 'student',
+      targetCareerId: { $ne: null },
+    })
+      .select('_id targetCareerId')
+      .lean(),
+    Skill.find({}).select('_id slug').lean(),
+    Career.find({ isActive: true }).select('_id slug').lean(),
+  ]);
 
   if (students.length === 0) {
     return { items: [] };
   }
 
-  // Load user skill ratings for these students
-  const userSkills = await UserSkill.find({
-    userId: { $in: students.map((s) => s._id) },
-  })
-    .populate('skillId', 'slug')
-    .lean();
+  const skillSlugById = new Map(allSkills.map((s) => [s._id.toString(), s.slug]));
+  const careerSlugById = new Map(careers.map((c) => [c._id.toString(), c.slug]));
+
+  // Load user skill ratings and career models concurrently
+  const distinctCareerIds = [...new Set(students.map((s) => s.targetCareerId.toString()))];
+  const [userSkills, ...careerModelResults] = await Promise.all([
+    UserSkill.find({
+      userId: { $in: students.map((s) => s._id) },
+    })
+      .select('userId skillId proficiency')
+      .lean(),
+    ...distinctCareerIds.map(async (careerIdStr) => {
+      const slug = careerSlugById.get(careerIdStr);
+      if (!slug) return null;
+      const { model } = await getCareerModel(slug);
+      return { careerIdStr, model };
+    }),
+  ]);
+
+  const modelsByCareerId = new Map();
+  for (const res of careerModelResults) {
+    if (res) modelsByCareerId.set(res.careerIdStr, res.model);
+  }
 
   const profileByStudent = new Map();
   for (const s of students) {
@@ -214,20 +232,10 @@ export async function getAdminSkillGaps(limit = 10) {
   }
   for (const us of userSkills) {
     const sId = us.userId.toString();
-    const slug = us.skillId?.slug;
+    const slug = skillSlugById.get(us.skillId.toString());
     if (sId && slug && profileByStudent.has(sId)) {
       profileByStudent.get(sId)[slug] = us.proficiency;
     }
-  }
-
-  // Load career models for all careers chosen by students
-  const careerIds = [...new Set(students.map((s) => s.targetCareerId.toString()))];
-  const careers = await Career.find({ _id: { $in: careerIds } }).lean();
-
-  const modelsByCareerId = new Map();
-  for (const c of careers) {
-    const { model } = await getCareerModel(c.slug);
-    modelsByCareerId.set(c._id.toString(), model);
   }
 
   // Compute gaps per skill using engine gap formula
@@ -302,11 +310,12 @@ export async function getAdminSkillGaps(limit = 10) {
  * @returns {Promise<{ items: Array<Object> }>}
  */
 export async function getAdminCareerDistribution() {
-  const careers = await Career.find({ isActive: true }).lean();
-
-  const studentCounts = await User.aggregate([
-    { $match: { role: 'student', targetCareerId: { $ne: null } } },
-    { $group: { _id: '$targetCareerId', count: { $sum: 1 } } },
+  const [careers, studentCounts] = await Promise.all([
+    Career.find({ isActive: true }).lean(),
+    User.aggregate([
+      { $match: { role: 'student', targetCareerId: { $ne: null } } },
+      { $group: { _id: '$targetCareerId', count: { $sum: 1 } } },
+    ]),
   ]);
 
   const countMap = new Map(studentCounts.map((c) => [c._id.toString(), c.count]));
@@ -352,29 +361,31 @@ export async function getAdminSkillPopularity(limit = 10) {
     },
     { $sort: { students: -1, avgProf: -1 } },
     { $limit: limit },
+    {
+      $lookup: {
+        from: 'skills',
+        localField: '_id',
+        foreignField: '_id',
+        as: 'skill',
+      },
+    },
+    { $unwind: '$skill' },
   ]);
 
   if (popAgg.length === 0) {
     return { items: [] };
   }
 
-  const skillIds = popAgg.map((p) => p._id);
-  const skills = await Skill.find({ _id: { $in: skillIds } }).lean();
-  const skillMap = new Map(skills.map((s) => [s._id.toString(), s]));
-
-  const items = popAgg.map((p) => {
-    const s = skillMap.get(p._id.toString());
-    return {
-      skill: {
-        id: p._id.toString(),
-        slug: s?.slug || '',
-        name: s?.name || '',
-        category: s?.category || '',
-      },
-      students: p.students,
-      avgProficiency: Number(p.avgProf.toFixed(1)),
-    };
-  });
+  const items = popAgg.map((p) => ({
+    skill: {
+      id: p._id.toString(),
+      slug: p.skill.slug || '',
+      name: p.skill.name || '',
+      category: p.skill.category || '',
+    },
+    students: p.students,
+    avgProficiency: Number(p.avgProf.toFixed(1)),
+  }));
 
   return { items };
 }
@@ -386,22 +397,22 @@ export async function getAdminSkillPopularity(limit = 10) {
  * @returns {Promise<{ items: Array<Object> }>}
  */
 export async function getAdminSemesterDistribution() {
-  const students = await User.find({ role: 'student' })
-    .select('_id semester')
-    .lean();
-
-  const latestSnapshots = await AlignmentSnapshot.aggregate([
-    { $sort: { createdAt: -1 } },
-    { $group: { _id: '$userId', fitScore: { $first: '$fitScore' } } },
+  const [students, latestSnapshots, skillCounts] = await Promise.all([
+    User.find({ role: 'student' }).select('_id semester').lean(),
+    AlignmentSnapshot.aggregate([
+      { $sort: { userId: 1, createdAt: -1 } },
+      { $group: { _id: '$userId', fitScore: { $first: '$fitScore' } } },
+    ]),
+    UserSkill.aggregate([
+      { $match: { proficiency: { $gt: 0 } } },
+      { $group: { _id: '$userId', count: { $sum: 1 } } },
+    ]),
   ]);
+
   const studentFitMap = new Map(
     latestSnapshots.map((s) => [s._id.toString(), s.fitScore]),
   );
 
-  const skillCounts = await UserSkill.aggregate([
-    { $match: { proficiency: { $gt: 0 } } },
-    { $group: { _id: '$userId', count: { $sum: 1 } } },
-  ]);
   const studentSkillCountMap = new Map(
     skillCounts.map((s) => [s._id.toString(), s.count]),
   );

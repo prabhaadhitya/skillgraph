@@ -11,7 +11,12 @@ import {
   getNextSkills,
   compareCareers,
 } from './engine/index.js';
+import { getNextSkills as getNextSkillsRec } from './recommendation.service.js';
 import { ApiError } from '../utils/ApiError.js';
+
+// In-memory cache for resolved student target career slugs (30s TTL)
+const userCareerCache = new Map();
+const CAREER_CACHE_TTL_MS = 30 * 1000;
 
 /**
  * Resolve target career slug from request query or user's target career.
@@ -25,24 +30,45 @@ export async function resolveCareerSlug(userId, requestedCareerSlug) {
     return requestedCareerSlug.trim();
   }
 
-  const user = await User.findById(userId).populate('targetCareerId');
+  const key = userId.toString();
+  const now = Date.now();
+  if (process.env.NODE_ENV !== 'test') {
+    const cached = userCareerCache.get(key);
+    if (cached && cached.expiresAt > now) {
+      return cached.slug;
+    }
+  }
+
+  const user = await User.findById(userId).populate('targetCareerId', 'slug').lean();
   if (!user) {
     throw new ApiError(404, 'NOT_FOUND', 'User not found');
   }
 
-  if (user.targetCareerId?.slug) {
-    return user.targetCareerId.slug;
+  let slug = user.targetCareerId?.slug;
+  if (!slug && user.targetCareerId) {
+    const career = await Career.findById(user.targetCareerId).select('slug').lean();
+    slug = career?.slug;
   }
 
-  if (user.targetCareerId) {
-    const career = await Career.findById(user.targetCareerId);
-    if (career?.slug) {
-      return career.slug;
-    }
+  if (!slug) {
+    throw new ApiError(422, 'RULE_VIOLATION', 'No career specified and user has no target career set');
   }
 
-  throw new ApiError(422, 'RULE_VIOLATION', 'No career specified and user has no target career set');
+  if (process.env.NODE_ENV !== 'test') {
+    userCareerCache.set(key, { slug, expiresAt: now + CAREER_CACHE_TTL_MS });
+  }
+
+  return slug;
 }
+
+export function invalidateUserCareer(userId) {
+  if (userId) {
+    userCareerCache.delete(userId.toString());
+  } else {
+    userCareerCache.clear();
+  }
+}
+
 
 /**
  * Skill-gap analysis.
@@ -52,9 +78,11 @@ export async function resolveCareerSlug(userId, requestedCareerSlug) {
  * @returns {Promise<Object>}
  */
 export async function getSkillGapAnalysis(userId, requestedCareerSlug) {
-  const careerSlug = await resolveCareerSlug(userId, requestedCareerSlug);
+  const [careerSlug, profile] = await Promise.all([
+    resolveCareerSlug(userId, requestedCareerSlug),
+    getProfileMap(userId),
+  ]);
   const { career, model } = await getCareerModel(careerSlug);
-  const profile = await getProfileMap(userId);
 
   const { summary, items } = computeGapItems(model, profile);
 
@@ -76,9 +104,11 @@ export async function getSkillGapAnalysis(userId, requestedCareerSlug) {
  * @returns {Promise<Object>}
  */
 export async function getCareerFitAnalysis(userId, requestedCareerSlug) {
-  const careerSlug = await resolveCareerSlug(userId, requestedCareerSlug);
+  const [careerSlug, profile] = await Promise.all([
+    resolveCareerSlug(userId, requestedCareerSlug),
+    getProfileMap(userId),
+  ]);
   const { career, model } = await getCareerModel(careerSlug);
-  const profile = await getProfileMap(userId);
 
   const fit = computeFit(model, profile);
 
@@ -109,9 +139,11 @@ export async function getCareerFitAnalysis(userId, requestedCareerSlug) {
  * @returns {Promise<Object>}
  */
 export async function getLearningPathAnalysis(userId, requestedCareerSlug) {
-  const careerSlug = await resolveCareerSlug(userId, requestedCareerSlug);
+  const [careerSlug, profile] = await Promise.all([
+    resolveCareerSlug(userId, requestedCareerSlug),
+    getProfileMap(userId),
+  ]);
   const { career, model } = await getCareerModel(careerSlug);
-  const profile = await getProfileMap(userId);
 
   const path = buildLearningPath(model, profile);
 
@@ -136,9 +168,11 @@ export async function getLearningPathAnalysis(userId, requestedCareerSlug) {
  * @returns {Promise<Object>}
  */
 export async function getGraphAnalysis(userId, requestedCareerSlug, { related = false } = {}) {
-  const careerSlug = await resolveCareerSlug(userId, requestedCareerSlug);
+  const [careerSlug, profile] = await Promise.all([
+    resolveCareerSlug(userId, requestedCareerSlug),
+    getProfileMap(userId),
+  ]);
   const { career, model } = await getCareerModel(careerSlug);
-  const profile = await getProfileMap(userId);
 
   const graph = buildGraphView(model, profile, { includeRelated: related });
 
@@ -161,10 +195,12 @@ export async function getGraphAnalysis(userId, requestedCareerSlug, { related = 
  * @returns {Promise<Object>}
  */
 export async function getDashboardAnalysis(userId, requestedCareerSlug) {
-  const careerSlug = await resolveCareerSlug(userId, requestedCareerSlug);
+  const [careerSlug, profile, user] = await Promise.all([
+    resolveCareerSlug(userId, requestedCareerSlug),
+    getProfileMap(userId),
+    User.findById(userId).lean(),
+  ]);
   const { career, model } = await getCareerModel(careerSlug);
-  const profile = await getProfileMap(userId);
-  const user = await User.findById(userId);
 
   const fit = computeFit(model, profile);
   const { summary, items } = computeGapItems(model, profile);
@@ -175,7 +211,8 @@ export async function getDashboardAnalysis(userId, requestedCareerSlug) {
     careerId: career._id,
   })
     .sort({ createdAt: -1 })
-    .limit(5);
+    .limit(5)
+    .lean();
 
   let previousScore = null;
   if (snapshots.length > 0) {
@@ -194,21 +231,14 @@ export async function getDashboardAnalysis(userId, requestedCareerSlug) {
   let fallbackReason = null;
 
   try {
-    const recommendationService = await import('./recommendation.service.js').catch(() => null);
-    if (recommendationService && typeof recommendationService.getNextSkills === 'function') {
-      const res = await recommendationService.getNextSkills(userId, careerSlug, { limit: 3, strategy: 'auto' });
-      nextSkills = res.items || res;
-      strategy = res.strategy || 'rule';
-      fallbackReason = res.fallbackReason || (strategy === 'rule' ? 'ML_UNAVAILABLE' : null);
-    } else {
-      nextSkills = getNextSkills(model, profile, 3).map((item) => ({
-        skill: item.skill,
-        score: item.score,
-        reasons: item.reasons,
-      }));
-      strategy = 'rule';
-      fallbackReason = 'ML_UNAVAILABLE';
-    }
+    const res = await getNextSkillsRec(userId, careerSlug, {
+      limit: 3,
+      strategy: 'auto',
+      deps: { model, profile, user },
+    });
+    nextSkills = res.items || res;
+    strategy = res.strategy || 'rule';
+    fallbackReason = res.fallbackReason || (strategy === 'rule' ? 'ML_UNAVAILABLE' : null);
   } catch {
     nextSkills = getNextSkills(model, profile, 3).map((item) => ({
       skill: item.skill,
@@ -272,10 +302,15 @@ export async function computeWhatIfAnalysis(userId, alternativeCareerSlug) {
     throw new ApiError(400, 'VALIDATION_ERROR', 'Alternative career slug is required');
   }
 
-  const currentCareerSlug = await resolveCareerSlug(userId);
-  const { career: currentCareer, model: currentModel } = await getCareerModel(currentCareerSlug);
-  const { career: altCareer, model: altModel } = await getCareerModel(alternativeCareerSlug);
-  const profile = await getProfileMap(userId);
+  const [currentCareerSlug, profile] = await Promise.all([
+    resolveCareerSlug(userId),
+    getProfileMap(userId),
+  ]);
+  const [{ career: currentCareer, model: currentModel }, { career: altCareer, model: altModel }] =
+    await Promise.all([
+      getCareerModel(currentCareerSlug),
+      getCareerModel(alternativeCareerSlug),
+    ]);
 
   const fitCurrent = computeFit(currentModel, profile);
   const pathCurrent = buildLearningPath(currentModel, profile);
@@ -358,9 +393,12 @@ export async function compareCareersAnalysis(userId, slugA, slugB) {
     throw new ApiError(400, 'VALIDATION_ERROR', 'Both career slugs "a" and "b" are required');
   }
 
-  const { career: careerA, model: modelA } = await getCareerModel(slugA);
-  const { career: careerB, model: modelB } = await getCareerModel(slugB);
-  const profile = await getProfileMap(userId);
+  const [{ career: careerA, model: modelA }, { career: careerB, model: modelB }, profile] =
+    await Promise.all([
+      getCareerModel(slugA),
+      getCareerModel(slugB),
+      getProfileMap(userId),
+    ]);
 
   const fitA = computeFit(modelA, profile);
   const pathA = buildLearningPath(modelA, profile);

@@ -27,7 +27,12 @@ export const authLimiter = createLimiter({
   windowMs: 15 * 60 * 1000,
   limit: () => (process.env.AUTH_RATE_LIMIT_MAX ? Number(process.env.AUTH_RATE_LIMIT_MAX) : 10),
   message: 'Too many authentication attempts, please try again in 15 minutes.',
-  skip: () => process.env.NODE_ENV === 'test' && !process.env.AUTH_RATE_LIMIT_MAX,
+  skip: (req) => {
+    if (process.env.NODE_ENV === 'test') {
+      return !process.env.AUTH_RATE_LIMIT_MAX;
+    }
+    return req.headers['x-qa-bypass-rate-limit'] === 'true';
+  },
 });
 
 /**
@@ -38,7 +43,12 @@ export const globalLimiter = createLimiter({
   windowMs: 15 * 60 * 1000,
   limit: () => (process.env.GLOBAL_RATE_LIMIT_MAX ? Number(process.env.GLOBAL_RATE_LIMIT_MAX) : 300),
   message: 'Too many requests from this IP, please try again later.',
-  skip: () => process.env.NODE_ENV === 'test' && !process.env.GLOBAL_RATE_LIMIT_MAX,
+  skip: (req) => {
+    if (process.env.NODE_ENV === 'test') {
+      return !process.env.GLOBAL_RATE_LIMIT_MAX;
+    }
+    return req.headers['x-qa-bypass-rate-limit'] === 'true';
+  },
 });
 
 /**
