@@ -19,6 +19,12 @@ export function CareerCompareView({
   compareData,
   isLoading = false,
   isError = false,
+  error = null,
+  careers = [],
+  selectedA,
+  selectedB,
+  onChangeA,
+  onChangeB,
   onClear,
 }) {
   if (isLoading) {
@@ -38,11 +44,17 @@ export function CareerCompareView({
   }
 
   if (isError || !compareData) {
+    const errorMsg =
+      error?.message ||
+      (selectedA && selectedB && selectedA === selectedB
+        ? 'Cannot compare a career with itself. Please choose two different careers.'
+        : 'Could not compare the selected careers. Please try again.');
+
     return (
       <div className="p-6 bg-surface border-2 border-ink shadow-md">
         <ErrorState
-          title="COMPARISON FAILED"
-          message="Could not compare the selected careers. Please try again."
+          title="COMPARISON BLOCKED"
+          message={errorMsg}
           onRetry={onClear}
           retryLabel="CLEAR SELECTION"
         />
@@ -78,14 +90,29 @@ export function CareerCompareView({
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Career A Header */}
         <div className="p-4 bg-surface border-2 border-ink shadow-sm flex items-center justify-between">
-          <div>
-            <div className="font-mono text-xs text-muted uppercase font-bold tracking-wider">
+          <div className="flex-1 mr-3">
+            <div className="font-mono text-xs text-muted uppercase font-bold tracking-wider mb-1">
               TRACK A
             </div>
-            <h3 className="font-display font-black text-lg text-ink uppercase">
-              {a.career?.name}
-            </h3>
-            <div className="font-mono text-xs text-muted mt-1">
+            {careers && careers.length > 0 && onChangeA ? (
+              <select
+                value={selectedA || a.career?.slug}
+                onChange={(e) => onChangeA(e.target.value)}
+                className="font-display font-black text-base text-ink uppercase bg-paper border-2 border-ink px-2 py-1 shadow-2xs cursor-pointer focus:outline-none focus:ring-2 focus:ring-brand w-full max-w-[260px]"
+                aria-label="Select Career Track A"
+              >
+                {careers.map((c) => (
+                  <option key={c.slug} value={c.slug}>
+                    {c.name}
+                  </option>
+                ))}
+              </select>
+            ) : (
+              <h3 className="font-display font-black text-lg text-ink uppercase">
+                {a.career?.name}
+              </h3>
+            )}
+            <div className="font-mono text-xs text-muted mt-1.5">
               Path: {a.pathSteps ?? 0} steps · {a.effortPoints ?? 0} effort pts
             </div>
           </div>
@@ -99,14 +126,29 @@ export function CareerCompareView({
 
         {/* Career B Header */}
         <div className="p-4 bg-surface border-2 border-ink shadow-sm flex items-center justify-between">
-          <div>
-            <div className="font-mono text-xs text-muted uppercase font-bold tracking-wider">
+          <div className="flex-1 mr-3">
+            <div className="font-mono text-xs text-muted uppercase font-bold tracking-wider mb-1">
               TRACK B
             </div>
-            <h3 className="font-display font-black text-lg text-ink uppercase">
-              {b.career?.name}
-            </h3>
-            <div className="font-mono text-xs text-muted mt-1">
+            {careers && careers.length > 0 && onChangeB ? (
+              <select
+                value={selectedB || b.career?.slug}
+                onChange={(e) => onChangeB(e.target.value)}
+                className="font-display font-black text-base text-ink uppercase bg-paper border-2 border-ink px-2 py-1 shadow-2xs cursor-pointer focus:outline-none focus:ring-2 focus:ring-brand w-full max-w-[260px]"
+                aria-label="Select Career Track B"
+              >
+                {careers.map((c) => (
+                  <option key={c.slug} value={c.slug}>
+                    {c.name}
+                  </option>
+                ))}
+              </select>
+            ) : (
+              <h3 className="font-display font-black text-lg text-ink uppercase">
+                {b.career?.name}
+              </h3>
+            )}
+            <div className="font-mono text-xs text-muted mt-1.5">
               Path: {b.pathSteps ?? 0} steps · {b.effortPoints ?? 0} effort pts
             </div>
           </div>

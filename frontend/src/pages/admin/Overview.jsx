@@ -365,69 +365,76 @@ export function Overview() {
                     </tr>
                   </thead>
                   <tbody className="divide-y-2 divide-line font-mono text-xs">
-                    <tr>
-                      <td className="p-2.5 font-bold">Precision@3</td>
-                      <td className="p-2.5 text-center text-muted">
-                        {((modelInfo.metrics?.baseline?.precisionAt3 ?? 0.51) * 100).toFixed(1)}%
-                      </td>
-                      <td className="p-2.5 text-center bg-brand-light font-bold text-brand">
-                        {((modelInfo.metrics?.ml?.precisionAt3 ?? 0.72) * 100).toFixed(1)}%
-                      </td>
-                      <td className="p-2.5 text-right font-bold text-brand">
-                        +{(
-                          ((modelInfo.metrics?.ml?.precisionAt3 ?? 0.72) -
-                            (modelInfo.metrics?.baseline?.precisionAt3 ?? 0.51)) *
-                          100
-                        ).toFixed(1)}%
-                      </td>
-                    </tr>
-                    <tr>
-                      <td className="p-2.5 font-bold">Recall@3</td>
-                      <td className="p-2.5 text-center text-muted">
-                        {((modelInfo.metrics?.baseline?.recallAt3 ?? 0.44) * 100).toFixed(1)}%
-                      </td>
-                      <td className="p-2.5 text-center bg-brand-light font-bold text-brand">
-                        {((modelInfo.metrics?.ml?.recallAt3 ?? 0.65) * 100).toFixed(1)}%
-                      </td>
-                      <td className="p-2.5 text-right font-bold text-brand">
-                        +{(
-                          ((modelInfo.metrics?.ml?.recallAt3 ?? 0.65) -
-                            (modelInfo.metrics?.baseline?.recallAt3 ?? 0.44)) *
-                          100
-                        ).toFixed(1)}%
-                      </td>
-                    </tr>
-                    <tr>
-                      <td className="p-2.5 font-bold">Hit Rate@3</td>
-                      <td className="p-2.5 text-center text-muted">
-                        {((modelInfo.metrics?.baseline?.hitRateAt3 ?? 0.68) * 100).toFixed(1)}%
-                      </td>
-                      <td className="p-2.5 text-center bg-brand-light font-bold text-brand">
-                        {((modelInfo.metrics?.ml?.hitRateAt3 ?? 0.88) * 100).toFixed(1)}%
-                      </td>
-                      <td className="p-2.5 text-right font-bold text-brand">
-                        +{(
-                          ((modelInfo.metrics?.ml?.hitRateAt3 ?? 0.88) -
-                            (modelInfo.metrics?.baseline?.hitRateAt3 ?? 0.68)) *
-                          100
-                        ).toFixed(1)}%
-                      </td>
-                    </tr>
-                    <tr>
-                      <td className="p-2.5 font-bold">MRR (Mean Reciprocal Rank)</td>
-                      <td className="p-2.5 text-center text-muted">
-                        {(modelInfo.metrics?.baseline?.mrr ?? 0.58).toFixed(2)}
-                      </td>
-                      <td className="p-2.5 text-center bg-brand-light font-bold text-brand">
-                        {(modelInfo.metrics?.ml?.mrr ?? 0.76).toFixed(2)}
-                      </td>
-                      <td className="p-2.5 text-right font-bold text-brand">
-                        +{(
-                          (modelInfo.metrics?.ml?.mrr ?? 0.76) -
-                          (modelInfo.metrics?.baseline?.mrr ?? 0.58)
-                        ).toFixed(2)}
-                      </td>
-                    </tr>
+                    {(() => {
+                      const mlP = modelInfo.metrics?.ml?.precisionAt3 ?? modelInfo.ml?.precision_at_3 ?? 0.196;
+                      const baseP = modelInfo.metrics?.baseline?.precisionAt3 ?? modelInfo.baseline?.precision_at_3 ?? 0.197;
+                      const deltaP = (mlP - baseP) * 100;
+
+                      const mlR = modelInfo.metrics?.ml?.recallAt3 ?? modelInfo.ml?.recall_at_3 ?? 0.587;
+                      const baseR = modelInfo.metrics?.baseline?.recallAt3 ?? modelInfo.baseline?.recall_at_3 ?? 0.591;
+                      const deltaR = (mlR - baseR) * 100;
+
+                      const mlH = modelInfo.metrics?.ml?.hitRateAt3 ?? modelInfo.ml?.hit_rate_at_3 ?? 0.587;
+                      const baseH = modelInfo.metrics?.baseline?.hitRateAt3 ?? modelInfo.baseline?.hit_rate_at_3 ?? 0.591;
+                      const deltaH = (mlH - baseH) * 100;
+
+                      const mlM = modelInfo.metrics?.ml?.mrr ?? modelInfo.ml?.mrr ?? 0.473;
+                      const baseM = modelInfo.metrics?.baseline?.mrr ?? modelInfo.baseline?.mrr ?? 0.464;
+                      const deltaM = mlM - baseM;
+
+                      return (
+                        <>
+                          <tr>
+                            <td className="p-2.5 font-bold">Precision@3</td>
+                            <td className="p-2.5 text-center text-muted">
+                              {(baseP * 100).toFixed(1)}%
+                            </td>
+                            <td className="p-2.5 text-center bg-brand-light font-bold text-brand">
+                              {(mlP * 100).toFixed(1)}%
+                            </td>
+                            <td className="p-2.5 text-right font-bold text-brand">
+                              {deltaP >= 0 ? `+${deltaP.toFixed(1)}%` : `${deltaP.toFixed(1)}%`}
+                            </td>
+                          </tr>
+                          <tr>
+                            <td className="p-2.5 font-bold">Recall@3</td>
+                            <td className="p-2.5 text-center text-muted">
+                              {(baseR * 100).toFixed(1)}%
+                            </td>
+                            <td className="p-2.5 text-center bg-brand-light font-bold text-brand">
+                              {(mlR * 100).toFixed(1)}%
+                            </td>
+                            <td className="p-2.5 text-right font-bold text-brand">
+                              {deltaR >= 0 ? `+${deltaR.toFixed(1)}%` : `${deltaR.toFixed(1)}%`}
+                            </td>
+                          </tr>
+                          <tr>
+                            <td className="p-2.5 font-bold">Hit Rate@3</td>
+                            <td className="p-2.5 text-center text-muted">
+                              {(baseH * 100).toFixed(1)}%
+                            </td>
+                            <td className="p-2.5 text-center bg-brand-light font-bold text-brand">
+                              {(mlH * 100).toFixed(1)}%
+                            </td>
+                            <td className="p-2.5 text-right font-bold text-brand">
+                              {deltaH >= 0 ? `+${deltaH.toFixed(1)}%` : `${deltaH.toFixed(1)}%`}
+                            </td>
+                          </tr>
+                          <tr>
+                            <td className="p-2.5 font-bold">MRR (Mean Reciprocal Rank)</td>
+                            <td className="p-2.5 text-center text-muted">
+                              {baseM.toFixed(2)}
+                            </td>
+                            <td className="p-2.5 text-center bg-brand-light font-bold text-brand">
+                              {mlM.toFixed(2)}
+                            </td>
+                            <td className="p-2.5 text-right font-bold text-brand">
+                              {deltaM >= 0 ? `+${deltaM.toFixed(2)}` : `${deltaM.toFixed(2)}`}
+                            </td>
+                          </tr>
+                        </>
+                      );
+                    })()}
                   </tbody>
                 </table>
               </div>

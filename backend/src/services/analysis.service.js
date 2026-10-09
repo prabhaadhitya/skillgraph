@@ -392,6 +392,9 @@ export async function compareCareersAnalysis(userId, slugA, slugB) {
   if (!slugA || !slugB) {
     throw new ApiError(400, 'VALIDATION_ERROR', 'Both career slugs "a" and "b" are required');
   }
+  if (slugA === slugB) {
+    throw new ApiError(400, 'VALIDATION_ERROR', 'Cannot compare a career with itself. Please choose two different careers.');
+  }
 
   const [{ career: careerA, model: modelA }, { career: careerB, model: modelB }, profile] =
     await Promise.all([

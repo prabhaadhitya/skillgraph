@@ -38,6 +38,9 @@ export async function getCareerFit(careerSlug) {
  * @returns {Promise<Object>}
  */
 export async function compareCareers(a, b) {
+  if (a && b && a === b) {
+    throw new Error('Cannot compare a career with itself. Please choose two different careers.');
+  }
   if (USE_MOCKS) {
     const data = JSON.parse(JSON.stringify(mockCompareData));
     data.a.career.slug = a;

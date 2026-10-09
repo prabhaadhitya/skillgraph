@@ -57,6 +57,10 @@ export function CareerExplorer() {
   // Handlers
   const handleToggleCompare = (slug) => {
     setSelectedSlugs((prev) => {
+      if (prev.length === 1 && prev[0] === slug) {
+        toast.info('Cannot compare a career with itself. Please select a different career to compare.');
+        return prev;
+      }
       if (prev.includes(slug)) {
         return prev.filter((s) => s !== slug);
       }
@@ -189,6 +193,12 @@ export function CareerExplorer() {
             compareData={compareQuery.data}
             isLoading={compareQuery.isLoading}
             isError={compareQuery.isError}
+            error={compareQuery.error}
+            careers={careers}
+            selectedA={selectedSlugs[0]}
+            selectedB={selectedSlugs[1]}
+            onChangeA={(slugA) => setSelectedSlugs([slugA, selectedSlugs[1]])}
+            onChangeB={(slugB) => setSelectedSlugs([selectedSlugs[0], slugB])}
             onClear={handleClearCompare}
           />
         </div>

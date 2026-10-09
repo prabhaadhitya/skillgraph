@@ -58,7 +58,7 @@ export function useCareerCompare(a, b) {
   return useQuery({
     queryKey: ['career-compare', a, b],
     queryFn: () => compareCareers(a, b),
-    enabled: Boolean(a && b && a !== b),
+    enabled: Boolean(a && b),
     staleTime: 5 * 60 * 1000,
   });
 }

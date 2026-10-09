@@ -6,6 +6,7 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
+  Legend,
 } from 'recharts';
 import EmptyState from '../ui/EmptyState.jsx';
 import ChartTooltip from './ChartTooltip.jsx';
@@ -85,8 +86,18 @@ export function AlignmentLineChart({ data = [], className = '' }) {
               stroke="var(--color-ink)"
               domain={[0, 100]}
               tick={{ fill: 'var(--color-ink)', fontSize: 11, fontFamily: 'var(--font-mono)' }}
+              tickFormatter={(val) => `${val}%`}
             />
             <Tooltip content={<ChartTooltip unit="%" />} />
+            <Legend
+              wrapperStyle={{
+                fontFamily: 'var(--font-mono)',
+                fontSize: '11px',
+                textTransform: 'uppercase',
+                color: 'var(--color-ink)',
+                paddingTop: '6px',
+              }}
+            />
             <Line
               type="monotone"
               dataKey="fitScore"

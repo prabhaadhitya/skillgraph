@@ -60,15 +60,19 @@ export function WhatIfModal({
 
               <div className="flex flex-col items-center justify-center px-2">
                 <ArrowRight size={20} className="text-muted" />
-                {data.delta >= 0 ? (
+                {data.delta > 0 ? (
                   <span className="inline-flex items-center gap-0.5 px-2 py-0.5 mt-1 border-2 border-ink bg-brand text-white font-mono text-xs font-bold shadow-2xs">
                     <TrendingUp size={12} />
                     +{data.delta}%
                   </span>
-                ) : (
+                ) : data.delta < 0 ? (
                   <span className="inline-flex items-center gap-0.5 px-2 py-0.5 mt-1 border-2 border-ink bg-paper text-ink font-mono text-xs font-bold shadow-2xs">
                     <TrendingDown size={12} />
                     {data.delta}%
+                  </span>
+                ) : (
+                  <span className="inline-flex items-center gap-0.5 px-2 py-0.5 mt-1 border-2 border-ink bg-paper text-ink font-mono text-xs font-bold shadow-2xs">
+                    0% (No change)
                   </span>
                 )}
               </div>
