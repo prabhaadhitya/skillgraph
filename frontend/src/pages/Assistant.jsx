@@ -64,6 +64,8 @@ export function Assistant() {
             setError('Too many requests. Slow down a little and try again in a minute.');
           } else if (err?.status === 502) {
             setError('Upstream AI service error (502). Please try again shortly.');
+          } else {
+            setError('Could not load chat history. You can still send messages.');
           }
         }
       });

@@ -379,4 +379,287 @@ describe('services/ai/orchestrator (L1 to L8 tests)', () => {
     expect(res.reply).toContain('Statistics is recommended');
     expect(res.grounding.skills).toContain('statistics');
   });
+
+  // -------------------------------------------------------------
+  // Failure Matrix Case a: Shared key available -> normal answer, keySource: server
+  // -------------------------------------------------------------
+  it('Case a: No user key, shared key available returns normal answer with keySource server', async () => {
+    const fakeClient = {
+      chat: vi.fn(async () => ({
+        content: 'Python is essential for data processing in ML.',
+      })),
+    };
+
+    const res = await orchestrateChat({
+      userId: 'user-server-key',
+      message: 'Why should I learn Python?',
+      deps: baseDeps,
+      models: mockModels,
+      env: baseEnv,
+      openrouterClient: fakeClient,
+    });
+
+    expect(res.keySource).toBe('server');
+    expect(res.degraded).toBe(false);
+    expect(res.reply).toContain('Python');
+  });
+
+  // -------------------------------------------------------------
+  // Failure Matrix Case c: User key invalid (401 from OpenRouter)
+  // -------------------------------------------------------------
+  it('Case c: User key invalid (401 from OpenRouter) falls back to template with readable notice', async () => {
+    const fakeClient = {
+      chat: vi.fn(async () => {
+        throw new LlmError('auth', 'OpenRouter authentication failed (status 401)');
+      }),
+    };
+
+    const res = await orchestrateChat({
+      userId: 'user-alice',
+      message: 'Why should I learn Python?',
+      deps: baseDeps,
+      models: mockModels,
+      env: baseEnv,
+      openrouterClient: fakeClient,
+    });
+
+    expect(res.degraded).toBe(true);
+    expect(res.notice).toContain('Your OpenRouter key was rejected');
+    expect(res.reply).toBeDefined();
+    expect(res.reply).toContain('Python');
+  });
+
+  // -------------------------------------------------------------
+  // Failure Matrix Case e: OpenRouter returns 429
+  // -------------------------------------------------------------
+  it('Case e: OpenRouter returns 429 -> template answer, degraded true, no crash', async () => {
+    const fakeClient = {
+      chat: vi.fn(async () => {
+        throw new LlmError('rate_limit', 'OpenRouter rate limit exceeded (status 429)');
+      }),
+    };
+
+    const res = await orchestrateChat({
+      userId: 'user-alice',
+      message: 'Why should I learn Python?',
+      deps: baseDeps,
+      models: mockModels,
+      env: baseEnv,
+      openrouterClient: fakeClient,
+    });
+
+    expect(res.degraded).toBe(true);
+    expect(res.reply).toBeDefined();
+    expect(res.reply).toContain('Python');
+  });
+
+  // -------------------------------------------------------------
+  // Failure Matrix Case g: Model name does not exist (404)
+  // -------------------------------------------------------------
+  it('Case g: Model name does not exist -> clear message notice and template fallback', async () => {
+    const fakeClient = {
+      chat: vi.fn(async () => {
+        throw new LlmError('bad_model', "Model 'nonexistent-model' not found on OpenRouter");
+      }),
+    };
+
+    const res = await orchestrateChat({
+      userId: 'user-alice',
+      message: 'Why should I learn Python?',
+      deps: baseDeps,
+      models: mockModels,
+      env: baseEnv,
+      openrouterClient: fakeClient,
+    });
+
+    expect(res.degraded).toBe(true);
+    expect(res.notice).toContain('not found on OpenRouter');
+    expect(res.reply).toBeDefined();
+  });
+
+  // -------------------------------------------------------------
+  // Failure Matrix Case i: Database error during chat message persistence
+  // -------------------------------------------------------------
+  it('Case i: Database error on message persistence does not crash chat response', async () => {
+    const failingModels = {
+      ...mockModels,
+      ChatMessage: {
+        find: vi.fn(() => ({
+          sort: vi.fn(() => ({
+            limit: vi.fn(() => ({
+              lean: vi.fn(async () => {
+                throw new Error('Database connection timeout');
+              }),
+            })),
+          })),
+        })),
+        create: vi.fn(async () => {
+          throw new Error('Database write error');
+        }),
+      },
+    };
+
+    const fakeClient = {
+      chat: vi.fn(async () => ({
+        content: 'Python is a core language for ML.',
+      })),
+    };
+
+    const res = await orchestrateChat({
+      userId: 'user-alice',
+      message: 'Why should I learn Python?',
+      deps: baseDeps,
+      models: failingModels,
+      env: baseEnv,
+      openrouterClient: fakeClient,
+    });
+
+    // Chat successfully answers even if ChatMessage database operations fail
+    expect(res.reply).toContain('Python');
+    expect(res.degraded).toBe(false);
+  });
+
+  // -------------------------------------------------------------
+  // Key safety audit: "sk-or-TESTKEY123" triggered in upstream error
+  // -------------------------------------------------------------
+  it('Key safety audit: sk-or-TESTKEY123 in upstream error never leaks to response or logs', async () => {
+    const logSpy = vi.spyOn(console, 'log');
+    const errSpy = vi.spyOn(console, 'error');
+    const warnSpy = vi.spyOn(console, 'warn');
+    const sensitiveKey = 'sk-or-TESTKEY123';
+
+    const failingClient = {
+      chat: vi.fn(async () => {
+        throw new Error(`OpenRouter rejected Bearer ${sensitiveKey}: invalid authorization header`);
+      }),
+    };
+
+    const res = await orchestrateChat({
+      userId: 'user-alice',
+      message: 'Why Python?',
+      deps: baseDeps,
+      models: mockModels,
+      env: baseEnv,
+      openrouterClient: failingClient,
+    });
+
+    const allLogged = [
+      ...logSpy.mock.calls.flat(),
+      ...errSpy.mock.calls.flat(),
+      ...warnSpy.mock.calls.flat(),
+    ].join(' ');
+
+    expect(allLogged).not.toContain('TESTKEY123');
+    expect(JSON.stringify(res)).not.toContain('TESTKEY123');
+
+    logSpy.mockRestore();
+    errSpy.mockRestore();
+    warnSpy.mockRestore();
+  });
+
+  // -------------------------------------------------------------
+  // Step 5: Out of scope prompt gets polite redirect and costs no second LLM call
+  // -------------------------------------------------------------
+  it('Step 5: out_of_scope question gets polite redirect and costs 0 compose LLM calls', async () => {
+    const fakeClient = {
+      chat: vi.fn(),
+    };
+
+    const res = await orchestrateChat({
+      userId: 'user-alice',
+      message: 'Write me a poem about the sea.',
+      deps: baseDeps,
+      models: mockModels,
+      env: baseEnv,
+      openrouterClient: fakeClient,
+    });
+
+    expect(res.intent).toBe('out_of_scope');
+    expect(res.reply).toContain('I can only help with questions about your skills');
+    // Local keywordRouter recognized off-topic query, so client.chat was never called
+    expect(fakeClient.chat).not.toHaveBeenCalled();
+  });
+
+  // -------------------------------------------------------------
+  // Failure Matrix Case j: 500-character message is accepted
+  // -------------------------------------------------------------
+  it('Case j: 500-character message is accepted and processed', async () => {
+    const fakeClient = {
+      chat: vi.fn(async () => ({
+        content: 'Response to 500-character question.',
+      })),
+    };
+
+    const message500 = 'Why should I learn Python? ' + 'A'.repeat(473);
+    expect(message500.length).toBe(500);
+
+    const res = await orchestrateChat({
+      userId: 'user-alice',
+      message: message500,
+      deps: baseDeps,
+      models: mockModels,
+      env: baseEnv,
+      openrouterClient: fakeClient,
+    });
+
+    expect(res.reply).toBeDefined();
+    expect(res.reply).toContain('500-character');
+  });
+
+  // -------------------------------------------------------------
+  // Step 3: Daily cap atomic update cannot be bypassed by parallel requests
+  // -------------------------------------------------------------
+  it('Step 3: Atomic server key quota updates prevent bypass under concurrent requests', async () => {
+    let storedCount = 29;
+    const atomicMockUser = {
+      ...mockModels.User,
+      findOneAndUpdate: vi.fn(async (filter, update) => {
+        // If filter requires count < 30
+        if (filter['serverKeyUsage.count']?.$lt !== undefined) {
+          if (storedCount < filter['serverKeyUsage.count'].$lt) {
+            storedCount += update.$inc['serverKeyUsage.count'];
+            return { serverKeyUsage: { count: storedCount } };
+          }
+          return null; // Condition not met (already capped)
+        }
+        return null;
+      }),
+    };
+
+    const modelsWithAtomic = {
+      ...mockModels,
+      User: atomicMockUser,
+    };
+
+    const fakeClient = {
+      chat: vi.fn(async () => ({
+        content: 'Answer from server key.',
+      })),
+    };
+
+    // First request when count is 29 -> succeeds and increments to 30
+    await orchestrateChat({
+      userId: 'user-server-key',
+      message: 'Why should I learn Python?',
+      deps: baseDeps,
+      models: modelsWithAtomic,
+      env: baseEnv,
+      openrouterClient: fakeClient,
+    });
+
+    expect(storedCount).toBe(30);
+
+    // Second request when count is 30 -> filter { $lt: 30 } blocks increment
+    await orchestrateChat({
+      userId: 'user-server-key',
+      message: 'Why should I learn Python?',
+      deps: baseDeps,
+      models: modelsWithAtomic,
+      env: baseEnv,
+      openrouterClient: fakeClient,
+    });
+
+    // Stored count cannot exceed 30
+    expect(storedCount).toBe(30);
+  });
 });

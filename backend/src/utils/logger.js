@@ -24,7 +24,7 @@ const sanitize = (val) => {
       return {
         name: val.name,
         message: sanitize(val.message),
-        stack: val.stack,
+        stack: typeof val.stack === 'string' ? sanitize(val.stack) : val.stack,
       };
     }
 

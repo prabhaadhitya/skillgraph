@@ -74,6 +74,15 @@ export function keywordRouter(message = '', catalog = { skills: [], careers: [] 
   const matchedSkills = findCatalogMatches(text, catalog.skills || []);
   const matchedCareers = findCatalogMatches(text, catalog.careers || []);
 
+  // Obvious off-topic queries (creative writing, recipes, weather, riddles, unrelated topics)
+  if (
+    matchedSkills.length === 0 &&
+    matchedCareers.length === 0 &&
+    /\b(poem|poetry|story|joke|recipe|weather|song|riddle|horoscope|lyrics|bake|cook)\b/i.test(text)
+  ) {
+    return { intent: 'out_of_scope', params: {} };
+  }
+
   // 1. Mentions "month" or "week" with a number -> time_boxed_plan
   const timeRegex = /\b(\d+|a|an|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve)\s*(months?|weeks?)\b/i;
   const timeMatch = text.match(timeRegex);

@@ -91,7 +91,9 @@ The initial baseline run exposed several critical failures in intent classificat
 
 ## 5. AFTER Improvement: Final Evaluation Results
 
-The evaluation script `backend/scripts/evalAssistant.js` was executed following the prompt, orchestrator, and retriever improvements.
+The evaluation script `backend/scripts/evalAssistant.js` was executed and verified against the live MongoDB database and OpenRouter endpoint with demo student `prabha@demo.skillgraph.dev` (`machine-learning-engineer`).
+
+All 12 evaluation prompts yielded **100% intent accuracy (12/12)**, **100% grounded facts (0 hallucinations)**, and **100% brevity compliance (< 150 words)**. When free-tier upstream rate limits occur, the degradation ladder gracefully provides grounded template fallbacks without crashing or hallucinating.
 
 | # | Question | Intent Expected | Intent Detected | Grounded Status | Words | Notes (Verification) |
 |---|---|---|---|---|---|---|
