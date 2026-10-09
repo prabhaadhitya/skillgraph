@@ -7,6 +7,7 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
+  Legend,
 } from 'recharts';
 import ChartTooltip from './ChartTooltip.jsx';
 
@@ -75,14 +76,17 @@ export function CategoryBarChart({ data = [], className = '' }) {
             <XAxis
               dataKey="name"
               stroke="var(--color-ink)"
-              tick={{ fill: 'var(--color-ink)', fontSize: 11, fontFamily: 'var(--font-sans)' }}
-              angle={-20}
+              tick={{ fill: 'var(--color-ink)', fontSize: 10, fontFamily: 'var(--font-sans)' }}
+              tickFormatter={(val) => (val && val.length > 10 ? `${val.slice(0, 9)}…` : val)}
+              angle={-25}
               textAnchor="end"
               interval={0}
+              height={45}
             />
             <YAxis
               stroke="var(--color-ink)"
               tick={{ fill: 'var(--color-ink)', fontSize: 11, fontFamily: 'var(--font-mono)' }}
+              tickFormatter={(val) => (metric === 'avgLevel' ? `Lv ${val}` : val)}
               domain={metric === 'avgLevel' ? [0, 5] : [0, 'auto']}
               allowDecimals={metric === 'avgLevel'}
             />
@@ -92,6 +96,15 @@ export function CategoryBarChart({ data = [], className = '' }) {
                   unit={metric === 'avgLevel' ? ' / 5' : ''}
                 />
               }
+            />
+            <Legend
+              wrapperStyle={{
+                fontFamily: 'var(--font-mono)',
+                fontSize: '11px',
+                textTransform: 'uppercase',
+                color: 'var(--color-ink)',
+                paddingTop: '6px',
+              }}
             />
             <Bar
               dataKey={metric}

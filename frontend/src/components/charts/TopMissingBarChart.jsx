@@ -6,7 +6,9 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
+  Legend,
 } from 'recharts';
+import EmptyState from '../ui/EmptyState.jsx';
 import ChartTooltip from './ChartTooltip.jsx';
 
 /**
@@ -17,6 +19,16 @@ import ChartTooltip from './ChartTooltip.jsx';
  * @param {string} [props.className]
  */
 export function TopMissingBarChart({ data = [], className = '' }) {
+  if (!data || data.length === 0) {
+    return (
+      <EmptyState
+        title="No missing skills"
+        text="All required skills for this career track are mastered."
+        className={className}
+      />
+    );
+  }
+
   const chartData = data.map((item) => ({
     name: item.skill?.name || item.skill?.slug || 'Skill',
     gap: item.gap,
@@ -51,13 +63,15 @@ export function TopMissingBarChart({ data = [], className = '' }) {
               domain={[0, 5]}
               stroke="var(--color-ink)"
               tick={{ fill: 'var(--color-ink)', fontSize: 11, fontFamily: 'var(--font-mono)' }}
+              tickFormatter={(val) => `${val} lvls`}
             />
             <YAxis
               type="category"
               dataKey="name"
               stroke="var(--color-ink)"
-              tick={{ fill: 'var(--color-ink)', fontSize: 11, fontFamily: 'var(--font-sans)' }}
-              width={130}
+              tick={{ fill: 'var(--color-ink)', fontSize: 10, fontFamily: 'var(--font-sans)' }}
+              tickFormatter={(val) => (val && val.length > 13 ? `${val.slice(0, 12)}…` : val)}
+              width={105}
             />
             <Tooltip
               content={({ active, payload, label }) => {
@@ -75,6 +89,15 @@ export function TopMissingBarChart({ data = [], className = '' }) {
                     }
                   />
                 );
+              }}
+            />
+            <Legend
+              wrapperStyle={{
+                fontFamily: 'var(--font-mono)',
+                fontSize: '11px',
+                textTransform: 'uppercase',
+                color: 'var(--color-ink)',
+                paddingTop: '6px',
               }}
             />
             <Bar

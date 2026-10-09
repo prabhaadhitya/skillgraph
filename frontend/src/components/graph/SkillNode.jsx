@@ -75,7 +75,7 @@ export const SkillNode = memo(function SkillNode({ id, data = {}, selected = fal
       onKeyDown={handleKeyDown}
       onClick={handleTrigger}
       style={{ width: '168px', height: '64px' }}
-      className={`relative w-[168px] h-[64px] p-2 border-2 border-ink rounded-lg text-ink select-none flex flex-col justify-between transition-all duration-120 ease-out cursor-pointer focus:outline-none focus-visible:outline-3 focus-visible:outline-brand focus-visible:outline-offset-2 ${config.bgClass} ${
+      className={`relative w-[168px] h-[64px] p-2 border-2 border-ink rounded-none text-ink select-none flex flex-col justify-between transition-all duration-120 ease-out cursor-pointer focus:outline-none focus-visible:outline-3 focus-visible:outline-brand focus-visible:outline-offset-2 ${config.bgClass} ${
         selected
           ? 'shadow-lg outline-3 outline-brand outline-offset-[2px]'
           : 'shadow-sm hover:shadow-md'

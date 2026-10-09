@@ -372,6 +372,18 @@ describe('Analysis Endpoints (/api/analysis)', () => {
       expect(res.status).toBe(400);
       expect(res.body.success).toBe(false);
     });
+
+    it('returns 400 with friendly message when comparing a career with itself', async () => {
+      const res = await request(app)
+        .get('/api/analysis/career-compare?a=machine-learning-engineer&b=machine-learning-engineer')
+        .set('Cookie', prabhaCookie);
+
+      expect(res.status).toBe(400);
+      expect(res.body.success).toBe(false);
+      expect(res.body.error.code).toBe('VALIDATION_ERROR');
+      const detail = res.body.error.details?.find((d) => d.field === 'b');
+      expect(detail?.message).toMatch(/cannot compare a career with itself/i);
+    });
   });
 
   describe('A14: After skill PATCH dashboard score changes and previousScore is present', () => {

@@ -44,7 +44,11 @@ export const careerCompareQuerySchema = z
       .trim()
       .regex(slugRegex, 'Career slug "b" must be kebab-case'),
   })
-  .strict();
+  .strict()
+  .refine((data) => data.a !== data.b, {
+    message: 'Cannot compare a career with itself. Please choose two different careers.',
+    path: ['b'],
+  });
 
 export default {
   careerQuerySchema,
