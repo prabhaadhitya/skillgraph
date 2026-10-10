@@ -45,7 +45,7 @@ Rules: authorisation is enforced in middleware (`auth` → `requireRole`) **and*
 3. Field is `select: false` and removed by `toJSON`. API returns only `hasKey` and `keyLast4`.
 4. Decryption happens inside the LLM service for the duration of one request. The decrypted value is not assigned to any object that is logged, not attached to `req`, and not included in error messages. Error handlers strip `Authorization` headers.
 5. Rotating `LLM_KEY_ENCRYPTION_SECRET` invalidates stored keys; users are asked to re-enter them (acceptable for the project).
-6. The fallback server key (`OPENROUTER_API_KEY`) lives only in backend env; usage per user per day is counted in `serverKeyUsage` and capped by `SERVER_KEY_DAILY_LIMIT`.
+6. The fallback server key (`OPENROUTER_API_KEY`) lives only in backend env; usage per user per day is counted in `serverKeyUsage` and capped by `SERVER_KEY_DAILY_LIMIT`. Quota enforcement is concurrency-safe via atomic reservations (`findOneAndUpdate` with `{ 'serverKeyUsage.count': { $lt: dailyLimit } }`) before outbound OpenRouter calls. Failed or timed-out requests (resulting in degraded template fallbacks) refund the reserved quota slot. BYOK users bypass server quota reservation entirely and enjoy unlimited chat. Obvious off-topic queries resolved locally by keyword routing consume no server quota.
 7. Tell users plainly (UI copy) that the key is stored encrypted on our server and can be removed anytime.
 
 **Honest limit:** if an attacker gets both the database and the backend environment, keys can be decrypted. That is why keys are optional and users should use a restricted/free-tier key.
@@ -68,6 +68,8 @@ Rules: authorisation is enforced in middleware (`auth` → `requireRole`) **and*
 - CSRF: cookies are `SameSite=Lax`, API accepts JSON only, state-changing routes are non-GET, and CORS is locked to one origin. This is adequate for the project; if the frontend and API are ever on different sites, add a CSRF token.
 - Rate limits (`express-rate-limit`): auth 10/15 min/IP; AI 20/min/user; global 300/15 min/IP. Return `429 RATE_LIMITED`.
 - `app.disable('x-powered-by')`; `trust proxy` only when deployed behind a proxy.
+- **Open redirect prevention**: Login `next` query parameter and navigation adapter redirects are strictly sanitized (`urlValidation.js`) against approved internal route prefixes (`/`, `/app/*`, `/admin/*`, `/onboarding/*`, `/_kit/*`). External URLs, protocol-relative paths (`//evil.com`), backslash bypasses (`/\evil.com`), control characters, and post-login loop paths (`/login`, `/register`) are blocked and fall back safely to role-appropriate defaults.
+- **Client endpoint trust policy**: `sendRequest` validates all API targets against trusted origins (`VITE_API_URL` and browser origin). Untrusted or external destinations throw an `UNTRUSTED_ENDPOINT` error before `fetch` is called, ensuring authenticated cookies (`credentials: 'include'`) and CSRF tokens are never sent to unauthorized hosts.
 
 ## 8. Secrets and configuration
 - `.env` files are **gitignored**; commit `.env.example` with placeholder values only.

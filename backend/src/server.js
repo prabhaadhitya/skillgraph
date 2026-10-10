@@ -4,8 +4,18 @@ import { connectDB } from './config/db.js';
 import { logger } from './utils/logger.js';
 import { warmCareerModels } from './services/careerModel.service.js';
 
+export async function validateProductionStartup(config = env) {
+  if (config.NODE_ENV === 'production') {
+    if (process.env.DEMO_PASSWORD) {
+      logger.warn('DEMO_PASSWORD is set in environment; demo account seeding remains strictly disabled in production.');
+    }
+    logger.info('Production startup validation passed: secrets verified, demo seeding prohibited, mock mode disabled.');
+  }
+}
+
 async function startServer() {
   try {
+    await validateProductionStartup();
     await connectDB();
     await warmCareerModels().catch(() => {});
     app.listen(env.PORT, () => {

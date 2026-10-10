@@ -13,29 +13,84 @@ import {
 } from './engine/index.js';
 import { getNextSkills as getNextSkillsRec } from './recommendation.service.js';
 import { ApiError } from '../utils/ApiError.js';
+import { BoundedCache } from '../utils/cache.js';
 
-// In-memory cache for resolved student target career slugs (30s TTL)
-const userCareerCache = new Map();
+// In-memory bounded cache for resolved student target career slugs (30s TTL, max 1000 entries, LRU eviction)
 const CAREER_CACHE_TTL_MS = 30 * 1000;
+const userCareerCache = new BoundedCache({
+  maxSize: 1000,
+  ttlMs: CAREER_CACHE_TTL_MS,
+  name: 'userCareerCache',
+});
+
+/**
+ * Check whether a student's target career is currently cached in memory.
+ *
+ * @param {string|import('mongoose').Types.ObjectId} userId
+ * @returns {boolean}
+ */
+export function isUserCareerCached(userId) {
+  if (!userId) return false;
+  return userCareerCache.has(userId.toString());
+}
+
+/**
+ * Get cached student target career slug, or null if expired/absent.
+ *
+ * @param {string|import('mongoose').Types.ObjectId} userId
+ * @returns {string|null}
+ */
+export function getCachedUserCareer(userId) {
+  if (!userId) return null;
+  const slug = userCareerCache.get(userId.toString());
+  return slug || null;
+}
+
+/**
+ * Invalidate cached target career for a user, or all users if no userId given.
+ *
+ * @param {string|import('mongoose').Types.ObjectId} [userId]
+ */
+export function invalidateUserCareer(userId) {
+  if (userId) {
+    userCareerCache.delete(userId.toString());
+  } else {
+    userCareerCache.clear();
+  }
+}
+
+/**
+ * Diagnostic access to user career cache instance.
+ *
+ * @returns {BoundedCache}
+ */
+export function getUserCareerCache() {
+  return userCareerCache;
+}
 
 /**
  * Resolve target career slug from request query or user's target career.
  *
  * @param {string|import('mongoose').Types.ObjectId} userId
  * @param {string} [requestedCareerSlug]
+ * @param {Object} [options={}]
+ * @param {boolean} [options.useCache]
  * @returns {Promise<string>} Career slug
  */
-export async function resolveCareerSlug(userId, requestedCareerSlug) {
+export async function resolveCareerSlug(userId, requestedCareerSlug, options = {}) {
   if (requestedCareerSlug && typeof requestedCareerSlug === 'string' && requestedCareerSlug.trim()) {
     return requestedCareerSlug.trim();
   }
 
   const key = userId.toString();
-  const now = Date.now();
-  if (process.env.NODE_ENV !== 'test') {
+  const isCacheEnabled =
+    options.useCache ??
+    (process.env.ENABLE_CAREER_CACHE === 'true' || process.env.NODE_ENV !== 'test');
+
+  if (isCacheEnabled) {
     const cached = userCareerCache.get(key);
-    if (cached && cached.expiresAt > now) {
-      return cached.slug;
+    if (cached) {
+      return cached;
     }
   }
 
@@ -54,19 +109,11 @@ export async function resolveCareerSlug(userId, requestedCareerSlug) {
     throw new ApiError(422, 'RULE_VIOLATION', 'No career specified and user has no target career set');
   }
 
-  if (process.env.NODE_ENV !== 'test') {
-    userCareerCache.set(key, { slug, expiresAt: now + CAREER_CACHE_TTL_MS });
+  if (isCacheEnabled) {
+    userCareerCache.set(key, slug);
   }
 
   return slug;
-}
-
-export function invalidateUserCareer(userId) {
-  if (userId) {
-    userCareerCache.delete(userId.toString());
-  } else {
-    userCareerCache.clear();
-  }
 }
 
 
@@ -75,12 +122,13 @@ export function invalidateUserCareer(userId) {
  *
  * @param {string} userId
  * @param {string} [requestedCareerSlug]
+ * @param {Object} [options={}]
  * @returns {Promise<Object>}
  */
-export async function getSkillGapAnalysis(userId, requestedCareerSlug) {
+export async function getSkillGapAnalysis(userId, requestedCareerSlug, options = {}) {
   const [careerSlug, profile] = await Promise.all([
-    resolveCareerSlug(userId, requestedCareerSlug),
-    getProfileMap(userId),
+    resolveCareerSlug(userId, requestedCareerSlug, options),
+    getProfileMap(userId, options),
   ]);
   const { career, model } = await getCareerModel(careerSlug);
 
@@ -101,12 +149,13 @@ export async function getSkillGapAnalysis(userId, requestedCareerSlug) {
  *
  * @param {string} userId
  * @param {string} [requestedCareerSlug]
+ * @param {Object} [options={}]
  * @returns {Promise<Object>}
  */
-export async function getCareerFitAnalysis(userId, requestedCareerSlug) {
+export async function getCareerFitAnalysis(userId, requestedCareerSlug, options = {}) {
   const [careerSlug, profile] = await Promise.all([
-    resolveCareerSlug(userId, requestedCareerSlug),
-    getProfileMap(userId),
+    resolveCareerSlug(userId, requestedCareerSlug, options),
+    getProfileMap(userId, options),
   ]);
   const { career, model } = await getCareerModel(careerSlug);
 
@@ -136,12 +185,13 @@ export async function getCareerFitAnalysis(userId, requestedCareerSlug) {
  *
  * @param {string} userId
  * @param {string} [requestedCareerSlug]
+ * @param {Object} [options={}]
  * @returns {Promise<Object>}
  */
-export async function getLearningPathAnalysis(userId, requestedCareerSlug) {
+export async function getLearningPathAnalysis(userId, requestedCareerSlug, options = {}) {
   const [careerSlug, profile] = await Promise.all([
-    resolveCareerSlug(userId, requestedCareerSlug),
-    getProfileMap(userId),
+    resolveCareerSlug(userId, requestedCareerSlug, options),
+    getProfileMap(userId, options),
   ]);
   const { career, model } = await getCareerModel(careerSlug);
 
@@ -167,10 +217,11 @@ export async function getLearningPathAnalysis(userId, requestedCareerSlug) {
  * @param {boolean} [options.related=false]
  * @returns {Promise<Object>}
  */
-export async function getGraphAnalysis(userId, requestedCareerSlug, { related = false } = {}) {
+export async function getGraphAnalysis(userId, requestedCareerSlug, options = {}) {
+  const related = Boolean(options.related);
   const [careerSlug, profile] = await Promise.all([
-    resolveCareerSlug(userId, requestedCareerSlug),
-    getProfileMap(userId),
+    resolveCareerSlug(userId, requestedCareerSlug, options),
+    getProfileMap(userId, options),
   ]);
   const { career, model } = await getCareerModel(careerSlug);
 
@@ -192,12 +243,13 @@ export async function getGraphAnalysis(userId, requestedCareerSlug, { related = 
  *
  * @param {string} userId
  * @param {string} [requestedCareerSlug]
+ * @param {Object} [options={}]
  * @returns {Promise<Object>}
  */
-export async function getDashboardAnalysis(userId, requestedCareerSlug) {
+export async function getDashboardAnalysis(userId, requestedCareerSlug, options = {}) {
   const [careerSlug, profile, user] = await Promise.all([
-    resolveCareerSlug(userId, requestedCareerSlug),
-    getProfileMap(userId),
+    resolveCareerSlug(userId, requestedCareerSlug, options),
+    getProfileMap(userId, options),
     User.findById(userId).lean(),
   ]);
   const { career, model } = await getCareerModel(careerSlug);
@@ -469,6 +521,10 @@ export async function compareCareersAnalysis(userId, slugA, slugB) {
 
 export default {
   resolveCareerSlug,
+  invalidateUserCareer,
+  isUserCareerCached,
+  getCachedUserCareer,
+  getUserCareerCache,
   getSkillGapAnalysis,
   getCareerFitAnalysis,
   getLearningPathAnalysis,

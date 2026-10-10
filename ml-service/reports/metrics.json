@@ -3,13 +3,45 @@
     "hit_rate_at_3": 0.5867,
     "precision_at_3": 0.1956,
     "recall_at_3": 0.5867,
-    "mrr": 0.4726
+    "mrr": 0.4728
   },
   "baseline": {
     "hit_rate_at_3": 0.5907,
     "precision_at_3": 0.1969,
     "recall_at_3": 0.5907,
     "mrr": 0.464
+  },
+  "rank_analysis": {
+    "eligibility_rule": "identical_ready",
+    "n_profiles_evaluated": 750,
+    "rank_distribution_ml": {
+      "rank_1": 190,
+      "rank_2": 134,
+      "rank_3": 116,
+      "rank_4": 94,
+      "rank_5": 82,
+      "rank_gt_5": 134
+    },
+    "rank_distribution_baseline": {
+      "rank_1": 180,
+      "rank_2": 140,
+      "rank_3": 123,
+      "rank_4": 77,
+      "rank_5": 84,
+      "rank_gt_5": 146
+    },
+    "baseline_wins_ml_loses_count": 77,
+    "ml_wins_baseline_loses_count": 74,
+    "rank_4_borderline_misses": 46,
+    "rank_5_borderline_misses": 20,
+    "non_interest_divergence_pct": 84.4,
+    "tradeoff_justification": {
+      "mrr_delta": 0.0088,
+      "hit_rate_delta": -0.004,
+      "rank_1_advantage_ml": 10,
+      "rank_4_disadvantage_ml": 17,
+      "default_recommendation_system": "rule_based"
+    }
   },
   "models_compared": [
     {
@@ -26,5 +58,6 @@
     }
   ],
   "n_profiles": 5000,
-  "seed": 42
+  "seed": 42,
+  "eligibility_rule": "identical_ready"
 }

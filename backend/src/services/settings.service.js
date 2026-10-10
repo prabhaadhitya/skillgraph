@@ -100,6 +100,10 @@ export function createSettingsService({
     const update = {};
 
     if (apiKey) {
+      if (env.ENABLE_USER_API_KEYS === false) {
+        throw new ApiError(403, 'FORBIDDEN', 'User API key storage is disabled');
+      }
+
       const secret = env.LLM_KEY_ENCRYPTION_SECRET;
       if (!secret) {
         throw new ApiError(500, 'CONFIGURATION_ERROR', 'Encryption secret is not configured');
@@ -168,6 +172,9 @@ export function createSettingsService({
     }
 
     const hasUserKey = Boolean(user.llmSettings?.apiKeyEnc?.ciphertext);
+    if (hasUserKey && env.ENABLE_USER_API_KEYS === false) {
+      throw new ApiError(403, 'FORBIDDEN', 'User API key usage is disabled');
+    }
 
     const decryptUserKey = () => {
       const secret = env.LLM_KEY_ENCRYPTION_SECRET;

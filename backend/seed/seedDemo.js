@@ -17,6 +17,13 @@ import { computeFit } from '../src/services/engine/fit.js';
  * @returns {Promise<Object>} Summary of created and updated records
  */
 export async function seedDemoUsers({ models, seedDir, options = {} }) {
+  const effectiveEnv = options.env || process.env.NODE_ENV;
+  if (effectiveEnv === 'production' && !options.allowInProduction) {
+    throw new Error(
+      'Refused to seed demo accounts: NODE_ENV is "production". Demo persona seeding is not permitted in production.',
+    );
+  }
+
   const { User, Career, Skill, UserSkill, AlignmentSnapshot } = models;
 
   let dir = seedDir || process.env.SEED_DIR;
@@ -154,6 +161,12 @@ export async function seedDemoUsers({ models, seedDir, options = {} }) {
 async function runCli() {
   const { config: loadDotenv } = await import('dotenv');
   loadDotenv();
+
+  if (process.env.NODE_ENV === 'production') {
+    // eslint-disable-next-line no-console
+    console.error('Error: Refused to seed demo accounts in production (NODE_ENV=production).');
+    process.exit(1);
+  }
 
   const mongoUri = process.env.MONGODB_URI;
   if (!mongoUri) {

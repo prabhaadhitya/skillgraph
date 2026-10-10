@@ -6,6 +6,65 @@ import { getProfileMap } from './profile.service.js';
 import { computeFit } from './engine/fit.js';
 import { ApiError } from '../utils/ApiError.js';
 
+import { BoundedCache } from '../utils/cache.js';
+
+// In-memory bounded cache for alignment computations (30s TTL, max 1000 entries, LRU eviction)
+const ALIGNMENT_CACHE_TTL_MS = 30 * 1000;
+const alignmentCache = new BoundedCache({
+  maxSize: 1000,
+  ttlMs: ALIGNMENT_CACHE_TTL_MS,
+  name: 'alignmentCache',
+});
+
+/**
+ * Invalidate cached alignment for a user, or all users if no userId given.
+ * @param {string|import('mongoose').Types.ObjectId} [userId]
+ */
+export function invalidateAlignmentCache(userId) {
+  if (userId) {
+    alignmentCache.delete(userId.toString());
+  } else {
+    alignmentCache.clear();
+  }
+}
+
+/**
+ * Check whether a user's alignment is currently cached in memory.
+ * @param {string|import('mongoose').Types.ObjectId} userId
+ * @returns {boolean}
+ */
+export function isAlignmentCached(userId) {
+  if (!userId) return false;
+  return alignmentCache.has(userId.toString());
+}
+
+/**
+ * Cache alignment result for a user.
+ * @param {string|import('mongoose').Types.ObjectId} userId
+ * @param {Object} data
+ */
+export function cacheAlignment(userId, data) {
+  if (!userId) return;
+  alignmentCache.set(userId.toString(), data);
+}
+
+/**
+ * Retrieve cached alignment result for a user if available.
+ * @param {string|import('mongoose').Types.ObjectId} userId
+ * @returns {Object|null}
+ */
+export function getCachedAlignment(userId) {
+  if (!userId) return null;
+  return alignmentCache.get(userId.toString()) || null;
+}
+
+/**
+ * Diagnostic access to alignment cache instance.
+ */
+export function getAlignmentCache() {
+  return alignmentCache;
+}
+
 /**
  * Record or merge an alignment snapshot for a student's target career.
  *
@@ -22,7 +81,16 @@ import { ApiError } from '../utils/ApiError.js';
  * @returns {Promise<{ score: number, previousScore: number|null, band: 'early'|'developing'|'strong' }>}
  */
 export async function recordSnapshot(userId, trigger = 'skills_update', options = {}) {
-  const user = await User.findById(userId);
+  const session = options.session || null;
+
+  if (options.failAt === 'in_snapshot') {
+    throw new Error('Failure injected in alignmentService.recordSnapshot (in_snapshot)');
+  }
+
+  const userQuery = User.findById(userId);
+  if (session) userQuery.session(session);
+  const user = await userQuery;
+
   if (!user) {
     throw new ApiError(404, 'NOT_FOUND', 'User not found');
   }
@@ -31,13 +99,16 @@ export async function recordSnapshot(userId, trigger = 'skills_update', options 
     throw new ApiError(422, 'RULE_VIOLATION', 'User has no target career set');
   }
 
-  const career = await Career.findById(user.targetCareerId);
+  const careerQuery = Career.findById(user.targetCareerId);
+  if (session) careerQuery.session(session);
+  const career = await careerQuery;
+
   if (!career) {
     throw new ApiError(404, 'NOT_FOUND', 'Target career not found');
   }
 
   const { model } = await getCareerModel(career.slug);
-  const profile = await getProfileMap(userId);
+  const profile = await getProfileMap(userId, { session });
   const fit = computeFit(model, profile);
 
   const score = fit.fitScore;
@@ -50,10 +121,12 @@ export async function recordSnapshot(userId, trigger = 'skills_update', options 
     : (typeof options.now === 'number' ? new Date(options.now) : new Date());
 
   // Find latest snapshot for this user and career
-  const latestSnapshot = await AlignmentSnapshot.findOne({
+  let snapshotQuery = AlignmentSnapshot.findOne({
     userId,
     careerId: career._id,
   }).sort({ createdAt: -1 });
+  if (session) snapshotQuery = snapshotQuery.session(session);
+  const latestSnapshot = await snapshotQuery;
 
   const isUnder60s = latestSnapshot &&
     now.getTime() - new Date(latestSnapshot.createdAt).getTime() < 60 * 1000;
@@ -68,14 +141,16 @@ export async function recordSnapshot(userId, trigger = 'skills_update', options 
     if (trigger) {
       latestSnapshot.trigger = trigger;
     }
-    await latestSnapshot.save();
+    await latestSnapshot.save({ session });
 
     // previousScore is the score of the latest snapshot older than this updated one
-    const olderSnapshot = await AlignmentSnapshot.findOne({
+    let olderQuery = AlignmentSnapshot.findOne({
       userId,
       careerId: career._id,
       createdAt: { $lt: latestSnapshot.createdAt },
     }).sort({ createdAt: -1 });
+    if (session) olderQuery = olderQuery.session(session);
+    const olderSnapshot = await olderQuery;
 
     previousScore = olderSnapshot ? olderSnapshot.fitScore : null;
   } else {
@@ -83,24 +158,50 @@ export async function recordSnapshot(userId, trigger = 'skills_update', options 
     previousScore = latestSnapshot ? latestSnapshot.fitScore : null;
 
     // Insert fresh snapshot
-    await AlignmentSnapshot.create({
-      userId,
-      careerId: career._id,
-      fitScore: score,
-      coverage,
-      readiness,
-      trigger: trigger || 'skills_update',
-      createdAt: now,
-    });
+    if (session) {
+      await AlignmentSnapshot.create(
+        [
+          {
+            userId,
+            careerId: career._id,
+            fitScore: score,
+            coverage,
+            readiness,
+            trigger: trigger || 'skills_update',
+            createdAt: now,
+          },
+        ],
+        { session },
+      );
+    } else {
+      await AlignmentSnapshot.create({
+        userId,
+        careerId: career._id,
+        fitScore: score,
+        coverage,
+        readiness,
+        trigger: trigger || 'skills_update',
+        createdAt: now,
+      });
+    }
   }
 
-  return {
+  const result = {
     score,
     previousScore,
     band,
   };
+
+  if (!session) {
+    cacheAlignment(userId, result);
+  }
+
+  return result;
 }
 
 export default {
   recordSnapshot,
+  invalidateAlignmentCache,
+  isAlignmentCached,
+  cacheAlignment,
 };

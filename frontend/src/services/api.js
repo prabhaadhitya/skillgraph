@@ -11,6 +11,12 @@ import {
   http,
   api,
   apiWithMeta,
+  getCookie,
+  getCsrfToken,
+  setCsrfToken,
+  resolveAndValidateApiUrl,
+  sanitizeInternalDestination,
+  UntrustedEndpointError,
 } from './http.js';
 
 export {
@@ -21,6 +27,12 @@ export {
   http,
   api,
   apiWithMeta,
+  getCookie,
+  getCsrfToken,
+  setCsrfToken,
+  resolveAndValidateApiUrl,
+  sanitizeInternalDestination,
+  UntrustedEndpointError,
 };
 
 export default api;

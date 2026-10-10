@@ -157,5 +157,41 @@ describe('services/ml/mlClient', () => {
 
       expect(result).toBeNull();
     });
+
+    it('returns null on 401 Unauthorized response (mismatched or rejected key)', async () => {
+      const fakeFetch = vi.fn(async () => ({
+        ok: false,
+        status: 401,
+        json: async () => ({ detail: 'Unauthorized: invalid or missing X-Internal-Key' }),
+      }));
+
+      const client = createMlClient({ baseUrl, internalKey: 'wrong-mismatched-key', fetchImpl: fakeFetch });
+      const recResult = await client.recommend({ careerSlug: 'test' });
+      const infoResult = await client.modelInfo();
+
+      expect(recResult).toBeNull();
+      expect(infoResult).toBeNull();
+      expect(fakeFetch).toHaveBeenCalledTimes(3); // 1 for recommend + 2 for modelInfo fallback attempts
+    });
+
+    it('safely disables ML calls when internalKey is missing or empty without sending requests', async () => {
+      const fakeFetch = vi.fn();
+      const client = createMlClient({ baseUrl, internalKey: '', fetchImpl: fakeFetch });
+
+      expect(client.isConfigured()).toBe(false);
+
+      const recResult = await client.recommend({ careerSlug: 'test' });
+      const infoResult = await client.modelInfo();
+
+      expect(recResult).toBeNull();
+      expect(infoResult).toBeNull();
+      expect(fakeFetch).not.toHaveBeenCalled();
+    });
+
+    it('reports isConfigured() as true when a non-empty key is provided', () => {
+      const client = createMlClient({ baseUrl, internalKey: 'valid-secret-key-16-chars' });
+      expect(client.isConfigured()).toBe(true);
+    });
   });
 });
+

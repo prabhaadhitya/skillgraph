@@ -5,6 +5,7 @@ import { useAuth } from '../../hooks/useAuth.js';
 import { Button } from '../../components/ui/Button.jsx';
 import { Input } from '../../components/ui/Input.jsx';
 import { Tag } from '../../components/ui/Tag.jsx';
+import { sanitizePostLoginDestination } from '../../utils/urlValidation.js';
 
 /**
  * Login Page component.
@@ -14,7 +15,7 @@ import { Tag } from '../../components/ui/Tag.jsx';
  * - Loading state on submission button.
  * - "Show password" toggle.
  * - Password rule helper text.
- * - Post-login routing to ?next= if present, else dashboard, else /onboarding.
+ * - Post-login routing to ?next= if present and valid, else dashboard, else /onboarding.
  */
 export function LoginPage() {
   const { user, login } = useAuth();
@@ -34,11 +35,18 @@ export function LoginPage() {
 
   const getDestination = useCallback(
     (loggedInUser) => {
+      const defaultDest =
+        loggedInUser?.role === 'admin'
+          ? '/admin'
+          : loggedInUser?.onboardingCompleted
+            ? '/app/dashboard'
+            : '/onboarding';
+
       const nextParam = searchParams.get('next');
-      if (nextParam) return nextParam;
-      if (loggedInUser?.role === 'admin') return '/admin';
-      if (loggedInUser?.onboardingCompleted) return '/app/dashboard';
-      return '/onboarding';
+      if (nextParam) {
+        return sanitizePostLoginDestination(nextParam, defaultDest);
+      }
+      return defaultDest;
     },
     [searchParams],
   );

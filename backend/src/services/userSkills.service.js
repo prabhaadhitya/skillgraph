@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import { User } from '../models/user.model.js';
 import { Skill } from '../models/skill.model.js';
 import { UserSkill } from '../models/userSkill.model.js';
@@ -23,6 +24,151 @@ export const setAlignmentService = (service) => {
  * @returns {Object}
  */
 export const getAlignmentService = () => alignmentService;
+
+/**
+ * Cached topology transaction support flag.
+ * @type {boolean|null}
+ */
+let cachedTransactionSupport = null;
+
+/**
+ * Reset transaction support cache (for testing different topologies).
+ */
+export const resetTransactionSupportCache = () => {
+  cachedTransactionSupport = null;
+};
+
+/**
+ * Invalidate both profile and alignment caches for a user.
+ * @param {string|import('mongoose').Types.ObjectId} userId
+ */
+const invalidateCaches = (userId) => {
+  invalidateProfile(userId);
+  if (typeof alignmentService?.invalidateAlignmentCache === 'function') {
+    alignmentService.invalidateAlignmentCache(userId);
+  }
+};
+
+/**
+ * Detect whether the active MongoDB deployment topology supports multi-document transactions.
+ * Returns true for replica sets, sharded clusters, or when overridden via FORCE_TRANSACTIONS=true.
+ * Returns false for standalone instances or when FORCE_TRANSACTIONS=false.
+ *
+ * @returns {Promise<boolean>}
+ */
+export const supportsTransactions = async () => {
+  if (process.env.FORCE_TRANSACTIONS === 'true') return true;
+  if (process.env.FORCE_TRANSACTIONS === 'false') return false;
+  if (cachedTransactionSupport !== null) return cachedTransactionSupport;
+
+  try {
+    if (!mongoose.connection || mongoose.connection.readyState !== 1) {
+      return false;
+    }
+    const topology = mongoose.connection.client?.topology;
+    const topologyType = topology?.description?.type;
+    if (topologyType === 'Single') {
+      cachedTransactionSupport = false;
+      return false;
+    }
+    if (
+      topologyType &&
+      (topologyType.includes('ReplicaSet') ||
+        topologyType === 'Sharded' ||
+        topologyType === 'LoadBalanced')
+    ) {
+      cachedTransactionSupport = true;
+      return true;
+    }
+
+    // Attempt a lightweight probe if topology is ambiguous
+    const session = await mongoose.startSession();
+    try {
+      session.startTransaction();
+      await session.abortTransaction();
+      cachedTransactionSupport = true;
+      return true;
+    } catch {
+      cachedTransactionSupport = false;
+      return false;
+    } finally {
+      await session.endSession();
+    }
+  } catch {
+    cachedTransactionSupport = false;
+    return false;
+  }
+};
+
+/**
+ * Safely roll back mutations across UserSkill, UserProgress, and AlignmentSnapshot
+ * when running without multi-document transactions.
+ *
+ * @param {Object} params
+ * @param {string|import('mongoose').Types.ObjectId} params.userId
+ * @param {string|import('mongoose').Types.ObjectId} params.targetCareerId
+ * @param {Array<Object>} params.priorUserSkills - Snapshot of user's skills before mutation
+ * @param {Object|null} params.priorLatestSnapshot - Snapshot of user's latest alignment snapshot before mutation
+ * @param {Array<import('mongoose').Types.ObjectId>} [params.insertedProgressIds] - IDs of progress rows created during mutation
+ */
+export const executeCompensatingRollback = async ({
+  userId,
+  targetCareerId,
+  priorUserSkills = [],
+  priorLatestSnapshot = null,
+  insertedProgressIds = [],
+}) => {
+  // 1. Revert UserProgress
+  if (insertedProgressIds.length > 0) {
+    await UserProgress.deleteMany({ _id: { $in: insertedProgressIds } });
+  }
+
+  // 2. Revert UserSkill
+  await UserSkill.deleteMany({ userId });
+  if (priorUserSkills.length > 0) {
+    await UserSkill.insertMany(
+      priorUserSkills.map((s) => ({
+        _id: s._id,
+        userId: s.userId,
+        skillId: s.skillId,
+        proficiency: s.proficiency,
+        source: s.source || 'self',
+      })),
+    );
+  }
+
+  // 3. Revert AlignmentSnapshot
+  if (priorLatestSnapshot) {
+    // Delete any snapshots created during this failed run
+    await AlignmentSnapshot.deleteMany({
+      userId,
+      careerId: targetCareerId,
+      _id: { $ne: priorLatestSnapshot._id },
+      createdAt: { $gte: priorLatestSnapshot.createdAt },
+    });
+    // Revert latest snapshot fields if it was updated in-place
+    await AlignmentSnapshot.updateOne(
+      { _id: priorLatestSnapshot._id },
+      {
+        $set: {
+          fitScore: priorLatestSnapshot.fitScore,
+          coverage: priorLatestSnapshot.coverage,
+          readiness: priorLatestSnapshot.readiness,
+          trigger: priorLatestSnapshot.trigger,
+        },
+      },
+    );
+  } else {
+    // No snapshot existed prior to this run: delete any created during this run
+    await AlignmentSnapshot.deleteMany({
+      userId,
+      careerId: targetCareerId,
+    });
+  }
+
+  // 4. Invalidate in-memory caches
+  invalidateCaches(userId);
+};
 
 /**
  * Format skill document to SkillRef.
@@ -80,9 +226,13 @@ export const getSkills = async (userId) => {
  *
  * @param {string} userId
  * @param {Array<{ skillSlug: string, proficiency: number }>} skillsArray
+ * @param {Object} [options={}]
+ * @param {string} [options.failAt] - 'after_skills' | 'after_progress' | 'in_snapshot'
+ * @param {boolean} [options.forceTransactionMode] - Force transaction vs compensating mode
+ * @param {Date|number} [options.now] - Optional timestamp provider
  * @returns {Promise<{ items: Array<Object>, fit: { score: number, previousScore: number|null, band: string } }>}
  */
-export const putSkills = async (userId, skillsArray) => {
+export const putSkills = async (userId, skillsArray, options = {}) => {
   const user = await User.findById(userId);
   if (!user) {
     throw new ApiError(401, 'UNAUTHENTICATED', 'User no longer exists');
@@ -130,7 +280,7 @@ export const putSkills = async (userId, skillsArray) => {
   const progressRowsToInsert = [];
   const deleteIds = [];
   const createRows = [];
-  const updatePromises = [];
+  const updateOps = [];
 
   for (const skillIdStr of allSkillIds) {
     const previous = existingMap.get(skillIdStr)?.proficiency || 0;
@@ -155,35 +305,120 @@ export const putSkills = async (userId, skillsArray) => {
           source: 'self',
         });
       } else {
-        updatePromises.push(
-          UserSkill.updateOne(
-            { userId, skillId: skillDoc._id },
-            { $set: { proficiency: current } },
-          ),
-        );
+        updateOps.push({
+          filter: { userId, skillId: skillDoc._id },
+          update: { $set: { proficiency: current } },
+        });
       }
     }
   }
 
-  if (deleteIds.length > 0) {
-    await UserSkill.deleteMany({ userId, skillId: { $in: deleteIds } });
-  }
-  if (createRows.length > 0) {
-    await UserSkill.insertMany(createRows);
-  }
-  if (updatePromises.length > 0) {
-    await Promise.all(updatePromises);
-  }
-  if (progressRowsToInsert.length > 0) {
-    await UserProgress.insertMany(progressRowsToInsert);
+  const useTransactions =
+    options.forceTransactionMode !== undefined
+      ? Boolean(options.forceTransactionMode)
+      : await supportsTransactions();
+
+  let fit;
+
+  if (useTransactions) {
+    const session = await mongoose.startSession();
+    try {
+      await session.withTransaction(async () => {
+        if (deleteIds.length > 0) {
+          await UserSkill.deleteMany({ userId, skillId: { $in: deleteIds } }).session(session);
+        }
+        if (createRows.length > 0) {
+          await UserSkill.insertMany(createRows, { session });
+        }
+        if (updateOps.length > 0) {
+          await Promise.all(
+            updateOps.map((op) => UserSkill.updateOne(op.filter, op.update).session(session)),
+          );
+        }
+
+        if (options.failAt === 'after_skills') {
+          throw new Error('Injected failure: after_skills');
+        }
+
+        if (progressRowsToInsert.length > 0) {
+          await UserProgress.insertMany(progressRowsToInsert, { session });
+        }
+
+        if (options.failAt === 'after_progress') {
+          throw new Error('Injected failure: after_progress');
+        }
+
+        const hasSnapshot = await AlignmentSnapshot.exists({ userId }).session(session);
+        const trigger = hasSnapshot ? 'skills_update' : 'onboarding';
+        fit = await alignmentService.recordSnapshot(userId, trigger, {
+          session,
+          now: options.now,
+          failAt: options.failAt,
+        });
+      });
+    } catch (err) {
+      invalidateCaches(userId);
+      throw err;
+    } finally {
+      await session.endSession();
+    }
+  } else {
+    // Non-transactional topology: Compensating Recovery Strategy
+    const priorUserSkills = await UserSkill.find({ userId }).lean();
+    const priorLatestSnapshot = await AlignmentSnapshot.findOne({
+      userId,
+      careerId: user.targetCareerId,
+    })
+      .sort({ createdAt: -1 })
+      .lean();
+
+    let insertedProgressIds = [];
+
+    try {
+      if (deleteIds.length > 0) {
+        await UserSkill.deleteMany({ userId, skillId: { $in: deleteIds } });
+      }
+      if (createRows.length > 0) {
+        await UserSkill.insertMany(createRows);
+      }
+      if (updateOps.length > 0) {
+        await Promise.all(
+          updateOps.map((op) => UserSkill.updateOne(op.filter, op.update)),
+        );
+      }
+
+      if (options.failAt === 'after_skills') {
+        throw new Error('Injected failure: after_skills');
+      }
+
+      if (progressRowsToInsert.length > 0) {
+        const inserted = await UserProgress.insertMany(progressRowsToInsert);
+        insertedProgressIds = inserted.map((p) => p._id);
+      }
+
+      if (options.failAt === 'after_progress') {
+        throw new Error('Injected failure: after_progress');
+      }
+
+      const hasSnapshot = await AlignmentSnapshot.exists({ userId });
+      const trigger = hasSnapshot ? 'skills_update' : 'onboarding';
+      fit = await alignmentService.recordSnapshot(userId, trigger, {
+        now: options.now,
+        failAt: options.failAt,
+      });
+    } catch (err) {
+      await executeCompensatingRollback({
+        userId,
+        targetCareerId: user.targetCareerId,
+        priorUserSkills,
+        priorLatestSnapshot,
+        insertedProgressIds,
+      });
+      throw err;
+    }
   }
 
-  invalidateProfile(userId);
-
-  // Recalculate alignment snapshot
-  const hasSnapshot = await AlignmentSnapshot.exists({ userId });
-  const trigger = hasSnapshot ? 'skills_update' : 'onboarding';
-  const fit = await alignmentService.recordSnapshot(userId, trigger);
+  invalidateCaches(userId);
 
   // Return updated items
   const updatedUserSkills = await UserSkill.find({ userId })
@@ -209,9 +444,13 @@ export const putSkills = async (userId, skillsArray) => {
  * @param {string} userId
  * @param {string} skillSlug
  * @param {number} proficiency
+ * @param {Object} [options={}]
+ * @param {string} [options.failAt] - 'after_skills' | 'after_progress' | 'in_snapshot'
+ * @param {boolean} [options.forceTransactionMode] - Force transaction vs compensating mode
+ * @param {Date|number} [options.now] - Optional timestamp provider
  * @returns {Promise<{ skill: Object, previousLevel: number, proficiency: number, fit: Object }>}
  */
-export const patchSkill = async (userId, skillSlug, proficiency) => {
+export const patchSkill = async (userId, skillSlug, proficiency, options = {}) => {
   const user = await User.findById(userId);
   if (!user) {
     throw new ApiError(401, 'UNAUTHENTICATED', 'User no longer exists');
@@ -230,34 +469,186 @@ export const patchSkill = async (userId, skillSlug, proficiency) => {
   const previousLevel = existing ? existing.proficiency : 0;
   const currentLevel = proficiency;
 
-  if (previousLevel !== currentLevel) {
-    if (currentLevel === 0) {
-      await UserSkill.deleteOne({ userId, skillId: skill._id });
-    } else if (existing) {
-      existing.proficiency = currentLevel;
-      await existing.save();
-    } else {
-      await UserSkill.create({
-        userId,
-        skillId: skill._id,
-        proficiency: currentLevel,
-        source: 'self',
-      });
-    }
+  const useTransactions =
+    options.forceTransactionMode !== undefined
+      ? Boolean(options.forceTransactionMode)
+      : await supportsTransactions();
 
-    await UserProgress.create({
+  let fit;
+
+  if (useTransactions) {
+    const session = await mongoose.startSession();
+    try {
+      await session.withTransaction(async () => {
+        if (previousLevel !== currentLevel) {
+          if (currentLevel === 0) {
+            await UserSkill.deleteOne({ userId, skillId: skill._id }).session(session);
+          } else if (existing) {
+            await UserSkill.updateOne(
+              { userId, skillId: skill._id },
+              { $set: { proficiency: currentLevel } },
+            ).session(session);
+          } else {
+            await UserSkill.create(
+              [
+                {
+                  userId,
+                  skillId: skill._id,
+                  proficiency: currentLevel,
+                  source: 'self',
+                },
+              ],
+              { session },
+            );
+          }
+
+          if (options.failAt === 'after_skills') {
+            throw new Error('Injected failure: after_skills');
+          }
+
+          await UserProgress.create(
+            [
+              {
+                userId,
+                skillId: skill._id,
+                previousLevel,
+                currentLevel,
+              },
+            ],
+            { session },
+          );
+
+          if (options.failAt === 'after_progress') {
+            throw new Error('Injected failure: after_progress');
+          }
+        }
+
+        const hasSnapshot = await AlignmentSnapshot.exists({ userId }).session(session);
+        const trigger = hasSnapshot ? 'skills_update' : 'onboarding';
+        fit = await alignmentService.recordSnapshot(userId, trigger, {
+          session,
+          now: options.now,
+          failAt: options.failAt,
+        });
+      });
+    } catch (err) {
+      invalidateCaches(userId);
+      throw err;
+    } finally {
+      await session.endSession();
+    }
+  } else {
+    // Non-transactional topology: Compensating Recovery Strategy
+    const priorUserSkill = existing
+      ? {
+          _id: existing._id,
+          proficiency: existing.proficiency,
+          source: existing.source || 'self',
+        }
+      : null;
+    const priorLatestSnapshot = await AlignmentSnapshot.findOne({
       userId,
-      skillId: skill._id,
-      previousLevel,
-      currentLevel,
-    });
+      careerId: user.targetCareerId,
+    })
+      .sort({ createdAt: -1 })
+      .lean();
+
+    let createdProgressDoc = null;
+
+    try {
+      if (previousLevel !== currentLevel) {
+        if (currentLevel === 0) {
+          await UserSkill.deleteOne({ userId, skillId: skill._id });
+        } else if (existing) {
+          await UserSkill.updateOne(
+            { userId, skillId: skill._id },
+            { $set: { proficiency: currentLevel } },
+          );
+        } else {
+          await UserSkill.create({
+            userId,
+            skillId: skill._id,
+            proficiency: currentLevel,
+            source: 'self',
+          });
+        }
+
+        if (options.failAt === 'after_skills') {
+          throw new Error('Injected failure: after_skills');
+        }
+
+        createdProgressDoc = await UserProgress.create({
+          userId,
+          skillId: skill._id,
+          previousLevel,
+          currentLevel,
+        });
+
+        if (options.failAt === 'after_progress') {
+          throw new Error('Injected failure: after_progress');
+        }
+      }
+
+      const hasSnapshot = await AlignmentSnapshot.exists({ userId });
+      const trigger = hasSnapshot ? 'skills_update' : 'onboarding';
+      fit = await alignmentService.recordSnapshot(userId, trigger, {
+        now: options.now,
+        failAt: options.failAt,
+      });
+    } catch (err) {
+      // Compensating recovery on failure:
+      if (createdProgressDoc) {
+        await UserProgress.deleteOne({ _id: createdProgressDoc._id });
+      }
+
+      if (previousLevel !== currentLevel) {
+        if (priorUserSkill === null) {
+          await UserSkill.deleteOne({ userId, skillId: skill._id });
+        } else {
+          await UserSkill.updateOne(
+            { userId, skillId: skill._id },
+            {
+              $set: {
+                proficiency: priorUserSkill.proficiency,
+                source: priorUserSkill.source,
+              },
+            },
+            { upsert: true },
+          );
+        }
+      }
+
+      if (priorLatestSnapshot) {
+        await AlignmentSnapshot.deleteMany({
+          userId,
+          careerId: user.targetCareerId,
+          _id: { $ne: priorLatestSnapshot._id },
+          createdAt: { $gte: priorLatestSnapshot.createdAt },
+        });
+        await AlignmentSnapshot.updateOne(
+          { _id: priorLatestSnapshot._id },
+          {
+            $set: {
+              fitScore: priorLatestSnapshot.fitScore,
+              coverage: priorLatestSnapshot.coverage,
+              readiness: priorLatestSnapshot.readiness,
+              trigger: priorLatestSnapshot.trigger,
+            },
+          },
+        );
+      } else {
+        await AlignmentSnapshot.deleteMany({
+          userId,
+          careerId: user.targetCareerId,
+        });
+      }
+
+      invalidateCaches(userId);
+      throw err;
+    }
   }
 
-  invalidateProfile(userId);
-
-  const hasSnapshot = await AlignmentSnapshot.exists({ userId });
-  const trigger = hasSnapshot ? 'skills_update' : 'onboarding';
-  const fit = await alignmentService.recordSnapshot(userId, trigger);
+  invalidateCaches(userId);
 
   return {
     skill: formatSkillRef(skill),
@@ -304,6 +695,9 @@ export const getProgress = async (userId) => {
 };
 
 export default {
+  supportsTransactions,
+  resetTransactionSupportCache,
+  executeCompensatingRollback,
   setAlignmentService,
   getAlignmentService,
   getSkills,

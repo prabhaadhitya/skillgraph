@@ -233,5 +233,32 @@ describe('ML Integration & Recommendations Endpoints', () => {
       expect(res.body.success).toBe(true);
       expect(res.body.data.available).toBe(true);
     });
+
+    it('returns { available: false } when ML service returns 401 Unauthorized due to mismatched key', async () => {
+      vi.spyOn(mlClient, 'modelInfo').mockResolvedValueOnce(null);
+
+      const res = await request(app)
+        .get('/api/admin/ml/info')
+        .set('Cookie', adminCookie);
+
+      expect(res.status).toBe(200);
+      expect(res.body.success).toBe(true);
+      expect(res.body.data).toEqual({ available: false });
+    });
+  });
+
+  describe('Internal Key Security & Unauthorized Handling', () => {
+    it('falls back to rule-based recommendations when ML service rejects with 401', async () => {
+      vi.spyOn(mlClient, 'recommend').mockResolvedValueOnce(null);
+
+      const res = await request(app)
+        .get('/api/recommendations/next-skills?limit=3&strategy=ml')
+        .set('Cookie', studentCookie);
+
+      expect(res.status).toBe(200);
+      expect(res.body.success).toBe(true);
+      expect(res.body.data.strategy).toBe('rule');
+      expect(res.body.data.fallbackReason).toBe('ML_UNAVAILABLE');
+    });
   });
 });

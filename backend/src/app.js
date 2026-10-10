@@ -3,6 +3,7 @@ import helmet from 'helmet';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import { env } from './config/env.js';
+import { csrfProtection, isAllowedOrigin } from './middleware/csrf.js';
 import { notFound } from './middleware/notFound.js';
 import { errorHandler } from './middleware/errorHandler.js';
 import { globalLimiter } from './middleware/rateLimit.js';
@@ -22,11 +23,27 @@ app.disable('x-powered-by');
 // Security headers
 app.use(helmet());
 
-// CORS configuration matching CLIENT_ORIGIN
+// CORS configuration supporting multi-origin, credentialed cross-site cookies, and CSRF headers
 app.use(
   cors({
-    origin: env.CLIENT_ORIGIN,
+    origin: (origin, callback) => {
+      if (!origin || isAllowedOrigin(origin, env.CLIENT_ORIGIN)) {
+        return callback(null, true);
+      }
+      return callback(null, false);
+    },
     credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: [
+      'Content-Type',
+      'Authorization',
+      'X-Requested-With',
+      'X-CSRF-Token',
+      'x-csrf-token',
+      'x-qa-bypass-rate-limit',
+    ],
+    exposedHeaders: ['Set-Cookie', 'X-CSRF-Token', 'x-csrf-token'],
+    maxAge: 86400,
   }),
 );
 
@@ -36,8 +53,11 @@ app.use(express.json({ limit: '100kb' }));
 // Reject any request body, query, or params containing MongoDB operators ($ prefix)
 app.use(mongoSanitizer);
 
-// Cookie parsing for sg_token
+// Cookie parsing for sg_token and sg_csrf
 app.use(cookieParser());
+
+// CSRF protection for cookie-based sessions
+app.use(csrfProtection);
 
 // Structured HTTP request logging: method, path, status, duration ms (never bodies/cookies/headers)
 app.use(requestLogger);
