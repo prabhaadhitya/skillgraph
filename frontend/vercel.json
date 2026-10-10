@@ -1,0 +1,16 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/:path*",
+      "destination": "https://skillgraph-backend.onrender.com/api/:path*"
+    },
+    {
+      "source": "/health",
+      "destination": "https://skillgraph-backend.onrender.com/health"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}

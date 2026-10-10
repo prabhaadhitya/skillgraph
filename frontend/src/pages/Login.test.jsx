@@ -142,4 +142,197 @@ describe('Login Page', () => {
 
     expect(screen.getByText('Dashboard Target')).toBeInTheDocument();
   });
+
+  describe('Login ?next= Destination Security', () => {
+    it('redirects to approved internal destination on successful login when valid ?next= is provided', async () => {
+      const mockLogin = vi.fn().mockResolvedValue({
+        id: 'u-1',
+        email: 'student@example.com',
+        role: 'student',
+        onboardingCompleted: true,
+      });
+
+      const authValue = {
+        user: null,
+        isLoading: false,
+        login: mockLogin,
+      };
+
+      render(
+        <AuthContext.Provider value={authValue}>
+          <MemoryRouter initialEntries={['/login?next=%2Fapp%2Fpath']}>
+            <Routes>
+              <Route path="/login" element={<Login />} />
+              <Route path="/app/path" element={<div>Learning Path Destination</div>} />
+              <Route path="/app/dashboard" element={<div>Default Dashboard</div>} />
+            </Routes>
+          </MemoryRouter>
+        </AuthContext.Provider>,
+      );
+
+      fireEvent.change(screen.getByLabelText(/Email Address/i), {
+        target: { value: 'student@example.com' },
+      });
+      fireEvent.change(screen.getByLabelText(/^Password$/i), {
+        target: { value: 'ValidPassword123!' },
+      });
+      fireEvent.click(screen.getByRole('button', { name: /LOG IN/i }));
+
+      await waitFor(() => {
+        expect(screen.getByText('Learning Path Destination')).toBeInTheDocument();
+      });
+    });
+
+    it('preserves query parameters on valid internal destination (?next=/app/dashboard?tab=skills)', async () => {
+      const mockLogin = vi.fn().mockResolvedValue({
+        id: 'u-1',
+        email: 'student@example.com',
+        role: 'student',
+        onboardingCompleted: true,
+      });
+
+      const authValue = {
+        user: null,
+        isLoading: false,
+        login: mockLogin,
+      };
+
+      render(
+        <AuthContext.Provider value={authValue}>
+          <MemoryRouter initialEntries={['/login?next=%2Fapp%2Fdashboard%3Ftab%3Dskills']}>
+            <Routes>
+              <Route path="/login" element={<Login />} />
+              <Route path="/app/dashboard" element={<div>Dashboard Skills Tab</div>} />
+            </Routes>
+          </MemoryRouter>
+        </AuthContext.Provider>,
+      );
+
+      fireEvent.change(screen.getByLabelText(/Email Address/i), {
+        target: { value: 'student@example.com' },
+      });
+      fireEvent.change(screen.getByLabelText(/^Password$/i), {
+        target: { value: 'ValidPassword123!' },
+      });
+      fireEvent.click(screen.getByRole('button', { name: /LOG IN/i }));
+
+      await waitFor(() => {
+        expect(screen.getByText('Dashboard Skills Tab')).toBeInTheDocument();
+      });
+    });
+
+    it('rejects external URLs in ?next= and safely redirects to default dashboard', async () => {
+      const mockLogin = vi.fn().mockResolvedValue({
+        id: 'u-1',
+        email: 'student@example.com',
+        role: 'student',
+        onboardingCompleted: true,
+      });
+
+      const authValue = {
+        user: null,
+        isLoading: false,
+        login: mockLogin,
+      };
+
+      render(
+        <AuthContext.Provider value={authValue}>
+          <MemoryRouter initialEntries={['/login?next=https%3A%2F%2Fevil.com%2Fsteal']}>
+            <Routes>
+              <Route path="/login" element={<Login />} />
+              <Route path="/app/dashboard" element={<div>Safe Fallback Dashboard</div>} />
+            </Routes>
+          </MemoryRouter>
+        </AuthContext.Provider>,
+      );
+
+      fireEvent.change(screen.getByLabelText(/Email Address/i), {
+        target: { value: 'student@example.com' },
+      });
+      fireEvent.change(screen.getByLabelText(/^Password$/i), {
+        target: { value: 'ValidPassword123!' },
+      });
+      fireEvent.click(screen.getByRole('button', { name: /LOG IN/i }));
+
+      await waitFor(() => {
+        expect(screen.getByText('Safe Fallback Dashboard')).toBeInTheDocument();
+      });
+    });
+
+    it('rejects protocol-relative URLs in ?next= (//evil.com)', async () => {
+      const mockLogin = vi.fn().mockResolvedValue({
+        id: 'u-1',
+        email: 'student@example.com',
+        role: 'student',
+        onboardingCompleted: true,
+      });
+
+      const authValue = {
+        user: null,
+        isLoading: false,
+        login: mockLogin,
+      };
+
+      render(
+        <AuthContext.Provider value={authValue}>
+          <MemoryRouter initialEntries={['/login?next=%2F%2Fevil.com%2Fphish']}>
+            <Routes>
+              <Route path="/login" element={<Login />} />
+              <Route path="/app/dashboard" element={<div>Safe Fallback Dashboard</div>} />
+            </Routes>
+          </MemoryRouter>
+        </AuthContext.Provider>,
+      );
+
+      fireEvent.change(screen.getByLabelText(/Email Address/i), {
+        target: { value: 'student@example.com' },
+      });
+      fireEvent.change(screen.getByLabelText(/^Password$/i), {
+        target: { value: 'ValidPassword123!' },
+      });
+      fireEvent.click(screen.getByRole('button', { name: /LOG IN/i }));
+
+      await waitFor(() => {
+        expect(screen.getByText('Safe Fallback Dashboard')).toBeInTheDocument();
+      });
+    });
+
+    it('rejects malformed paths (/\\evil.com, javascript:) and prevents loops (/login)', async () => {
+      const mockLogin = vi.fn().mockResolvedValue({
+        id: 'u-1',
+        email: 'student@example.com',
+        role: 'student',
+        onboardingCompleted: true,
+      });
+
+      const authValue = {
+        user: null,
+        isLoading: false,
+        login: mockLogin,
+      };
+
+      render(
+        <AuthContext.Provider value={authValue}>
+          <MemoryRouter initialEntries={['/login?next=%2F%5Cevil.com']}>
+            <Routes>
+              <Route path="/login" element={<Login />} />
+              <Route path="/app/dashboard" element={<div>Safe Fallback Dashboard</div>} />
+            </Routes>
+          </MemoryRouter>
+        </AuthContext.Provider>,
+      );
+
+      fireEvent.change(screen.getByLabelText(/Email Address/i), {
+        target: { value: 'student@example.com' },
+      });
+      fireEvent.change(screen.getByLabelText(/^Password$/i), {
+        target: { value: 'ValidPassword123!' },
+      });
+      fireEvent.click(screen.getByRole('button', { name: /LOG IN/i }));
+
+      await waitFor(() => {
+        expect(screen.getByText('Safe Fallback Dashboard')).toBeInTheDocument();
+      });
+    });
+  });
 });

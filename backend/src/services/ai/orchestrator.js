@@ -7,7 +7,7 @@ import { keywordRouter } from './keywordRouter.js';
 import { renderTemplateAnswer } from './templates.js';
 import { ALLOWED_INTENTS, validateIntent, parseIntentJson } from '../llm/intents.js';
 import { buildIntentMessages, buildComposeMessages } from './prompts.js';
-import { resolveKey, nextUsage } from '../llm/keyResolver.js';
+import { resolveKey } from '../llm/keyResolver.js';
 import { decryptSecret } from '../../utils/crypto.js';
 import { executeRetriever, getDefaultDeps } from './retrievers/index.js';
 
@@ -112,6 +112,137 @@ async function loadHistory(userId, models = {}) {
 }
 
 /**
+ * Concurrency-Safe Server LLM Quota Reservation Policy:
+ * 1. Pre-Allocation Reservation: Atomically reserves 1 quota slot (serverKeyUsage.count)
+ *    prior to dispatching external calls to OpenRouter.
+ * 2. Concurrency Limit Enforcement: Uses conditional atomic findOneAndUpdate with
+ *    { 'serverKeyUsage.count': { $lt: dailyLimit } } to guarantee concurrent requests
+ *    cannot exceed SERVER_KEY_DAILY_LIMIT.
+ * 3. Provider Failure / Timeout Refund Policy: If a quota slot was reserved but the
+ *    OpenRouter call times out, encounters a network drop, or fails with 5xx/429 (causing
+ *    the request to degrade to a template answer), the reserved slot is atomically
+ *    refunded ($inc: -1, min 0) so the student is not penalized.
+ * 4. BYOK Exemption: User-supplied API keys (source: 'user') bypass server quota
+ *    reservation completely and are not subject to serverKeyUsage limits.
+ * 5. Off-Topic Exemption: Obvious off-topic queries resolved locally by the keyword router
+ *    do not invoke OpenRouter and do not reserve or consume quota.
+ */
+
+/**
+ * Concurrency-safe atomic server key quota reservation.
+ * Atomically increments today's usage if count < dailyLimit, or rolls over from prior date.
+ *
+ * @param {string|import('mongoose').Types.ObjectId} userId
+ * @param {string} todayStr - 'YYYY-MM-DD'
+ * @param {number} dailyLimit
+ * @param {Object} [UserModel]
+ * @returns {Promise<{ success: boolean, count?: number, reason?: string }>}
+ */
+export async function reserveServerQuota(userId, todayStr, dailyLimit, UserModel = User) {
+  if (!UserModel) {
+    return { success: true };
+  }
+
+  if (dailyLimit <= 0) {
+    return { success: false, reason: 'DAILY_LIMIT' };
+  }
+
+  if (typeof UserModel.findOneAndUpdate === 'function') {
+    // 1. Increment if date matches today and count is under limit
+    const incRes = await UserModel.findOneAndUpdate(
+      {
+        _id: userId,
+        'serverKeyUsage.date': todayStr,
+        'serverKeyUsage.count': { $lt: dailyLimit },
+      },
+      {
+        $inc: { 'serverKeyUsage.count': 1 },
+      },
+      { returnDocument: 'after' },
+    );
+
+    if (incRes) {
+      return { success: true, count: incRes?.serverKeyUsage?.count };
+    }
+
+    // 2. Rollover if date is not today, null, or record does not exist
+    const resetRes = await UserModel.findOneAndUpdate(
+      {
+        _id: userId,
+        $or: [
+          { 'serverKeyUsage.date': { $ne: todayStr } },
+          { 'serverKeyUsage.date': null },
+          { serverKeyUsage: { $exists: false } },
+        ],
+      },
+      {
+        $set: {
+          serverKeyUsage: { date: todayStr, count: 1 },
+        },
+      },
+      { returnDocument: 'after' },
+    );
+
+    if (resetRes) {
+      return { success: true, count: 1 };
+    }
+
+    // 3. Retry increment in case a concurrent request executed rollover simultaneously
+    const retryInc = await UserModel.findOneAndUpdate(
+      {
+        _id: userId,
+        'serverKeyUsage.date': todayStr,
+        'serverKeyUsage.count': { $lt: dailyLimit },
+      },
+      {
+        $inc: { 'serverKeyUsage.count': 1 },
+      },
+      { returnDocument: 'after' },
+    );
+
+    if (retryInc) {
+      return { success: true, count: retryInc?.serverKeyUsage?.count };
+    }
+
+    // Daily limit reached
+    return { success: false, reason: 'DAILY_LIMIT' };
+  }
+
+  // Fallback for mock models without findOneAndUpdate
+  return { success: true };
+}
+
+/**
+ * Concurrency-safe atomic server key quota refund.
+ * Releases 1 reserved quota slot when an external OpenRouter call fails, times out,
+ * or degrades to a template answer, ensuring students are not penalized for provider downtime.
+ *
+ * @param {string|import('mongoose').Types.ObjectId} userId
+ * @param {string} todayStr - 'YYYY-MM-DD'
+ * @param {Object} [UserModel]
+ * @returns {Promise<void>}
+ */
+export async function releaseQuotaReservation(userId, todayStr, UserModel = User) {
+  if (!UserModel || typeof UserModel.findOneAndUpdate !== 'function') {
+    return;
+  }
+  try {
+    await UserModel.findOneAndUpdate(
+      {
+        _id: userId,
+        'serverKeyUsage.date': todayStr,
+        'serverKeyUsage.count': { $gt: 0 },
+      },
+      {
+        $inc: { 'serverKeyUsage.count': -1 },
+      },
+    );
+  } catch {
+    // Non-critical background refund error
+  }
+}
+
+/**
  * Orchestrates a grounded chat interaction with degradation ladder.
  *
  * Ladder:
@@ -168,7 +299,7 @@ export async function orchestrateChat({
   };
 
   const todayStr = new Date().toISOString().slice(0, 10);
-  const keyResolution = resolveKey({
+  let keyResolution = resolveKey({
     userKeyPresent,
     decryptUserKey,
     serverKey: env.OPENROUTER_API_KEY || null,
@@ -204,6 +335,29 @@ export async function orchestrateChat({
   let isLocalRoute = false;
   let hasLlmError = false;
 
+  let serverQuotaReserved = false;
+
+  const ensureServerQuotaReserved = async () => {
+    if (keyResolution.source !== 'server') {
+      return true;
+    }
+    if (serverQuotaReserved) {
+      return true;
+    }
+    const dailyLimit = Number(env.SERVER_KEY_DAILY_LIMIT) || 30;
+    const reservation = await reserveServerQuota(userId, todayStr, dailyLimit, UserModel);
+    if (!reservation.success) {
+      keyResolution = {
+        apiKey: null,
+        source: 'none',
+        reason: 'DAILY_LIMIT',
+      };
+      return false;
+    }
+    serverQuotaReserved = true;
+    return true;
+  };
+
   // 2. Intent Classification Step
   if (!intent) {
     const localKw = keywordRouter(message, catalog);
@@ -222,72 +376,80 @@ export async function orchestrateChat({
       params = localKw.params;
       isLocalRoute = true;
     } else {
-      try {
-        const intentMessages = buildIntentMessages({ message, history, catalog });
-        const intentResponse = await client.chat({
-          apiKey: keyResolution.apiKey,
-          model: effectiveModel,
-          messages: intentMessages,
-          temperature: 0.1,
-          maxTokens: 250,
-          timeoutMs,
-        });
-
-        const rawJson = parseIntentJson(intentResponse?.content);
-        if (!rawJson) {
-          throw new Error('Invalid JSON from intent LLM');
-        }
-
-        const parsedSchema = rawIntentSchema.safeParse(rawJson);
-        if (!parsedSchema.success) {
-          throw new Error('Zod validation failed on intent JSON');
-        }
-
-        const data = parsedSchema.data;
-        const rawParams = {
-          ...(data.params || {}),
-          skillSlug: normalizeSkillSlug(data.skillSlug || data.params?.skillSlug, catalog.skills),
-          careerSlug: normalizeCareerSlug(data.careerSlug || data.params?.careerSlug, catalog.careers),
-          otherSkillSlug: normalizeSkillSlug(data.otherSkillSlug || data.params?.otherSkillSlug, catalog.skills),
-          weeks: data.weeks !== undefined ? data.weeks : data.params?.weeks,
-        };
-
-        const validated = validateIntent(
-          { intent: data.intent, params: rawParams },
-          { skillSlugs, careerSlugs },
-        );
-        intent = validated.intent;
-        params = validated.params;
-
-        // If LLM returned out_of_scope but query matches a high-confidence intent keyword pattern, recover
-        if (intent === 'out_of_scope') {
-          const kwFallback = keywordRouter(message, catalog);
-          if (kwFallback.intent !== 'out_of_scope') {
-            intent = kwFallback.intent;
-            params = kwFallback.params;
-          }
-        }
-      } catch (err) {
-        hasLlmError = true;
-        if (
-          err?.kind === 'auth' ||
-          err?.message?.includes('401') ||
-          err?.message?.includes('authentication failed')
-        ) {
-          keyAuthFailed = true;
-        }
-        if (
-          err?.kind === 'bad_model' ||
-          err?.message?.includes('not found') ||
-          err?.message?.includes('404')
-        ) {
-          modelNotFound = true;
-        }
-        // Degradation Ladder Step 1: Fall back to keyword router
-        const kwResult = keywordRouter(message, catalog);
-        intent = kwResult.intent;
-        params = kwResult.params;
+      const quotaOk = await ensureServerQuotaReserved();
+      if (!quotaOk) {
+        // Quota limit reached atomically: route directly via keywordRouter without OpenRouter call
+        intent = localKw.intent;
+        params = localKw.params;
         isLocalRoute = true;
+      } else {
+        try {
+          const intentMessages = buildIntentMessages({ message, history, catalog });
+          const intentResponse = await client.chat({
+            apiKey: keyResolution.apiKey,
+            model: effectiveModel,
+            messages: intentMessages,
+            temperature: 0.1,
+            maxTokens: 250,
+            timeoutMs,
+          });
+
+          const rawJson = parseIntentJson(intentResponse?.content);
+          if (!rawJson) {
+            throw new Error('Invalid JSON from intent LLM');
+          }
+
+          const parsedSchema = rawIntentSchema.safeParse(rawJson);
+          if (!parsedSchema.success) {
+            throw new Error('Zod validation failed on intent JSON');
+          }
+
+          const data = parsedSchema.data;
+          const rawParams = {
+            ...(data.params || {}),
+            skillSlug: normalizeSkillSlug(data.skillSlug || data.params?.skillSlug, catalog.skills),
+            careerSlug: normalizeCareerSlug(data.careerSlug || data.params?.careerSlug, catalog.careers),
+            otherSkillSlug: normalizeSkillSlug(data.otherSkillSlug || data.params?.otherSkillSlug, catalog.skills),
+            weeks: data.weeks !== undefined ? data.weeks : data.params?.weeks,
+          };
+
+          const validated = validateIntent(
+            { intent: data.intent, params: rawParams },
+            { skillSlugs, careerSlugs },
+          );
+          intent = validated.intent;
+          params = validated.params;
+
+          // If LLM returned out_of_scope but query matches a high-confidence intent keyword pattern, recover
+          if (intent === 'out_of_scope') {
+            const kwFallback = keywordRouter(message, catalog);
+            if (kwFallback.intent !== 'out_of_scope') {
+              intent = kwFallback.intent;
+              params = kwFallback.params;
+            }
+          }
+        } catch (err) {
+          hasLlmError = true;
+          if (
+            err?.kind === 'auth' ||
+            err?.message?.includes('401') ||
+            err?.message?.includes('authentication failed')
+          ) {
+            keyAuthFailed = true;
+          }
+          if (
+            err?.kind === 'bad_model' ||
+            err?.message?.includes('not found') ||
+            err?.message?.includes('404')
+          ) {
+            modelNotFound = true;
+          }
+          // Degradation Ladder Step 1: Fall back to keyword router
+          const kwResult = keywordRouter(message, catalog);
+          intent = kwResult.intent;
+          params = kwResult.params;
+          isLocalRoute = true;
+        }
       }
     }
   }
@@ -328,84 +490,56 @@ export async function orchestrateChat({
     reply = renderTemplateAnswer('out_of_scope', facts);
     degraded = true;
   } else {
-    try {
-      const composeMessages = buildComposeMessages({ intent, facts, message, history });
-      const composeResponse = await client.chat({
-        apiKey: keyResolution.apiKey,
-        model: effectiveModel,
-        messages: composeMessages,
-        temperature: 0.3,
-        maxTokens: 250,
-        timeoutMs,
-      });
-
-      if (composeResponse?.content && typeof composeResponse.content === 'string') {
-        reply = composeResponse.content.trim();
-        degraded = false;
-      } else {
-        throw new Error('Empty response from compose LLM');
-      }
-
-      // If server fallback key succeeded, track daily quota usage atomically
-      if (keyResolution.source === 'server' && UserModel) {
-        try {
-          const dailyLimit = Number(env.SERVER_KEY_DAILY_LIMIT) || 30;
-          if (typeof UserModel.findOneAndUpdate === 'function') {
-            const resetRes = await UserModel.findOneAndUpdate(
-              {
-                _id: userId,
-                $or: [
-                  { 'serverKeyUsage.date': { $ne: todayStr } },
-                  { 'serverKeyUsage.date': null },
-                  { serverKeyUsage: { $exists: false } },
-                ],
-              },
-              {
-                $set: {
-                  serverKeyUsage: { date: todayStr, count: 1 },
-                },
-              },
-              { returnDocument: 'after' },
-            );
-
-            if (!resetRes) {
-              await UserModel.findOneAndUpdate(
-                {
-                  _id: userId,
-                  'serverKeyUsage.date': todayStr,
-                  'serverKeyUsage.count': { $lt: dailyLimit },
-                },
-                {
-                  $inc: { 'serverKeyUsage.count': 1 },
-                },
-              );
-            }
-          } else if (typeof UserModel.findByIdAndUpdate === 'function') {
-            const updatedUsage = nextUsage(user?.serverKeyUsage, todayStr);
-            await UserModel.findByIdAndUpdate(userId, { serverKeyUsage: updatedUsage });
-          }
-        } catch {
-          // Non-critical background quota update failure
-        }
-      }
-    } catch (err) {
-      // Degradation Ladder Step 2: Failed or timed-out compose LLM call -> deterministic template answer
+    const quotaOk = await ensureServerQuotaReserved();
+    if (!quotaOk) {
       reply = renderTemplateAnswer(intent, facts);
       degraded = true;
-      if (
-        err?.kind === 'auth' ||
-        err?.message?.includes('401') ||
-        err?.message?.includes('authentication failed')
-      ) {
-        notice = 'Your OpenRouter key was rejected. Check your key in Settings';
-      } else if (
-        err?.kind === 'bad_model' ||
-        err?.message?.includes('not found') ||
-        err?.message?.includes('404')
-      ) {
-        notice = `The model '${effectiveModel}' was not found on OpenRouter. Check your model in Settings`;
+      notice = 'Add your own OpenRouter key in Settings for unlimited chat';
+    } else {
+      try {
+        const composeMessages = buildComposeMessages({ intent, facts, message, history });
+        const composeResponse = await client.chat({
+          apiKey: keyResolution.apiKey,
+          model: effectiveModel,
+          messages: composeMessages,
+          temperature: 0.3,
+          maxTokens: 250,
+          timeoutMs,
+        });
+
+        if (composeResponse?.content && typeof composeResponse.content === 'string') {
+          reply = composeResponse.content.trim();
+          degraded = false;
+        } else {
+          throw new Error('Empty response from compose LLM');
+        }
+      } catch (err) {
+        // Degradation Ladder Step 2: Failed or timed-out compose LLM call -> deterministic template answer
+        reply = renderTemplateAnswer(intent, facts);
+        degraded = true;
+        if (
+          err?.kind === 'auth' ||
+          err?.message?.includes('401') ||
+          err?.message?.includes('authentication failed')
+        ) {
+          notice = 'Your OpenRouter key was rejected. Check your key in Settings';
+        } else if (
+          err?.kind === 'bad_model' ||
+          err?.message?.includes('not found') ||
+          err?.message?.includes('404')
+        ) {
+          notice = `The model '${effectiveModel}' was not found on OpenRouter. Check your model in Settings`;
+        }
       }
     }
+  }
+
+  // Quota reservation refund policy:
+  // If server quota was reserved but request degraded to template answer (provider error, timeout, etc.),
+  // atomically refund the reserved slot so the user is not penalized for infrastructure downtime.
+  if (serverQuotaReserved && degraded) {
+    await releaseQuotaReservation(userId, todayStr, UserModel);
+    serverQuotaReserved = false;
   }
 
   // 5. Persist Chat Messages
@@ -487,4 +621,6 @@ export async function orchestrateExplain({
 export default {
   orchestrateChat,
   orchestrateExplain,
+  reserveServerQuota,
+  releaseQuotaReservation,
 };

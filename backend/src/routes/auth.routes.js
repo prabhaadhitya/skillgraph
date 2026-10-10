@@ -19,4 +19,7 @@ authRouter.post('/logout', authController.logout);
 // GET /api/auth/me (authenticated)
 authRouter.get('/me', auth, authController.me);
 
+// GET /api/auth/csrf (public, fetches/refreshes CSRF token)
+authRouter.get('/csrf', authController.csrf);
+
 export default authRouter;

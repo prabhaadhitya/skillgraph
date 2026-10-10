@@ -1,0 +1,48 @@
+services:
+  # SkillGraph Backend Service (Node.js / Express)
+  - type: web
+    name: skillgraph-backend
+    runtime: node
+    plan: free
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: MONGODB_URI
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_EXPIRES_IN
+        value: 7d
+      - key: COOKIE_SECURE
+        value: "true"
+      - key: CLIENT_ORIGIN
+        sync: false
+      - key: LLM_KEY_ENCRYPTION_SECRET
+        generateValue: true
+      - key: ML_SERVICE_URL
+        sync: false
+      - key: ML_INTERNAL_KEY
+        generateValue: true
+      - key: OPENROUTER_API_KEY
+        sync: false
+      - key: OPENROUTER_DEFAULT_MODEL
+        value: google/gemini-2.0-flash-exp:free
+
+  # SkillGraph ML Microservice (Python / FastAPI)
+  - type: web
+    name: skillgraph-ml
+    runtime: python
+    plan: free
+    rootDir: ml-service
+    buildCommand: pip install -r requirements.txt && python -m data.generate_synthetic && python -m training.train && python -m app.verify_model
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    envVars:
+      - key: INTERNAL_KEY
+        sync: false
+      - key: HOST
+        value: 0.0.0.0

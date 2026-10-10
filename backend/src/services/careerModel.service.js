@@ -3,10 +3,15 @@ import { CareerSkill } from '../models/careerSkill.model.js';
 import { SkillRelationship } from '../models/skillRelationship.model.js';
 import { buildCareerModel } from './engine/graph.js';
 import { ApiError } from '../utils/ApiError.js';
+import { BoundedCache } from '../utils/cache.js';
 
-// In-memory cache for career models with 5-minute TTL
-const cache = new Map();
+// In-memory bounded cache for career models with 5-minute TTL, max 100 entries, LRU eviction
 const TTL_MS = 5 * 60 * 1000;
+const careerModelCache = new BoundedCache({
+  maxSize: 100,
+  ttlMs: TTL_MS,
+  name: 'careerModelCache',
+});
 
 /**
  * Fetch and construct the career engine model for a given career slug.
@@ -20,10 +25,9 @@ export async function getCareerModel(slug) {
     throw new ApiError(400, 'VALIDATION_ERROR', 'Career slug is required');
   }
 
-  const now = Date.now();
-  const cached = cache.get(slug);
-  if (cached && cached.expiresAt > now) {
-    return cached.data;
+  const cached = careerModelCache.get(slug);
+  if (cached) {
+    return cached;
   }
 
   const career = await Career.findOne({ slug }).lean();
@@ -93,12 +97,20 @@ export async function getCareerModel(slug) {
     model,
   };
 
-  cache.set(slug, {
-    data,
-    expiresAt: now + TTL_MS,
-  });
+  careerModelCache.set(slug, data);
 
   return data;
+}
+
+/**
+ * Check whether a career model is currently cached in memory.
+ *
+ * @param {string} slug
+ * @returns {boolean}
+ */
+export function isCareerModelCached(slug) {
+  if (!slug) return false;
+  return careerModelCache.has(slug);
 }
 
 /**
@@ -109,10 +121,19 @@ export async function getCareerModel(slug) {
  */
 export function invalidateCareerModels(slug) {
   if (slug) {
-    cache.delete(slug);
+    careerModelCache.delete(slug);
   } else {
-    cache.clear();
+    careerModelCache.clear();
   }
+}
+
+/**
+ * Diagnostic access to career model cache instance.
+ *
+ * @returns {BoundedCache}
+ */
+export function getCareerModelCache() {
+  return careerModelCache;
 }
 
 /**
@@ -129,6 +150,8 @@ export async function warmCareerModels() {
 
 export default {
   getCareerModel,
+  isCareerModelCached,
   invalidateCareerModels,
+  getCareerModelCache,
   warmCareerModels,
 };

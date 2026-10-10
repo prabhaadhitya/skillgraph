@@ -21,6 +21,8 @@ export function createMlClient({
   fetchImpl = fetch,
 } = {}) {
   const normalizedBase = String(baseUrl).replace(/\/+$/, '');
+  const trimmedKey = typeof internalKey === 'string' ? internalKey.trim() : '';
+  const isConfigured = Boolean(trimmedKey);
 
   /**
    * Safe fetch helper that handles timeouts, errors, and JSON parsing.
@@ -59,6 +61,15 @@ export function createMlClient({
 
   return {
     /**
+     * Returns true if a non-empty internalKey is configured.
+     *
+     * @returns {boolean}
+     */
+    isConfigured() {
+      return isConfigured;
+    },
+
+    /**
      * Check ML service health.
      * GET /health (unauthenticated)
      *
@@ -81,11 +92,16 @@ export function createMlClient({
      * @returns {Promise<Object|null>}
      */
     async modelInfo(endpoint = '/model/info') {
+      if (!isConfigured) {
+        logger.warn('ML integration disabled: internal key is not configured');
+        return null;
+      }
+
       const res = await safeFetch(endpoint, {
         method: 'GET',
         headers: {
           Accept: 'application/json',
-          'X-Internal-Key': internalKey,
+          'X-Internal-Key': trimmedKey,
         },
       });
 
@@ -97,7 +113,7 @@ export function createMlClient({
         method: 'GET',
         headers: {
           Accept: 'application/json',
-          'X-Internal-Key': internalKey,
+          'X-Internal-Key': trimmedKey,
         },
       });
     },
@@ -117,6 +133,11 @@ export function createMlClient({
      * @returns {Promise<Object|null>}
      */
     async recommend(params = {}) {
+      if (!isConfigured) {
+        logger.warn('ML integration disabled: internal key is not configured');
+        return null;
+      }
+
       const careerSlug = params.careerSlug || params.career;
       const proficiencies = params.proficiencies || params.profile || {};
       const topK = params.topK ?? params.limit;
@@ -133,7 +154,7 @@ export function createMlClient({
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json',
-          'X-Internal-Key': internalKey,
+          'X-Internal-Key': trimmedKey,
         },
         body: JSON.stringify(payload),
       });

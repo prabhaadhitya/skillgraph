@@ -8,8 +8,12 @@
  * - Network Error: Throws ApiError(0, 'NETWORK_ERROR', ...) that pages display using ErrorState with RETRY.
  */
 
-const BASE = import.meta.env.VITE_API_BASE_URL ?? '/api';
-export const USE_MOCKS = import.meta.env.VITE_USE_MOCKS === 'true';
+const BASE = (import.meta.env.VITE_API_BASE_URL || '/api').trim();
+
+// Keep mock mode strictly disabled in production builds
+export const USE_MOCKS = import.meta.env.PROD
+  ? false
+  : import.meta.env.VITE_USE_MOCKS === 'true';
 
 /**
  * Custom error class representing SkillGraph API errors.
@@ -30,6 +34,18 @@ export class ApiError extends Error {
   }
 }
 
+import {
+  resolveAndValidateApiUrl,
+  sanitizeInternalDestination,
+  UntrustedEndpointError,
+} from '../utils/urlValidation.js';
+
+export {
+  resolveAndValidateApiUrl,
+  sanitizeInternalDestination,
+  UntrustedEndpointError,
+};
+
 /**
  * Navigation adapter for redirecting.
  * Exposed to allow easy mocking in test environments.
@@ -38,7 +54,8 @@ export const navigationAdapter = {
   redirect: (url) => {
     if (typeof window !== 'undefined') {
       try {
-        window.location.href = url;
+        const safeUrl = sanitizeInternalDestination(url, '/login');
+        window.location.href = safeUrl;
       } catch {
         // Fallback for environments where location is read-only
       }
@@ -62,6 +79,38 @@ export function emitToast(type, message) {
   }
 }
 
+let currentCsrfToken = null;
+
+/**
+ * Read cookie value by name in browser environments.
+ *
+ * @param {string} name
+ * @returns {string|null}
+ */
+export function getCookie(name) {
+  if (typeof document === 'undefined') return null;
+  const match = document.cookie.match(new RegExp('(^|;\\s*)(' + name + ')=([^;]*)'));
+  return match ? decodeURIComponent(match[3]) : null;
+}
+
+/**
+ * Retrieve current active CSRF token.
+ *
+ * @returns {string|null}
+ */
+export function getCsrfToken() {
+  return currentCsrfToken || getCookie('sg_csrf');
+}
+
+/**
+ * Set active CSRF token.
+ *
+ * @param {string} token
+ */
+export function setCsrfToken(token) {
+  currentCsrfToken = token;
+}
+
 /**
  * Perform a fetch request to the backend with envelope unwrapping and error handling.
  *
@@ -71,9 +120,16 @@ export function emitToast(type, message) {
  * @returns {Promise<any>}
  */
 export async function sendRequest(endpoint, options = {}, returnMeta = false) {
-  const url = endpoint.startsWith('http')
-    ? endpoint
-    : `${BASE.replace(/\/+$/, '')}/${endpoint.replace(/^\/+/, '')}`;
+  let url;
+  try {
+    url = resolveAndValidateApiUrl(endpoint, BASE);
+  } catch (err) {
+    throw new ApiError(
+      err.status || 400,
+      err.code || 'UNTRUSTED_ENDPOINT',
+      err.message || 'Requests to untrusted endpoints are not permitted',
+    );
+  }
 
   const method = (options.method || 'GET').toUpperCase();
   const headers = {
@@ -83,6 +139,14 @@ export async function sendRequest(endpoint, options = {}, returnMeta = false) {
 
   if (options.body && !(options.body instanceof FormData)) {
     headers['Content-Type'] = 'application/json';
+  }
+
+  // Automatically attach CSRF token to state-changing requests
+  if (!['GET', 'HEAD', 'OPTIONS'].includes(method)) {
+    const csrf = getCsrfToken();
+    if (csrf) {
+      headers['x-csrf-token'] = csrf;
+    }
   }
 
   let res;
@@ -103,11 +167,20 @@ export async function sendRequest(endpoint, options = {}, returnMeta = false) {
     );
   }
 
+  // Capture CSRF token from response headers if emitted by server
+  const responseCsrf = res.headers.get('x-csrf-token');
+  if (responseCsrf) {
+    setCsrfToken(responseCsrf);
+  }
+
   let json = null;
   const contentType = res.headers.get('content-type') || '';
   if (contentType.includes('application/json')) {
     try {
       json = await res.json();
+      if (json?.data?.csrfToken || json?.meta?.csrfToken) {
+        setCsrfToken(json.data?.csrfToken || json.meta?.csrfToken);
+      }
     } catch {
       json = null;
     }
@@ -135,9 +208,10 @@ export async function sendRequest(endpoint, options = {}, returnMeta = false) {
           emitToast('error', 'Please log in again');
 
           const currentPath = window.location.pathname + window.location.search;
+          const safePath = sanitizeInternalDestination(currentPath, null);
           const nextQuery =
-            currentPath && currentPath !== '/' && !currentPath.startsWith('/login')
-              ? `?next=${encodeURIComponent(currentPath)}`
+            safePath && safePath !== '/' && !safePath.startsWith('/login')
+              ? `?next=${encodeURIComponent(safePath)}`
               : '';
 
           // Defer navigation slightly so state update propagates

@@ -10,28 +10,29 @@ from pathlib import Path
 from typing import Dict, List, Optional, Any
 import numpy as np
 import joblib
-from fastapi import FastAPI, Request, HTTPException, status
+from fastapi import FastAPI, Request, HTTPException, status, Response
 from fastapi.responses import JSONResponse
+import secrets
 from pydantic import BaseModel
 import uvicorn
 
+import app.config as config
 from app.config import (
     INTERNAL_KEY,
     HOST,
     PORT,
     ML_SERVICE_DIR,
+    IS_PRODUCTION,
+    MODEL_FILE,
+    MODEL_INFO_FILE,
+    REPORTS_DIR,
+    METRICS_FILE,
 )
 from training.features import (
     build_features,
     get_cached_career_models,
     get_cached_skills_map,
 )
-
-MODELS_DIR = ML_SERVICE_DIR / "models"
-MODEL_FILE = MODELS_DIR / "model.joblib"
-MODEL_INFO_FILE = MODELS_DIR / "model_info.json"
-REPORTS_DIR = ML_SERVICE_DIR / "reports"
-METRICS_FILE = REPORTS_DIR / "metrics.json"
 
 app = FastAPI(
     title="SkillGraph ML Service",
@@ -72,6 +73,12 @@ def load_model_and_metadata():
         _loaded_model = None
         _model_load_error = f"Model file not found at {MODEL_FILE}"
 
+    if getattr(config, "IS_PRODUCTION", False) and _loaded_model is None:
+        raise RuntimeError(
+            f"ML service deployment failed: {_model_load_error or 'Trained model artifact not available'}. "
+            "In production, the trained model artifact (model.joblib) must be available at deployment."
+        )
+
     return _loaded_model
 
 
@@ -88,7 +95,8 @@ async def enforce_internal_key_middleware(request: Request, call_next):
         return await call_next(request)
 
     key = request.headers.get("X-Internal-Key")
-    if not key or key != INTERNAL_KEY:
+    configured_key = getattr(config, "INTERNAL_KEY", None) or INTERNAL_KEY
+    if not key or not configured_key or not secrets.compare_digest(key, configured_key):
         return JSONResponse(
             status_code=status.HTTP_401_UNAUTHORIZED,
             content={"detail": "Unauthorized: invalid or missing X-Internal-Key"},
@@ -98,13 +106,25 @@ async def enforce_internal_key_middleware(request: Request, call_next):
 
 
 @app.get("/health")
-async def health():
+async def health(response: Response):
     """
     Health check endpoint (public, unauthenticated).
+    Returns 503 Service Unavailable in production if model artifact is not loaded.
     """
+    is_prod = getattr(config, "IS_PRODUCTION", False)
+    model_loaded = _loaded_model is not None
+
+    if is_prod and not model_loaded:
+        response.status_code = status.HTTP_503_SERVICE_UNAVAILABLE
+        return {
+            "status": "unhealthy",
+            "modelLoaded": False,
+            "error": _model_load_error or "Model artifact not loaded in production",
+        }
+
     return {
         "status": "ok",
-        "modelLoaded": _loaded_model is not None,
+        "modelLoaded": model_loaded,
     }
 
 

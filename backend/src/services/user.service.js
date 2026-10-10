@@ -3,6 +3,8 @@ import { Career } from '../models/career.model.js';
 import { ApiError } from '../utils/ApiError.js';
 import { formatUser } from '../utils/formatUser.js';
 import { getAlignmentService } from './userSkills.service.js';
+import { invalidateUserCareer } from './analysis.service.js';
+import { invalidateAlignmentCache } from './alignment.service.js';
 
 /**
  * Get current user profile.
@@ -77,8 +79,10 @@ export const updateProfile = async (userId, patchData) => {
   await user.save();
   await user.populate('targetCareerId');
 
-  // Record alignment snapshot with trigger target_change
+  // Invalidate cached target career and alignment snapshot when target career changes
   if (careerChanged) {
+    invalidateUserCareer(userId);
+    invalidateAlignmentCache(userId);
     const alignmentService = getAlignmentService();
     await alignmentService.recordSnapshot(userId, 'target_change');
   }
@@ -86,7 +90,11 @@ export const updateProfile = async (userId, patchData) => {
   return formatUser(user);
 };
 
+export { invalidateUserCareer, invalidateAlignmentCache };
+
 export default {
   getProfile,
   updateProfile,
+  invalidateUserCareer,
+  invalidateAlignmentCache,
 };
