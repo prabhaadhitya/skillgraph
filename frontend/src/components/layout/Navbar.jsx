@@ -71,7 +71,7 @@ export function Navbar() {
                 variant="primary"
                 size="sm"
                 icon={<LayoutDashboard size={14} />}
-                onClick={() => navigate('/app/dashboard')}
+                onClick={() => navigate(user.role === 'admin' ? '/admin' : '/app/dashboard')}
                 className="rounded-full px-4"
               >
                 OPEN APP
@@ -132,7 +132,7 @@ export function Navbar() {
                   size="md"
                   onClick={() => {
                     setMobileMenuOpen(false);
-                    navigate('/app/dashboard');
+                    navigate(user.role === 'admin' ? '/admin' : '/app/dashboard');
                   }}
                   className="w-full"
                 >
