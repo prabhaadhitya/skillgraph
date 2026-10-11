@@ -7,6 +7,7 @@ import {
   globalLimiter,
   createLimiter,
 } from '../src/middleware/rateLimit.js';
+import { app } from '../src/app.js';
 
 describe('Rate limit bypass security (x-qa-bypass-rate-limit)', () => {
   const originalEnv = { ...process.env };
@@ -18,6 +19,7 @@ describe('Rate limit bypass security (x-qa-bypass-rate-limit)', () => {
 
   afterEach(() => {
     process.env = { ...originalEnv };
+    app.set('trust proxy', Number(process.env.TRUST_PROXY ?? 1));
   });
 
   describe('canBypassRateLimit helper function', () => {
@@ -257,6 +259,41 @@ describe('Rate limit bypass security (x-qa-bypass-rate-limit)', () => {
         const res = await request(testApp).post('/login');
         expect(res.status).toBe(200);
       }
+    });
+  });
+
+  describe('Reverse proxy rate limiting with TRUST_PROXY', () => {
+    it('a request through the app with X-Forwarded-For "1.1.1.1, 2.2.2.2" and TRUST_PROXY=2 is rate limited by 1.1.1.1 and not by 2.2.2.2', async () => {
+      process.env.GLOBAL_RATE_LIMIT_MAX = '2';
+      process.env.TRUST_PROXY = '2';
+      app.set('trust proxy', Number(process.env.TRUST_PROXY ?? 1));
+
+      // 1st request from 1.1.1.1 via proxy 2.2.2.2 succeeds
+      const res1 = await request(app)
+        .get('/health')
+        .set('X-Forwarded-For', '1.1.1.1, 2.2.2.2');
+      expect(res1.status).toBe(200);
+
+      // 2nd request from 1.1.1.1 via proxy 2.2.2.2 succeeds
+      const res2 = await request(app)
+        .get('/health')
+        .set('X-Forwarded-For', '1.1.1.1, 2.2.2.2');
+      expect(res2.status).toBe(200);
+
+      // 3rd request from 1.1.1.1 via proxy 2.2.2.2 is rate limited (429)
+      const res3 = await request(app)
+        .get('/health')
+        .set('X-Forwarded-For', '1.1.1.1, 2.2.2.2');
+      expect(res3.status).toBe(429);
+      expect(res3.body.success).toBe(false);
+      expect(res3.body.error.code).toBe('RATE_LIMITED');
+
+      // Request from 3.3.3.3 passing through same proxy 2.2.2.2 succeeds (not rate limited by 2.2.2.2)
+      const res4 = await request(app)
+        .get('/health')
+        .set('X-Forwarded-For', '3.3.3.3, 2.2.2.2');
+      expect(res4.status).toBe(200);
+      expect(res4.body.success).toBe(true);
     });
   });
 });

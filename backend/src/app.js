@@ -17,6 +17,8 @@ import { apiRouter } from './routes/index.js';
 
 export const app = express();
 
+app.set("trust proxy", Number(process.env.TRUST_PROXY ?? 1));
+
 // Disable X-Powered-By header
 app.disable('x-powered-by');
 

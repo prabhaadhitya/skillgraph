@@ -92,6 +92,7 @@ export const envSchema = z
     DEMO_PASSWORD: z.string().optional(),
     AUTH_RATE_LIMIT_MAX: z.coerce.number().optional(),
     GLOBAL_RATE_LIMIT_MAX: z.coerce.number().optional(),
+    TRUST_PROXY: z.coerce.number().optional(),
   })
   .superRefine((data, ctx) => {
     const isProd = data.NODE_ENV === 'production';
@@ -161,6 +162,12 @@ export const envSchema = z
           path: ['CLIENT_ORIGIN'],
           message:
             'CLIENT_ORIGIN must be configured with your production frontend origin and cannot be wildcard (*) in production',
+        });
+      } else if (origin.toLowerCase().includes('localhost') || origin.includes('127.0.0.1')) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ['CLIENT_ORIGIN'],
+          message: 'CLIENT_ORIGIN must be your production frontend origin in production',
         });
       }
 

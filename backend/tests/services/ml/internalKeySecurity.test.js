@@ -37,6 +37,7 @@ describe('ML Internal Key Security & Fallback', () => {
     const validBaseEnv = {
       MONGODB_URI: 'mongodb://localhost:27017/test',
       JWT_SECRET: 'a_very_long_jwt_secret_min_32_characters_long_12345',
+      CLIENT_ORIGIN: 'https://skillgraph.vercel.app',
     };
 
     it('fails startup in production if ML_SERVICE_URL is set without ML_INTERNAL_KEY', () => {
