@@ -43,9 +43,19 @@ export function LoginPage() {
             : '/onboarding';
 
       const nextParam = searchParams.get('next');
-      if (nextParam) {
-        return sanitizePostLoginDestination(nextParam, defaultDest);
+      const nextTarget = nextParam ? sanitizePostLoginDestination(nextParam, null) : null;
+
+      if (nextTarget) {
+        const isAdminTarget = nextTarget === '/admin' || nextTarget.startsWith('/admin/');
+        if (loggedInUser?.role === 'admin') {
+          return isAdminTarget ? nextTarget : '/admin';
+        }
+        if (isAdminTarget) {
+          return defaultDest;
+        }
+        return nextTarget;
       }
+
       return defaultDest;
     },
     [searchParams],

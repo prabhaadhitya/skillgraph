@@ -335,4 +335,238 @@ describe('Login Page', () => {
       });
     });
   });
+
+  describe('Role-based post-login destination rules', () => {
+    it('admin + ?next=/app/dashboard -> navigates to /admin', async () => {
+      const mockLogin = vi.fn().mockResolvedValue({
+        id: 'admin-1',
+        email: 'admin@example.com',
+        role: 'admin',
+      });
+
+      const authValue = {
+        user: null,
+        isLoading: false,
+        login: mockLogin,
+      };
+
+      render(
+        <AuthContext.Provider value={authValue}>
+          <MemoryRouter initialEntries={['/login?next=/app/dashboard']}>
+            <Routes>
+              <Route path="/login" element={<Login />} />
+              <Route path="/admin" element={<div>Admin Area</div>} />
+              <Route path="/app/dashboard" element={<div>Student Dashboard</div>} />
+            </Routes>
+          </MemoryRouter>
+        </AuthContext.Provider>,
+      );
+
+      fireEvent.change(screen.getByLabelText(/Email Address/i), {
+        target: { value: 'admin@example.com' },
+      });
+      fireEvent.change(screen.getByLabelText(/^Password$/i), {
+        target: { value: 'ValidPassword123!' },
+      });
+      fireEvent.click(screen.getByRole('button', { name: /LOG IN/i }));
+
+      await waitFor(() => {
+        expect(screen.getByText('Admin Area')).toBeInTheDocument();
+      });
+      expect(screen.queryByText('Student Dashboard')).not.toBeInTheDocument();
+    });
+
+    it('admin + ?next=/admin/skills -> navigates to /admin/skills', async () => {
+      const mockLogin = vi.fn().mockResolvedValue({
+        id: 'admin-1',
+        email: 'admin@example.com',
+        role: 'admin',
+      });
+
+      const authValue = {
+        user: null,
+        isLoading: false,
+        login: mockLogin,
+      };
+
+      render(
+        <AuthContext.Provider value={authValue}>
+          <MemoryRouter initialEntries={['/login?next=/admin/skills']}>
+            <Routes>
+              <Route path="/login" element={<Login />} />
+              <Route path="/admin/skills" element={<div>Admin Skills Area</div>} />
+              <Route path="/admin" element={<div>Admin Area</div>} />
+            </Routes>
+          </MemoryRouter>
+        </AuthContext.Provider>,
+      );
+
+      fireEvent.change(screen.getByLabelText(/Email Address/i), {
+        target: { value: 'admin@example.com' },
+      });
+      fireEvent.change(screen.getByLabelText(/^Password$/i), {
+        target: { value: 'ValidPassword123!' },
+      });
+      fireEvent.click(screen.getByRole('button', { name: /LOG IN/i }));
+
+      await waitFor(() => {
+        expect(screen.getByText('Admin Skills Area')).toBeInTheDocument();
+      });
+    });
+
+    it('admin + no next -> /admin', async () => {
+      const mockLogin = vi.fn().mockResolvedValue({
+        id: 'admin-1',
+        email: 'admin@example.com',
+        role: 'admin',
+      });
+
+      const authValue = {
+        user: null,
+        isLoading: false,
+        login: mockLogin,
+      };
+
+      render(
+        <AuthContext.Provider value={authValue}>
+          <MemoryRouter initialEntries={['/login']}>
+            <Routes>
+              <Route path="/login" element={<Login />} />
+              <Route path="/admin" element={<div>Admin Area</div>} />
+            </Routes>
+          </MemoryRouter>
+        </AuthContext.Provider>,
+      );
+
+      fireEvent.change(screen.getByLabelText(/Email Address/i), {
+        target: { value: 'admin@example.com' },
+      });
+      fireEvent.change(screen.getByLabelText(/^Password$/i), {
+        target: { value: 'ValidPassword123!' },
+      });
+      fireEvent.click(screen.getByRole('button', { name: /LOG IN/i }));
+
+      await waitFor(() => {
+        expect(screen.getByText('Admin Area')).toBeInTheDocument();
+      });
+    });
+
+    it('student (onboarded) + ?next=/admin/skills -> /app/dashboard', async () => {
+      const mockLogin = vi.fn().mockResolvedValue({
+        id: 'student-1',
+        email: 'student@example.com',
+        role: 'student',
+        onboardingCompleted: true,
+      });
+
+      const authValue = {
+        user: null,
+        isLoading: false,
+        login: mockLogin,
+      };
+
+      render(
+        <AuthContext.Provider value={authValue}>
+          <MemoryRouter initialEntries={['/login?next=/admin/skills']}>
+            <Routes>
+              <Route path="/login" element={<Login />} />
+              <Route path="/app/dashboard" element={<div>Student Dashboard</div>} />
+              <Route path="/admin/skills" element={<div>Admin Skills Area</div>} />
+            </Routes>
+          </MemoryRouter>
+        </AuthContext.Provider>,
+      );
+
+      fireEvent.change(screen.getByLabelText(/Email Address/i), {
+        target: { value: 'student@example.com' },
+      });
+      fireEvent.change(screen.getByLabelText(/^Password$/i), {
+        target: { value: 'ValidPassword123!' },
+      });
+      fireEvent.click(screen.getByRole('button', { name: /LOG IN/i }));
+
+      await waitFor(() => {
+        expect(screen.getByText('Student Dashboard')).toBeInTheDocument();
+      });
+      expect(screen.queryByText('Admin Skills Area')).not.toBeInTheDocument();
+    });
+
+    it('student + ?next=/app/graph -> /app/graph', async () => {
+      const mockLogin = vi.fn().mockResolvedValue({
+        id: 'student-1',
+        email: 'student@example.com',
+        role: 'student',
+        onboardingCompleted: true,
+      });
+
+      const authValue = {
+        user: null,
+        isLoading: false,
+        login: mockLogin,
+      };
+
+      render(
+        <AuthContext.Provider value={authValue}>
+          <MemoryRouter initialEntries={['/login?next=/app/graph']}>
+            <Routes>
+              <Route path="/login" element={<Login />} />
+              <Route path="/app/graph" element={<div>Skill Graph Page</div>} />
+              <Route path="/app/dashboard" element={<div>Student Dashboard</div>} />
+            </Routes>
+          </MemoryRouter>
+        </AuthContext.Provider>,
+      );
+
+      fireEvent.change(screen.getByLabelText(/Email Address/i), {
+        target: { value: 'student@example.com' },
+      });
+      fireEvent.change(screen.getByLabelText(/^Password$/i), {
+        target: { value: 'ValidPassword123!' },
+      });
+      fireEvent.click(screen.getByRole('button', { name: /LOG IN/i }));
+
+      await waitFor(() => {
+        expect(screen.getByText('Skill Graph Page')).toBeInTheDocument();
+      });
+    });
+
+    it('student not onboarded + no next -> /onboarding', async () => {
+      const mockLogin = vi.fn().mockResolvedValue({
+        id: 'student-2',
+        email: 'newstudent@example.com',
+        role: 'student',
+        onboardingCompleted: false,
+      });
+
+      const authValue = {
+        user: null,
+        isLoading: false,
+        login: mockLogin,
+      };
+
+      render(
+        <AuthContext.Provider value={authValue}>
+          <MemoryRouter initialEntries={['/login']}>
+            <Routes>
+              <Route path="/login" element={<Login />} />
+              <Route path="/onboarding" element={<div>Onboarding Page</div>} />
+              <Route path="/app/dashboard" element={<div>Student Dashboard</div>} />
+            </Routes>
+          </MemoryRouter>
+        </AuthContext.Provider>,
+      );
+
+      fireEvent.change(screen.getByLabelText(/Email Address/i), {
+        target: { value: 'newstudent@example.com' },
+      });
+      fireEvent.change(screen.getByLabelText(/^Password$/i), {
+        target: { value: 'ValidPassword123!' },
+      });
+      fireEvent.click(screen.getByRole('button', { name: /LOG IN/i }));
+
+      await waitFor(() => {
+        expect(screen.getByText('Onboarding Page')).toBeInTheDocument();
+      });
+    });
+  });
 });
