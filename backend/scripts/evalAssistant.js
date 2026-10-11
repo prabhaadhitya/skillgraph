@@ -1,4 +1,4 @@
-import fs from 'node:fs';
+/* eslint-disable no-console */
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import dotenv from 'dotenv';

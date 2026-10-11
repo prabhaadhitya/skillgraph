@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 // backend/scripts/badInputCheck.js
 /**
  * Bad-input sweep for all write endpoints in SkillGraph:
@@ -19,7 +20,7 @@ async function request(path, options = {}) {
   let json = null;
   try {
     json = await res.json();
-  } catch (err) {
+  } catch {
     // Non-JSON response
   }
   return { status: res.status, data: json };

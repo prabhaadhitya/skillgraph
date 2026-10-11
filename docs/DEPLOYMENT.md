@@ -155,7 +155,7 @@ Once the backend service is deployed, populate the knowledge base (71 skills, 5 
    You will see the seeder output:
    ```
    ✓ Loaded 71 skills
-   ✓ Loaded 85 relationships
+   ✓ Loaded 101 relationships
    ✓ Loaded 5 careers
    ✓ Created admin: admin@skillgraph.dev
    ```
@@ -165,7 +165,7 @@ Once the backend service is deployed, populate the knowledge base (71 skills, 5 
 MONGODB_URI="<your-atlas-uri>" npm run seed --prefix backend
 ```
 
-Verify backend health by opening `https://skillgraph-backend.onrender.com/health`. It should report:
+Verify backend health by opening `https://<your-backend>.onrender.com/health`. It should report:
 ```json
 {
   "status": "ok",

@@ -161,6 +161,26 @@ describe('Production Startup, Release Configuration & Secret Validation', () => 
       expect(issues.some((msg) => msg.includes('cannot be wildcard (*)'))).toBe(true);
     });
 
+    it('rejects CLIENT_ORIGIN containing localhost in production', () => {
+      const parsed = envSchema.safeParse({
+        ...validProdEnv,
+        CLIENT_ORIGIN: 'http://localhost:5173',
+      });
+      expect(parsed.success).toBe(false);
+      const issues = parsed.error.issues.map((i) => i.message);
+      expect(issues).toContain('CLIENT_ORIGIN must be your production frontend origin in production');
+    });
+
+    it('rejects CLIENT_ORIGIN containing 127.0.0.1 in production', () => {
+      const parsed = envSchema.safeParse({
+        ...validProdEnv,
+        CLIENT_ORIGIN: 'http://127.0.0.1:5173',
+      });
+      expect(parsed.success).toBe(false);
+      const issues = parsed.error.issues.map((i) => i.message);
+      expect(issues).toContain('CLIENT_ORIGIN must be your production frontend origin in production');
+    });
+
     it('rejects COOKIE_SECURE=false in production', () => {
       const parsed = envSchema.safeParse({
         ...validProdEnv,
